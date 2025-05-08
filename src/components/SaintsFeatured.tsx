@@ -2,8 +2,9 @@
 import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { OrthodoxIconFrame } from '@/components/ui/orthodox-icon-frame';
 
 const FEATURED_SAINTS = [
   {
@@ -55,60 +56,64 @@ export function SaintsFeatured() {
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {FEATURED_SAINTS.map((saint, index) => (
-            <Card 
-              key={index}
-              className={`overflow-hidden border-0 group transition-all duration-500 ${
-                index === activeSaint 
-                  ? 'bg-gold/10 shadow-[0_0_30px_rgba(212,175,55,0.15)]' 
-                  : 'bg-[#222]/50 hover:bg-gold/5'
-              }`}
-              onClick={() => setActiveSaint(index)}
-            >
-              <div className="aspect-[3/2] overflow-hidden relative">
-                <div 
-                  className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                  style={{backgroundImage: `url(${saint.icon})`}}
-                ></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1A1F2C] to-transparent"></div>
-                <div className="absolute bottom-4 left-4 right-4">
-                  <h3 className="font-display text-2xl font-bold text-white mb-1">{saint.name}</h3>
-                  <p className="text-gold/90 text-sm">{saint.title} • {saint.dates}</p>
-                </div>
-              </div>
-              
-              <div className="p-5">
-                <div className="mb-3 flex items-start justify-between">
-                  <div>
-                    <span className="text-sm text-white/70">Feast Day:</span>
-                    <span className="ml-2 text-gold font-medium">{saint.feast}</span>
+            <OrthodoxIconFrame key={index} frameType="cathedral" className="overflow-hidden h-full">
+              <Card 
+                className={`border-0 group transition-all duration-500 h-full ${
+                  index === activeSaint 
+                    ? 'bg-[#1A1F2C]/80 shadow-[0_0_30px_rgba(212,175,55,0.15)]' 
+                    : 'bg-[#1A1F2C]/50 hover:bg-gold/5'
+                }`}
+                onClick={() => setActiveSaint(index)}
+              >
+                <div className="aspect-[3/2] overflow-hidden relative">
+                  <div 
+                    className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                    style={{backgroundImage: `url(${saint.icon})`}}
+                  ></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#1A1F2C] to-transparent"></div>
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <h3 className="font-display text-2xl font-bold text-white mb-1">{saint.name}</h3>
+                    <p className="text-gold/90 text-sm">{saint.title} • {saint.dates}</p>
                   </div>
-                  {index === activeSaint && (
-                    <span className="inline-block px-2 py-1 bg-byzantine/20 border border-byzantine/30 rounded-full text-xs text-byzantine-light">
-                      Featured
-                    </span>
-                  )}
                 </div>
                 
-                <p className="text-white/70 text-sm mb-4">{saint.description}</p>
-                
-                <blockquote className="border-l-2 border-gold/50 pl-4 italic text-sm text-white/90 mb-4">
-                  "{saint.quote}"
-                </blockquote>
-                
-                <Button asChild variant="outline" size="sm" className="w-full mt-2 border-gold/50 text-gold hover:bg-gold/10">
-                  <Link to="/saints" className="flex items-center justify-center">
-                    <BookOpen className="h-4 w-4 mr-2" />
-                    Read Full Life
-                  </Link>
-                </Button>
-              </div>
-            </Card>
+                <div className="p-5">
+                  <div className="mb-3 flex items-start justify-between">
+                    <div>
+                      <span className="text-sm text-white/70">Feast Day:</span>
+                      <span className="ml-2 text-gold font-medium">{saint.feast}</span>
+                    </div>
+                    {index === activeSaint && (
+                      <span className="inline-block px-2 py-1 bg-byzantine/20 border border-byzantine/30 rounded-full text-xs text-byzantine-light">
+                        Featured
+                      </span>
+                    )}
+                  </div>
+                  
+                  <p className="text-white/70 text-sm mb-4">{saint.description}</p>
+                  
+                  <blockquote className="border-l-2 border-gold/50 pl-4 italic text-sm text-white/90 mb-4">
+                    "{saint.quote}"
+                  </blockquote>
+                  
+                  <Button asChild variant="outline" size="sm" className="w-full mt-2 border-gold/50 text-gold hover:bg-gold/10">
+                    <Link to="/saints" className="flex items-center justify-center">
+                      <BookOpen className="h-4 w-4 mr-2" />
+                      Read Full Life
+                    </Link>
+                  </Button>
+                </div>
+              </Card>
+            </OrthodoxIconFrame>
           ))}
         </div>
         
         <div className="flex justify-center mt-12">
           <Button asChild variant="outline" className="border-gold text-gold hover:bg-gold/10 px-8">
-            <Link to="/saints">Explore All Saints</Link>
+            <Link to="/saints" className="flex items-center">
+              <User className="h-4 w-4 mr-2" />
+              Explore All Saints
+            </Link>
           </Button>
         </div>
       </div>

@@ -3,7 +3,6 @@
  * Theme utilities for the application
  * Centralizes theme configuration and helper functions for Orthodox and Cathedral themes
  */
-
 import React from 'react';
 
 // Enhanced Orthodox theme colors
@@ -141,18 +140,18 @@ export const getCathedralDecoration = (type: 'header' | 'divider' | 'card' | 'fo
 };
 
 /**
- * Get cathedral-themed pattern backgrounds as CSS background values
+ * Get cathedral-themed pattern backgrounds
  */
 export const getCathedralPattern = (type: 'crosses' | 'domes' | 'arches' | 'icons'): string => {
   switch (type) {
     case 'crosses':
-      return "url(\"data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 10v40M15 30h30' stroke='%23D4AF37' stroke-width='1' fill='none' opacity='.2'/%3E%3C/svg%3E\")";
+      return `url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 10v40M15 30h30' stroke='%23D4AF37' stroke-width='1' fill='none' opacity='.2'/%3E%3C/svg%3E")`;
     case 'domes':
-      return "url(\"data:image/svg+xml,%3Csvg width='100' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 60C25 20 75 20 100 60' stroke='%23D4AF37' stroke-width='1' fill='none' opacity='.1'/%3E%3C/svg%3E\")";
+      return `url("data:image/svg+xml,%3Csvg width='100' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 60C25 20 75 20 100 60' stroke='%23D4AF37' stroke-width='1' fill='none' opacity='.1'/%3E%3C/svg%3E")`;
     case 'arches':
-      return "url(\"data:image/svg+xml,%3Csvg width='80' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 40C20 10 60 10 80 40' stroke='%23D4AF37' stroke-width='.8' fill='none' opacity='.15'/%3E%3C/svg%3E\")";
+      return `url("data:image/svg+xml,%3Csvg width='80' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 40C20 10 60 10 80 40' stroke='%23D4AF37' stroke-width='.8' fill='none' opacity='.15'/%3E%3C/svg%3E")`;
     case 'icons':
-      return "url(\"data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100' height='100' fill='none' stroke='%23D4AF37' stroke-width='.5' opacity='.1'/%3E%3Cpath d='M50 25v50M30 50h40' stroke='%23D4AF37' stroke-width='.7' opacity='.2'/%3E%3C/svg%3E\")";
+      return `url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100' height='100' fill='none' stroke='%23D4AF37' stroke-width='.5' opacity='.1'/%3E%3Cpath d='M50 25v50M30 50h40' stroke='%23D4AF37' stroke-width='.7' opacity='.2'/%3E%3C/svg%3E")`;
     default:
       return '';
   }
