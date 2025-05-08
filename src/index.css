@@ -175,6 +175,20 @@ body::before {
   }
 }
 
+/* New shimmer animation for dividers */
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 200%;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 4s ease-in-out infinite;
+}
+
 /* Prayer fade-in effect */
 .prayer-fade-in {
   animation: prayerFade 1s ease-out forwards;

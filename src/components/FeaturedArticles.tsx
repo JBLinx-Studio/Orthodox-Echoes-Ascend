@@ -91,7 +91,7 @@ const ARTICLES: BlogPost[] = [
   },
 ];
 
-const CATEGORIES = ['Featured', 'History', 'Theology', 'Liturgy', 'Saints', 'Spirituality'];
+const CATEGORIES = ['All', 'Featured', 'History', 'Theology', 'Liturgy', 'Saints', 'Spirituality', 'Art'];
 
 interface ArticleCardProps {
   article: BlogPost;
@@ -101,7 +101,7 @@ interface ArticleCardProps {
 function ArticleCard({ article, featured = false }: ArticleCardProps) {
   return (
     <Card className={cn(
-      "overflow-hidden border-none shadow-md transition-all duration-300 hover:shadow-lg bg-card h-full",
+      "overflow-hidden border-none shadow-md transition-all duration-300 hover:shadow-lg bg-[#1A1F2C]/70 backdrop-blur-sm h-full",
       featured && "md:col-span-2 md:row-span-2"
     )}>
       <div className={cn(
@@ -119,8 +119,8 @@ function ArticleCard({ article, featured = false }: ArticleCardProps) {
           />
           <div className="absolute top-2 left-2 bg-byzantine text-white text-xs px-2 py-1 rounded">{article.category}</div>
         </div>
-        <CardContent className="p-4 flex flex-col h-full">
-          <div className="mb-2 text-sm text-muted-foreground">{article.publishDate}</div>
+        <CardContent className="p-4 flex flex-col h-full text-white">
+          <div className="mb-2 text-sm text-white/60">{article.publishDate}</div>
           <h3 className={cn(
             "font-display font-bold tracking-tight",
             featured ? "text-xl md:text-2xl mb-3" : "text-lg mb-2"
@@ -128,17 +128,18 @@ function ArticleCard({ article, featured = false }: ArticleCardProps) {
             {article.title}
           </h3>
           <p className={cn(
-            "text-muted-foreground line-clamp-2",
+            "text-white/70 line-clamp-2",
             featured && "md:line-clamp-4"
           )}>
             {article.excerpt}
           </p>
-          <div className="mt-auto pt-4">
-            <Button asChild variant="link" className="p-0 h-auto font-medium text-byzantine hover:text-byzantine-dark">
+          <div className="mt-auto pt-4 flex justify-between items-center">
+            <Button asChild variant="link" className="p-0 h-auto font-medium text-gold hover:text-gold/80">
               <Link to={`/blog/${article.id}`} className="flex items-center gap-1">
                 Read more <ArrowRight className="h-4 w-4 ml-1" />
               </Link>
             </Button>
+            <div className="text-xs text-white/50">{article.readTime} min read</div>
           </div>
         </CardContent>
       </div>
@@ -147,7 +148,7 @@ function ArticleCard({ article, featured = false }: ArticleCardProps) {
 }
 
 export function FeaturedArticles() {
-  const [currentTab, setCurrentTab] = useState('Featured');
+  const [currentTab, setCurrentTab] = useState('All');
   const [articles, setArticles] = useState<BlogPost[]>(ARTICLES);
   
   useEffect(() => {
@@ -156,6 +157,7 @@ export function FeaturedArticles() {
   }, []);
   
   const filteredArticles = articles.filter(article => {
+    if (currentTab === 'All') return true;
     if (currentTab === 'Featured') return article.featured;
     return article.category.toLowerCase() === currentTab.toLowerCase();
   });
@@ -165,16 +167,24 @@ export function FeaturedArticles() {
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
           <div>
-            <h2 className="orthodox-heading text-2xl md:text-3xl font-bold mb-2">Explore Our Articles</h2>
-            <p className="text-muted-foreground">Discover the depth and richness of Orthodox teaching and tradition</p>
+            <h2 className="orthodox-heading text-2xl md:text-3xl font-bold mb-2 text-white">Explore Our Articles</h2>
+            <p className="text-white/60">Discover the depth and richness of Orthodox teaching and tradition</p>
           </div>
-          <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full md:w-auto">
-            <TabsList className="bg-muted/50">
-              {CATEGORIES.map(category => (
-                <TabsTrigger key={category} value={category}>{category}</TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
+          <div className="overflow-x-auto pb-2">
+            <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full md:w-auto">
+              <TabsList className="bg-[#1A1F2C]/50 border border-gold/10">
+                {CATEGORIES.map(category => (
+                  <TabsTrigger 
+                    key={category} 
+                    value={category}
+                    className="text-white data-[state=active]:bg-byzantine data-[state=active]:text-white"
+                  >
+                    {category}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+          </div>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -194,7 +204,7 @@ export function FeaturedArticles() {
         </div>
         
         <div className="mt-10 text-center">
-          <Button asChild variant="outline" className="border-byzantine text-byzantine hover:bg-byzantine/10">
+          <Button asChild variant="outline" className="border-byzantine/30 text-white hover:bg-byzantine/10 bg-byzantine/20">
             <Link to="/blog">View All Articles</Link>
           </Button>
         </div>
