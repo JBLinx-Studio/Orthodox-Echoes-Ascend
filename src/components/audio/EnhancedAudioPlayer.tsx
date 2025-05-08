@@ -353,7 +353,7 @@ export function EnhancedAudioPlayer({
           <div className="text-sm font-medium text-gold mb-3 flex justify-between items-center">
             <span className="flex items-center">
               <Music className="h-4 w-4 mr-2" />
-              Sacred Chants Collection
+              Sacred Sounds Collection
             </span>
             <span className="text-xs text-white/60">{currentTime} / {playlist[currentTrackIndex]?.length || "0:00"}</span>
           </div>

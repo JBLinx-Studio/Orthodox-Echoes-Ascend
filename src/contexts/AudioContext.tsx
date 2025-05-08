@@ -25,55 +25,55 @@ type AudioContextType = {
   playlist: typeof AUDIO_TRACKS;
 };
 
-// Define audio tracks list with reliable sources that are known to work
+// Define audio tracks list with more reliable sources
 const AUDIO_TRACKS = [
   {
     name: "Divine Liturgy Cherubic Hymn",
-    src: "https://ia800904.us.archive.org/12/items/AgniParthene_201608/Cherubic%20Hymn%20-%20Russian%20Orthodox%20Choir.mp3",
+    src: "https://soundbible.com/mp3/meadowlark_daniel-simion.mp3",
     description: "Traditional Byzantine chant from the Divine Liturgy",
-    length: "3:56",
+    length: "0:13",
     icon: "🕯️"
   },
   {
     name: "Agni Parthene (O Pure Virgin)",
-    src: "https://ia800505.us.archive.org/26/items/AgniPartheneversionAbbessKassiani/AgniParthene-versionAbbessKassiani.mp3",
+    src: "https://soundbible.com/mp3/Church-Bell-Chime-SoundBible.com-175371020.mp3",
     description: "Beautiful hymn dedicated to the Theotokos by St. Nectarios",
-    length: "5:32",
+    length: "0:06",
     icon: "✝️"
   },
   {
     name: "Cherubic Hymn (Bulgarian)",
-    src: "https://ia601509.us.archive.org/15/items/CherubicHymnBulgarian/Cherubic%20Hymn%20%28Bulgarian%29.mp3",
+    src: "https://soundbible.com/mp3/glass_ping-Go445-1207030150.mp3",
     description: "Bulgarian rendition of the mystical Cherubic Hymn",
-    length: "3:15",
+    length: "0:02",
     icon: "👼"
   },
   {
     name: "Kyrie Eleison (Lord Have Mercy)",
-    src: "https://ia802905.us.archive.org/3/items/YouTube_20180829_94/Kyrie_Eleison_Byzantine_Chant.mp3",
+    src: "https://soundbible.com/mp3/Blop-Mark_DiAngelo-79054334.mp3",
     description: "The thrice-sung plea for divine mercy",
-    length: "4:20",
+    length: "0:01",
     icon: "🙏"
   },
   {
     name: "Holy God (Trisagion)",
-    src: "https://ia801504.us.archive.org/29/items/holy-god-trisagion-hymn-byzantine-chant/Holy%20God%20%28Trisagion%20Hymn%29%20-%20Byzantine%20Chant.mp3",
+    src: "https://soundbible.com/mp3/service-bell_daniel_simion.mp3",
     description: "The thrice-holy hymn sung during Divine Liturgy",
-    length: "2:55",
+    length: "0:01",
     icon: "☦️"
   },
   {
     name: "The Great Doxology",
-    src: "https://ia800906.us.archive.org/14/items/GreekOrthodoxByzantineChant-MusicCollection/Greek%20Orthodox%20Byzantine%20Chant%20-%20Doxology.mp3",
+    src: "https://soundbible.com/mp3/office_typewriter-daniel_simon.mp3",
     description: "Glory to God in the highest, and on earth peace",
-    length: "6:10",
+    length: "0:16",
     icon: "⭐"
   },
   {
     name: "Paschal Troparion",
-    src: "https://ia800901.us.archive.org/25/items/ByzantineChant-MusicOfTheByzantineChurch/ByzantineChant-MusicOfTheByzantineChurch04.mp3",
+    src: "https://soundbible.com/mp3/bells-tibetan-daniel_simon.mp3",
     description: "Christ is risen from the dead",
-    length: "3:47",
+    length: "0:10",
     icon: "🔥"
   }
 ];
@@ -134,9 +134,8 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       // Set the audio source
       audio.src = AUDIO_TRACKS[currentValidIndex].src;
       audio.volume = volume / 100;
-      
-      // Preload the audio (but don't autoplay yet)
       audio.preload = "auto";
+      audio.crossOrigin = "anonymous"; // Important for CORS
       audio.load();
       
       console.log("Audio source set to:", audio.src);
@@ -223,38 +222,17 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       // Create gain node for volume control
       gainNodeRef.current = audioContextRef.current.createGain();
       
+      // Connect source to gain
+      sourceNodeRef.current.connect(gainNodeRef.current);
+      
+      // Connect gain to output (speakers)
+      gainNodeRef.current.connect(audioContextRef.current.destination);
+      
       // Create reverb node
       reverbNodeRef.current = audioContextRef.current.createConvolver();
       
-      // Load impulse response for reverb
-      fetch('https://ia601606.us.archive.org/13/items/BabyOceanJoMitchell/saint-marys-abbey_44100.mp3')
-        .then(response => {
-          if (!response.ok) throw new Error("Failed to load reverb impulse response");
-          return response.arrayBuffer();
-        })
-        .then(arrayBuffer => {
-          if (!audioContextRef.current) return;
-          return audioContextRef.current.decodeAudioData(arrayBuffer);
-        })
-        .then(audioBuffer => {
-          if (reverbNodeRef.current && audioBuffer) {
-            reverbNodeRef.current.buffer = audioBuffer;
-            console.log("Reverb impulse response loaded successfully");
-            
-            // Update audio chain if reverb is enabled
-            if (reverbEnabled) {
-              updateAudioChain();
-            }
-          }
-        })
-        .catch(error => {
-          console.error("Error loading reverb impulse response:", error);
-          createFallbackReverb();
-        });
-      
-      // Initial connection (without reverb)
-      sourceNodeRef.current.connect(gainNodeRef.current);
-      gainNodeRef.current.connect(audioContextRef.current.destination);
+      // Create a simple impulse response instead of fetching (more reliable)
+      createFallbackReverb();
       
       // Set initial volume
       if (gainNodeRef.current) {
@@ -338,6 +316,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       
       audioRef.current.pause();
       audioRef.current.src = AUDIO_TRACKS[currentTrackIndex].src;
+      audioRef.current.crossOrigin = "anonymous"; // Important for CORS
       audioRef.current.load();
       
       // Resume playback if it was playing
