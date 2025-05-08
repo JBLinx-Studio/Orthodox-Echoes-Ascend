@@ -41,7 +41,7 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          # Add cache busting by using the commit hash and timestamp
+          # Add cache busting by using the commit hash, run number, and timestamp
           VITE_CACHE_BUSTER: ${{ github.sha }}_${{ github.run_number }}_$(date +%s)
         
       # Create 404.html for SPA routing

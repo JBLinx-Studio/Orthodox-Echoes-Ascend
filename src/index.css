@@ -94,17 +94,16 @@ body::before {
 
 /* Orthodox-specific styling */
 
-/* Fix for the yellow underline on headings - now properly positioned */
+/* Fix for the yellow underline on headings - properly positioned */
 .orthodox-heading {
   position: relative;
   display: inline-block;
-  padding-bottom: 0.5rem;
 }
 
 .orthodox-heading::after {
   content: '';
   position: absolute;
-  bottom: 0;
+  bottom: -0.25rem; /* Position it properly below the text */
   left: 0;
   width: 40%;
   height: 2px;
