@@ -17,7 +17,8 @@ try {
     { stdio: 'inherit' }
   );
   
-  console.log(`\n✅ Successfully deployed to https://<YOUR_USERNAME>.github.io/${REPO_NAME}/`);
+  console.log(`\n✅ Successfully deployed to GitHub Pages!`);
+  console.log(`\nYour site will be available at: https://<YOUR_USERNAME>.github.io/${REPO_NAME}/`);
   console.log('\nRemember to configure GitHub Pages in your repository settings:');
   console.log('1. Go to Settings > Pages');
   console.log('2. Select "Deploy from a branch" under Build and deployment');
