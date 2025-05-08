@@ -10,10 +10,7 @@ import {
   Music,
   Maximize2,
   Minimize2,
-  Waves,
-  Settings2,
-  Info,
-  SliderHorizontal
+  Waves
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
@@ -28,11 +25,6 @@ import {
 import { useAudio } from '@/contexts/AudioContext';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 
 interface EnhancedAudioPlayerProps {
   autoplay?: boolean;
@@ -74,9 +66,6 @@ export function EnhancedAudioPlayer({
   const [currentTime, setCurrentTime] = useState("0:00");
   const [duration, setDuration] = useState("0:00");
   const [isLoading, setIsLoading] = useState(false);
-  const [showEffectsPanel, setShowEffectsPanel] = useState(false);
-  const [reverbDecay, setReverbDecay] = useState(2.0);
-  const [reverbPreDelay, setReverbPreDelay] = useState(0.1);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const progressIntervalRef = useRef<number | null>(null);
 
@@ -192,27 +181,11 @@ export function EnhancedAudioPlayer({
     setReverbAmount(newValue[0]);
   };
 
-  const handleReverbDecayChange = (newValue: number[]) => {
-    setReverbDecay(newValue[0]);
-  };
-
-  const handleReverbPreDelayChange = (newValue: number[]) => {
-    setReverbPreDelay(newValue[0]);
-  };
-
-  // Custom toast notifications that appear in a better position
-  const showCustomToast = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') => {
-    // Instead of the built-in toast, we'll use a custom implementation
-    // that's handled in the AudioContext to appear at the top center
-    const options: any = { type };
-    toast(message, options);
-  };
-
   // Render minimal player when minimized
   if (isMinimized) {
     return (
       <div className={cn(
-        "flex items-center gap-2 p-3 bg-[#1A1F2C]/95 backdrop-blur-sm rounded-full border border-gold/30 shadow-lg holy-glow-sm",
+        "flex items-center gap-2 p-3 bg-[#1A1F2C]/95 backdrop-blur-sm rounded-full border border-gold/30 shadow-lg",
         className
       )}>
         <span className="text-xs font-medium text-gold/80 max-w-28 truncate mr-1">
@@ -333,97 +306,28 @@ export function EnhancedAudioPlayer({
           </Tooltip>
         </TooltipProvider>
         
-        <Popover>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant={reverbEnabled ? "default" : "ghost"}
-                    size="icon"
-                    className={cn(
-                      "h-8 w-8 rounded-full transition-all",
-                      reverbEnabled 
-                        ? "bg-gold/30 text-gold hover:bg-gold/40" 
-                        : "hover:bg-gold/10 text-gold/70 hover:text-gold"
-                    )}
-                  >
-                    <Waves className="h-4 w-4" />
-                  </Button>
-                </PopoverTrigger>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Audio Effects</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <PopoverContent className="w-80 p-4" side="top">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h4 className="font-medium text-sm text-gold">Cathedral Reverb</h4>
-                <Switch 
-                  checked={reverbEnabled} 
-                  onCheckedChange={toggleReverb}
-                  className="data-[state=checked]:bg-gold"
-                />
-              </div>
-              
-              {reverbEnabled && (
-                <div className="space-y-3 mt-2 animate-fade-in">
-                  <div className="space-y-1">
-                    <div className="flex justify-between">
-                      <Label className="text-xs text-gold/80">Reverb Amount</Label>
-                      <span className="text-xs text-gold/70">{reverbAmount}%</span>
-                    </div>
-                    <Slider
-                      value={[reverbAmount]}
-                      max={100}
-                      step={1}
-                      onValueChange={handleReverbAmountChange}
-                      className="cursor-pointer"
-                    />
-                  </div>
-                  
-                  <div className="space-y-1">
-                    <div className="flex justify-between">
-                      <Label className="text-xs text-gold/80">Decay Time</Label>
-                      <span className="text-xs text-gold/70">{reverbDecay.toFixed(1)}s</span>
-                    </div>
-                    <Slider
-                      value={[reverbDecay]}
-                      min={0.5}
-                      max={8}
-                      step={0.1}
-                      onValueChange={handleReverbDecayChange}
-                      className="cursor-pointer"
-                    />
-                  </div>
-                  
-                  <div className="space-y-1">
-                    <div className="flex justify-between">
-                      <Label className="text-xs text-gold/80">Pre-Delay</Label>
-                      <span className="text-xs text-gold/70">{(reverbPreDelay * 1000).toFixed(0)}ms</span>
-                    </div>
-                    <Slider
-                      value={[reverbPreDelay]}
-                      min={0}
-                      max={0.3}
-                      step={0.01}
-                      onValueChange={handleReverbPreDelayChange}
-                      className="cursor-pointer"
-                    />
-                  </div>
-                  
-                  <div className="pt-2">
-                    <p className="text-xs text-white/60 italic">
-                      Simulates the acoustic environment of a cathedral with natural reverberation.
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </PopoverContent>
-        </Popover>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant={reverbEnabled ? "default" : "ghost"}
+                size="icon"
+                className={cn(
+                  "h-8 w-8 rounded-full transition-all",
+                  reverbEnabled 
+                    ? "bg-gold/30 text-gold hover:bg-gold/40" 
+                    : "hover:bg-gold/10 text-gold/70 hover:text-gold"
+                )}
+                onClick={toggleReverb}
+              >
+                <Waves className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{reverbEnabled ? "Disable Cathedral Reverb" : "Enable Cathedral Reverb"}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
         
         <TooltipProvider>
           <Tooltip>
@@ -455,19 +359,13 @@ export function EnhancedAudioPlayer({
           </div>
           
           <div className="mb-4">
-            <div className="relative h-2 w-full overflow-hidden rounded-full bg-secondary mb-1">
-              <div className={cn(
-                "absolute h-full transition-all bg-gradient-to-r from-gold/70 to-byzantine/70",
-                isPlaying && "progress-pulse"
-              )} style={{ width: `${progress}%` }}></div>
-              <Slider
-                value={[progress]}
-                max={100}
-                step={0.1}
-                onValueChange={handleProgressChange}
-                className="cursor-pointer absolute inset-0 opacity-0"
-              />
-            </div>
+            <Slider
+              value={[progress]}
+              max={100}
+              step={0.1}
+              onValueChange={handleProgressChange}
+              className="cursor-pointer"
+            />
             
             <div className="flex justify-between items-center mt-2">
               <div className="text-xs text-gold/80 font-medium max-w-xs truncate">
@@ -475,15 +373,31 @@ export function EnhancedAudioPlayer({
               </div>
               
               {isPlaying && (
-                <div className="audio-visualizer h-4">
-                  <div className="audio-bar"></div>
-                  <div className="audio-bar"></div>
-                  <div className="audio-bar"></div>
-                  <div className="audio-bar"></div>
+                <div className="flex space-x-1 items-center">
+                  <span className="w-1 h-3 bg-gold rounded-full animate-pulse" style={{animationDelay: "0ms"}}></span>
+                  <span className="w-1 h-4 bg-gold rounded-full animate-pulse" style={{animationDelay: "300ms"}}></span>
+                  <span className="w-1 h-2 bg-gold rounded-full animate-pulse" style={{animationDelay: "600ms"}}></span>
                 </div>
               )}
             </div>
           </div>
+          
+          {reverbEnabled && (
+            <div className="mb-4 glass-morphism p-3 rounded-md">
+              <Label className="text-xs text-gold/80 mb-2 block">Cathedral Reverb Amount</Label>
+              <div className="flex items-center gap-3">
+                <Waves className="h-3 w-3 text-gold/60" />
+                <Slider
+                  value={[reverbAmount]}
+                  max={100}
+                  step={1}
+                  onValueChange={handleReverbAmountChange}
+                  className="cursor-pointer"
+                />
+                <span className="text-xs text-gold/70 min-w-8">{reverbAmount}%</span>
+              </div>
+            </div>
+          )}
           
           <div className="space-y-2 max-h-48 overflow-y-auto pr-1 custom-scrollbar">
             {playlist.map((track, index) => (
@@ -523,7 +437,7 @@ export function EnhancedAudioPlayer({
             ))}
           </div>
           
-          <div className="flex justify-center mt-4 items-center gap-2">
+          <div className="flex justify-center mt-4">
             <Button
               variant="ghost"
               size="icon"
@@ -531,26 +445,6 @@ export function EnhancedAudioPlayer({
               onClick={prevTrack}
             >
               <SkipBack className="h-5 w-5" />
-            </Button>
-            
-            <Button
-              variant={isPlaying ? "default" : "outline"}
-              size="icon"
-              className={cn(
-                "h-11 w-11 rounded-full transition-all",
-                isPlaying 
-                  ? "bg-byzantine hover:bg-byzantine-dark text-white" 
-                  : "text-gold border-gold hover:bg-gold/10"
-              )}
-              onClick={togglePlay}
-            >
-              {isLoading ? (
-                <div className="h-5 w-5 rounded-full border-2 border-r-transparent border-current animate-spin"></div>
-              ) : isPlaying ? (
-                <Pause className="h-5 w-5" />
-              ) : (
-                <Play className="h-5 w-5 ml-0.5" />
-              )}
             </Button>
             
             <Button
@@ -564,59 +458,6 @@ export function EnhancedAudioPlayer({
           </div>
         </div>
       )}
-      
-      <style jsx global>{`
-        .progress-pulse {
-          animation: progressPulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes progressPulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.7; }
-        }
-        
-        .audio-visualizer {
-          display: flex;
-          align-items: center;
-          gap: 2px;
-        }
-        
-        .audio-bar {
-          width: 2px;
-          height: 12px;
-          background-color: #D4AF37;
-          border-radius: 1px;
-          animation: barAnimation 1.2s ease-in-out infinite;
-        }
-        
-        .audio-bar:nth-child(1) { animation-delay: 0ms; }
-        .audio-bar:nth-child(2) { animation-delay: 300ms; }
-        .audio-bar:nth-child(3) { animation-delay: 600ms; }
-        .audio-bar:nth-child(4) { animation-delay: 900ms; }
-        
-        @keyframes barAnimation {
-          0%, 100% { height: 4px; }
-          50% { height: 12px; }
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 4px;
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: rgba(255,255,255,0.05);
-          border-radius: 10px;
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(212, 175, 55, 0.3);
-          border-radius: 10px;
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(212, 175, 55, 0.5);
-        }
-      `}</style>
     </div>
   );
 }
