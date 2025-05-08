@@ -41,8 +41,8 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          # Add cache busting by using the commit hash
-          VITE_CACHE_BUSTER: ${{ github.sha }}
+          # Add cache busting by using the commit hash and timestamp
+          VITE_CACHE_BUSTER: ${{ github.sha }}_${{ github.run_id }}
         
       # Create 404.html for SPA routing
       - name: Create 404.html
@@ -94,6 +94,23 @@ jobs:
       - name: Create .nojekyll file
         run: touch ./dist/.nojekyll
         
+      # Clean cache in gh-pages branch
+      - name: Clean gh-pages branch
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          if git ls-remote --heads origin gh-pages | grep -q 'gh-pages'; then
+            git checkout --orphan temp-branch
+            git rm -rf --cached .
+            git checkout gh-pages
+            git rm -rf .
+            git clean -fxd
+            git commit --allow-empty -m "Clean gh-pages branch"
+            git push origin gh-pages --force
+            git checkout main
+          fi
+        continue-on-error: true
+        
       # Update deployment script to use force push
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
@@ -101,4 +118,7 @@ jobs:
           folder: dist # The folder the action should deploy
           branch: gh-pages # The branch the action should deploy to
           clean: true # Automatically remove deleted files from the deploy branch
+          clean-exclude: |
+            .git
+            .github
           force: true # Force update even if remote history differs

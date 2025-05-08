@@ -99,15 +99,23 @@ const cleanGhPagesBranch = () => {
   }
 }
 
+// Add cache-busting function
+const addCacheBusting = () => {
+  console.log('Adding cache-busting parameters to assets...');
+  const timestamp = new Date().getTime();
+  process.env.VITE_CACHE_BUSTER = `${timestamp}_${Math.random().toString(36).substring(2, 15)}`;
+  console.log(`Using cache buster: ${process.env.VITE_CACHE_BUSTER}`);
+}
+
 try {
   // Clean the gh-pages branch if it exists
   cleanGhPagesBranch();
   
+  // Add cache busting
+  addCacheBusting();
+  
   // Build the project
   console.log('\n🔨 Building the project...');
-  // Add cache busting environment variable
-  const cacheBuster = new Date().getTime();
-  process.env.VITE_CACHE_BUSTER = cacheBuster;
   execSync('npm run build', { stdio: 'inherit' });
   
   // Create 404.html and update index.html for SPA routing
