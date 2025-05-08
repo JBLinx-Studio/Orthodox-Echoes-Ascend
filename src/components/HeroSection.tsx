@@ -18,7 +18,6 @@ export function HeroSection({ className }: HeroSectionProps) {
   const [textReveal, setTextReveal] = useState(false);
   const { togglePlay, isPlaying, expandPlayer } = useAudio();
   const containerRef = useRef<HTMLDivElement>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   
   useEffect(() => {
     // Intro sequence
@@ -38,7 +37,7 @@ export function HeroSection({ className }: HeroSectionProps) {
     
     sequence();
     
-    // Effect for parallax scrolling and mouse movement
+    // Effect for parallax scrolling
     const handleScroll = () => {
       if (containerRef.current) {
         const scrollY = window.scrollY;
@@ -58,39 +57,9 @@ export function HeroSection({ className }: HeroSectionProps) {
       }
     };
     
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-      
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        const x = e.clientX - rect.left; // x position within the element
-        const y = e.clientY - rect.top;  // y position within the element
-        
-        const lightBeams = containerRef.current.querySelectorAll('.light-beam');
-        
-        lightBeams.forEach((beam, index) => {
-          const centerX = rect.width / 2;
-          const centerY = rect.height / 2;
-          
-          // Calculate distance from center and normalize
-          const distX = (x - centerX) / centerX;
-          const distY = (y - centerY) / centerY;
-          
-          // Different light beams move in slightly different ways
-          const offsetX = distX * 50 * (index % 2 === 0 ? 1 : -1);
-          const offsetY = distY * 30;
-          
-          (beam as HTMLElement).style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-        });
-      }
-    };
-    
     window.addEventListener('scroll', handleScroll);
-    window.addEventListener('mousemove', handleMouseMove);
-    
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('mousemove', handleMouseMove);
     };
   }, []);
 
@@ -114,9 +83,8 @@ export function HeroSection({ className }: HeroSectionProps) {
         <div className="absolute inset-0 bg-gradient-to-r from-byzantine/10 via-transparent to-gold/10 z-11"></div>
         
         {/* Dynamic light beams that follow cursor */}
-        <div className="absolute top-1/4 -left-[10%] w-[50%] h-[500px] rotate-45 light-beam glow-effect bg-gradient-to-r from-gold/5 to-transparent blur-[100px] z-5 animate-[pulse_15s_ease-in-out_infinite]"></div>
-        <div className="absolute bottom-1/3 -right-[10%] w-[40%] h-[400px] -rotate-45 light-beam glow-effect bg-gradient-to-l from-byzantine/5 to-transparent blur-[100px] z-5 animate-[pulse_20s_ease-in-out_infinite_reverse]"></div>
-        <div className="absolute top-1/2 left-1/3 w-[30%] h-[300px] light-beam glow-effect bg-radial-gradient from-gold/10 to-transparent blur-[120px] z-7 animate-[pulse_18s_ease-in-out_infinite_alternate]"></div>
+        <div className="absolute top-1/4 -left-[10%] w-[50%] h-[500px] rotate-45 glow-effect bg-gradient-to-r from-gold/5 to-transparent blur-[100px] z-5 animate-[pulse_15s_ease-in-out_infinite]"></div>
+        <div className="absolute bottom-1/3 -right-[10%] w-[40%] h-[400px] -rotate-45 glow-effect bg-gradient-to-l from-byzantine/5 to-transparent blur-[100px] z-5 animate-[pulse_20s_ease-in-out_infinite_reverse]"></div>
         
         {/* Byzantine architectural elements */}
         <div className="absolute bottom-0 inset-x-0 h-40 z-10">
@@ -162,26 +130,6 @@ export function HeroSection({ className }: HeroSectionProps) {
                 animationDelay: `${Math.random() * 2}s`,
               }}
             ></div>
-          ))}
-        </div>
-        
-        {/* Dust particles for atmospheric depth */}
-        <div className="absolute inset-0 z-6 pointer-events-none opacity-40">
-          {Array.from({ length: 40 }).map((_, i) => (
-            <div
-              key={i}
-              className="absolute rounded-full"
-              style={{
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                width: `${Math.random() * 3 + 1}px`,
-                height: `${Math.random() * 3 + 1}px`,
-                background: Math.random() > 0.5 ? 'rgba(212, 175, 55, 0.3)' : 'rgba(255, 255, 255, 0.3)',
-                boxShadow: '0 0 5px rgba(255, 255, 255, 0.3)',
-                animation: `float ${Math.random() * 20 + 10}s linear infinite`,
-                animationDelay: `${Math.random() * 5}s`,
-              }}
-            />
           ))}
         </div>
       </div>
@@ -289,7 +237,7 @@ export function HeroSection({ className }: HeroSectionProps) {
                       <Button 
                         asChild 
                         size="lg" 
-                        className="bg-[#ea384c] hover:bg-[#c42e3f] text-white border border-gold/20 shadow-lg hover:shadow-xl transition-all backdrop-blur-sm text-lg"
+                        className="bg-byzantine hover:bg-byzantine-dark text-white border border-gold/20 shadow-lg hover:shadow-xl transition-all backdrop-blur-sm text-lg"
                       >
                         <Link to="/learn" className="flex items-center">
                           <BookOpen className="mr-3 h-5 w-5" />
@@ -364,14 +312,6 @@ export function HeroSection({ className }: HeroSectionProps) {
           />
         </div>
       </motion.div>
-      
-      {/* Interactive light ray that follows cursor */}
-      <div
-        className="absolute inset-0 pointer-events-none z-5 opacity-30" 
-        style={{
-          background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, rgba(212, 175, 55, 0.2) 0%, transparent 40%)`,
-        }}
-      />
     </section>
   );
 }

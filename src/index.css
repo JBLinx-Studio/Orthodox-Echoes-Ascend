@@ -290,7 +290,6 @@ body::before {
   backdrop-filter: blur(10px) !important;
   border: 1px solid rgba(212, 175, 55, 0.2) !important;
   color: white !important;
-  z-index: 100 !important;
 }
 
 .SelectItem:hover,
@@ -313,38 +312,4 @@ body::before {
 .footer-links {
   position: relative;
   z-index: 20;
-}
-
-/* Enhanced red button styling */
-.btn-orthodox {
-  background-color: #ea384c !important;
-  color: #fff !important;
-  border: 1px solid rgba(212, 175, 55, 0.3) !important;
-  transition: all 0.3s ease;
-}
-
-.btn-orthodox:hover {
-  background-color: #c42e3f !important;
-  box-shadow: 0 0 10px rgba(234, 56, 76, 0.3);
-}
-
-/* Fix for tag colors in blog posts */
-.blog-tag {
-  background-color: rgba(26, 31, 44, 0.8) !important;
-  color: rgba(212, 175, 55, 0.9) !important;
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  padding: 0.2rem 0.5rem;
-  border-radius: 0.25rem;
-  font-size: 0.75rem;
-}
-
-/* Hero section enhancements */
-.hero-section-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
 }
