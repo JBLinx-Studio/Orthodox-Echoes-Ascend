@@ -25,56 +25,42 @@ type AudioContextType = {
   playlist: typeof AUDIO_TRACKS;
 };
 
-// Define audio tracks list with more reliable sources
+// Define audio tracks list with reliable sources from St. Anthony's Monastery
 const AUDIO_TRACKS = [
   {
-    name: "Divine Liturgy Cherubic Hymn",
-    src: "https://soundbible.com/mp3/meadowlark_daniel-simion.mp3",
-    description: "Traditional Byzantine chant from the Divine Liturgy",
-    length: "0:13",
-    icon: "🕯️"
-  },
-  {
-    name: "Agni Parthene (O Pure Virgin)",
-    src: "https://soundbible.com/mp3/Church-Bell-Chime-SoundBible.com-175371020.mp3",
-    description: "Beautiful hymn dedicated to the Theotokos by St. Nectarios",
-    length: "0:06",
+    name: "Christ is Risen",
+    src: "http://music.samonastery.org/Chrys/0125_Christ_is_Risen.mp3",
+    description: "Byzantine Notation - Elizabethan Divine Liturgy",
+    length: "1:45",
     icon: "✝️"
   },
   {
-    name: "Cherubic Hymn (Bulgarian)",
-    src: "https://soundbible.com/mp3/glass_ping-Go445-1207030150.mp3",
-    description: "Bulgarian rendition of the mystical Cherubic Hymn",
-    length: "0:02",
-    icon: "👼"
-  },
-  {
-    name: "Kyrie Eleison (Lord Have Mercy)",
-    src: "https://soundbible.com/mp3/Blop-Mark_DiAngelo-79054334.mp3",
-    description: "The thrice-sung plea for divine mercy",
-    length: "0:01",
+    name: "Through the Intercessions",
+    src: "http://music.samonastery.org/Chrys/0230_Through.mp3",
+    description: "Byzantine Notation - Elizabethan Divine Liturgy",
+    length: "1:20",
     icon: "🙏"
   },
   {
-    name: "Holy God (Trisagion)",
-    src: "https://soundbible.com/mp3/service-bell_daniel_simion.mp3",
-    description: "The thrice-holy hymn sung during Divine Liturgy",
-    length: "0:01",
-    icon: "☦️"
-  },
-  {
-    name: "The Great Doxology",
-    src: "https://soundbible.com/mp3/office_typewriter-daniel_simon.mp3",
-    description: "Glory to God in the highest, and on earth peace",
-    length: "0:16",
+    name: "Arise, O God",
+    src: "http://music.samonastery.org/Arise,%20O%20God.mp3",
+    description: "Instead of Alleluia on Holy Saturday",
+    length: "2:30",
     icon: "⭐"
   },
   {
-    name: "Paschal Troparion",
-    src: "https://soundbible.com/mp3/bells-tibetan-daniel_simon.mp3",
-    description: "Christ is risen from the dead",
-    length: "0:10",
-    icon: "🔥"
+    name: "Cherubic Hymn: Plagal Fifth Mode (Gregory)",
+    src: "http://music.samonastery.org/Chrys/0460_Cherubic_Hymn-Mode_5-Gregory.mp3",
+    description: "By Hieromonk Gregory",
+    length: "5:10",
+    icon: "👼"
+  },
+  {
+    name: "Cherubic Hymn: Plagal Fifth Mode (Petros)",
+    src: "http://music.samonastery.org/b0475_Cherubic%20Hymn-Mode5-Petros.mp3",
+    description: "By Theodore Phokaeus",
+    length: "4:25",
+    icon: "🕯️"
   }
 ];
 
@@ -120,6 +106,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Create a new audio element
     const audio = new Audio();
+    audio.crossOrigin = "anonymous"; // Enable CORS for all audio loading
     audioRef.current = audio;
     
     // Safely set the source - check if the index is valid before accessing
@@ -135,7 +122,6 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       audio.src = AUDIO_TRACKS[currentValidIndex].src;
       audio.volume = volume / 100;
       audio.preload = "auto";
-      audio.crossOrigin = "anonymous"; // Important for CORS
       audio.load();
       
       console.log("Audio source set to:", audio.src);
@@ -156,13 +142,13 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
             errorMessage = "Audio playback was aborted";
             break;
           case MediaError.MEDIA_ERR_NETWORK:
-            errorMessage = "Network error occurred while loading audio";
+            errorMessage = "Network error while loading audio. Try again later.";
             break;
           case MediaError.MEDIA_ERR_DECODE:
             errorMessage = "Audio decoding error";
             break;
           case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
-            errorMessage = "Audio format not supported";
+            errorMessage = "This audio format is not supported by your browser";
             break;
           default:
             errorMessage = `Unknown audio error with: ${AUDIO_TRACKS[currentTrackIndex].name}`;
@@ -183,9 +169,15 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       nextTrack();
     };
     
+    // Handle canplaythrough event to know when audio is ready
+    const handleCanPlayThrough = () => {
+      console.log("Audio can play through");
+    };
+    
     if (audioRef.current) {
       audioRef.current.addEventListener('error', handleError as EventListener);
       audioRef.current.addEventListener('ended', handleEnded);
+      audioRef.current.addEventListener('canplaythrough', handleCanPlayThrough);
     }
     
     return () => {
@@ -193,6 +185,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         audioRef.current.pause();
         audioRef.current.removeEventListener('error', handleError as EventListener);
         audioRef.current.removeEventListener('ended', handleEnded);
+        audioRef.current.removeEventListener('canplaythrough', handleCanPlayThrough);
       }
       
       // Clean up Web Audio API
@@ -238,6 +231,8 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       if (gainNodeRef.current) {
         gainNodeRef.current.gain.value = volume / 100;
       }
+      
+      console.log("Web Audio API setup completed successfully");
     } catch (error) {
       console.error("Error setting up Web Audio API:", error);
     }
@@ -366,7 +361,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
           toast.success(`Playing: ${AUDIO_TRACKS[currentTrackIndex].name}`);
         }).catch(err => {
           console.error("Error playing audio:", err);
-          toast.error("Could not play audio. Please try again.");
+          toast.error("Could not play audio. Please try again or select another track.");
         });
       }
     }
