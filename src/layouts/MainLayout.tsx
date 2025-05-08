@@ -46,15 +46,13 @@ export function MainLayout() {
         Skip to content
       </a>
       
-      {/* Enhanced cathedral background - moved to the top layer, z-index adjusted */}
-      <div className="fixed inset-0 z-[-1]">
+      {/* Enhanced cathedral background */}
+      <div className="fixed inset-0 z-0">
         <AnimatedBackground intensity="medium" theme="gold" />
       </div>
       
       {/* Navigation with z-index ensuring it's above other elements */}
-      <div className="relative z-10">
-        <NavBar />
-      </div>
+      <NavBar />
       
       <AnimatePresence mode="wait">
         {isPageLoading ? (
@@ -152,7 +150,7 @@ function BackToTopButton() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 10 }}
           onClick={scrollToTop}
-          className="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-[#ea384c]/70 text-white flex items-center justify-center shadow-lg backdrop-blur-sm button-press z-40 hover:bg-[#ea384c] focus-indicator border border-gold/30"
+          className="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-byzantine/70 text-white flex items-center justify-center shadow-lg backdrop-blur-sm button-press z-40 hover:bg-byzantine focus-indicator border border-gold/30"
           aria-label="Back to top"
         >
           {/* Orthodox cross icon */}

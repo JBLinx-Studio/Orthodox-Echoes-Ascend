@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -120,13 +119,6 @@ const CATEGORIES = [
   "icons", "tradition", "scripture", "church-life", "sacraments", "monasticism"
 ];
 
-// All available tags
-const TAGS = [
-  "Liturgy", "Worship", "Theology", "Iconography", "Art", "Saints", "Church History", 
-  "Spirituality", "Prayer", "Traditions", "Doctrine", "Faith", "East-West Schism",
-  "Scripture", "Monasticism", "Family", "Modern Life", "Patristics"
-];
-
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
   visible: { 
@@ -194,19 +186,6 @@ function PostCard({ post, onClick }: { post: BlogPost; onClick: () => void }) {
           <p className="text-white/70 line-clamp-3 mb-4 flex-grow">
             {post.excerpt}
           </p>
-          <div className="flex gap-2 flex-wrap mb-3">
-            {post.tags.slice(0, 2).map((tag, i) => (
-              <span key={i} className="text-xs bg-gold/10 text-gold/80 px-2 py-0.5 rounded-full flex items-center">
-                <Tag className="w-3 h-3 mr-1" />
-                {tag}
-              </span>
-            ))}
-            {post.tags.length > 2 && (
-              <span className="text-xs bg-gold/10 text-gold/80 px-2 py-0.5 rounded-full">
-                +{post.tags.length - 2}
-              </span>
-            )}
-          </div>
           <div className="flex items-center justify-between mt-2 pt-3 border-t border-gold/10">
             <div className="text-sm text-white/60 flex items-center">
               <Eye className="w-4 h-4 mr-1 text-white/40" />
@@ -431,7 +410,7 @@ function BlogPage() {
           {isAdmin && (
             <Button 
               onClick={handleCreateNew}
-              className="bg-byzantine hover:bg-byzantine-dark flex gap-2 items-center ml-auto"
+              className="bg-byzantine hover:bg-byzantine-dark flex gap-2 items-center ml-auto text-white"
             >
               <Plus className="h-4 w-4" />
               New Content
@@ -586,25 +565,6 @@ function BlogPage() {
           )}
         </TabsContent>
       </Tabs>
-      
-      {/* Content tags section */}
-      <div className="mt-16 mb-10">
-        <h3 className="text-2xl font-display font-bold text-gold mb-4">Popular Tags</h3>
-        <div className="flex flex-wrap gap-2">
-          {TAGS.map(tag => (
-            <Button 
-              key={tag}
-              variant="outline" 
-              size="sm"
-              className="border-gold/20 hover:border-gold/50 text-white/80 hover:text-white"
-              onClick={() => setFilter(tag)}
-            >
-              <Tag className="h-3 w-3 mr-1" />
-              {tag}
-            </Button>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }
