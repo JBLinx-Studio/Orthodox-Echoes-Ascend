@@ -38,15 +38,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
         
-      - name: Generate timestamp for cache busting
-        run: |
-          echo "DEPLOY_TIMESTAMP=$(date +%s)" >> $GITHUB_ENV
-          echo "Generating cache buster: ${{ env.DEPLOY_TIMESTAMP }}"
+      - name: Generate unique timestamp for cache busting
+        id: timestamp
+        run: echo "DEPLOY_TIMESTAMP=$(date +%s%N)" >> $GITHUB_ENV
         
       - name: Build
         run: npm run build
         env:
-          # Add enhanced cache busting with both timestamp and commit hash
+          # Enhanced cache busting with unique timestamp
           VITE_CACHE_BUSTER: ${{ github.sha }}_${{ github.run_number }}_${{ env.DEPLOY_TIMESTAMP }}
         
       # Create 404.html for SPA routing
@@ -99,29 +98,29 @@ jobs:
       - name: Create .nojekyll file
         run: touch ./dist/.nojekyll
         
-      # Add cache-busting timestamp to index.html
-      - name: Add cache-busting markers
+      # Add stronger cache-busting measures to index.html
+      - name: Add strong cache-busting markers
         run: |
-          # Add timestamp to index.html
-          echo "<!-- Deploy timestamp: $(date +%s) - $(date) -->" >> ./dist/index.html
+          # Add timestamp with nanoseconds precision to ensure uniqueness
+          UNIQUE_ID="${{ github.sha }}_${{ github.run_number }}_$(date +%s%N)"
+          echo "<!-- Deploy timestamp: $UNIQUE_ID - $(date) -->" >> ./dist/index.html
           
           # Add cache busting meta tag
           sed -i '/<head>/a \
-          <meta name="deploy-version" content="${{ github.sha }}_${{ github.run_number }}_${{ env.DEPLOY_TIMESTAMP }}">' ./dist/index.html
+          <meta name="deploy-version" content="'${UNIQUE_ID}'">' ./dist/index.html
+          
+          # Add cache control headers
+          echo 'Cache-Control: no-cache, no-store, must-revalidate' > ./dist/_headers
+          echo 'Pragma: no-cache' >> ./dist/_headers
+          echo 'Expires: 0' >> ./dist/_headers
         
-      # Force clear of any previous cache
-      - name: Clear caches in gh-pages branch if it exists
+      # Forcefully clear any previous cache by removing the gh-pages branch first if it exists
+      - name: Remove gh-pages branch if it exists
         continue-on-error: true
         run: |
-          git fetch origin gh-pages || echo "No gh-pages branch found"
-          git checkout gh-pages || echo "Could not switch to gh-pages branch"
-          if [ -d ".cache" ]; then
-            rm -rf .cache
-            echo "Cleared existing cache directory"
-          fi
-          git checkout ${GITHUB_SHA}
+          git push origin --delete gh-pages || echo "No gh-pages branch to delete"
         
-      # Deploy with force option to ensure changes take effect
+      # Deploy with enhanced options to ensure changes take effect
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
@@ -130,8 +129,10 @@ jobs:
           clean: true
           clean-exclude: |
             .nojekyll
+            _headers
+          single-commit: true
           force: true
-          commit-message: "Deploy website with cache buster: ${{ env.DEPLOY_TIMESTAMP }}"
+          commit-message: "Deploy website with ultra cache buster: ${{ env.DEPLOY_TIMESTAMP }}"
 
       # Verify deployment status
       - name: Verify deployment
@@ -140,3 +141,4 @@ jobs:
           echo "Cache buster: ${{ env.DEPLOY_TIMESTAMP }}"
           echo "GitHub SHA: ${{ github.sha }}"
           echo "Run number: ${{ github.run_number }}"
+          echo "Full unique ID: ${{ github.sha }}_${{ github.run_number }}_${{ env.DEPLOY_TIMESTAMP }}"

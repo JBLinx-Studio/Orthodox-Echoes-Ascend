@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
@@ -103,10 +104,10 @@ export function NavBar() {
       "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
       isScrolled 
         ? "bg-[#1A1F2C]/95 backdrop-blur-md border-b border-gold/10 py-2" 
-        : "bg-transparent py-4"
+        : "bg-[#0a0d16]/70 backdrop-blur-sm py-4"
     )}>
       {/* Scroll progress indicator */}
-      <div className="absolute bottom-0 left-0 h-[2px] bg-gold" style={{ width: `${scrollProgress}%` }}></div>
+      <div className="absolute bottom-0 left-0 h-[2px] bg-[#ea384c]" style={{ width: `${scrollProgress}%` }}></div>
       
       <div className="container px-4 mx-auto">
         <div className="flex items-center justify-between">
@@ -120,7 +121,7 @@ export function NavBar() {
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
-              <span className="absolute inset-0 rounded-full bg-gradient-to-br from-byzantine to-byzantine-dark shadow-lg"></span>
+              <span className="absolute inset-0 rounded-full bg-gradient-to-br from-[#ea384c] to-[#c42e3f] shadow-lg"></span>
               <span className="relative text-white font-display font-bold text-xl">Ω</span>
               <span className="absolute inset-0 rounded-full bg-gold/20 animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
             </motion.div>
@@ -146,14 +147,14 @@ export function NavBar() {
                     Faith & Doctrine
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-2">
+                    <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-2 bg-[#1A1F2C]/90 backdrop-blur-md border border-gold/20">
                       <li className="row-span-3">
                         <NavigationMenuLink asChild>
                           <a
                             className="flex flex-col justify-end w-full h-full p-6 no-underline rounded-md outline-none select-none bg-gradient-to-b from-byzantine/20 to-byzantine/5 border border-byzantine/10 focus:shadow-md"
                             href="/doctrine"
                           >
-                            <BookOpen className="h-6 w-6 text-byzantine mb-2" />
+                            <BookOpen className="h-6 w-6 text-[#ea384c] mb-2" />
                             <div className="text-lg font-medium text-white mb-2">Core Doctrine</div>
                             <p className="text-sm leading-tight text-gray-400">
                               Explore the foundational beliefs and theology of the Orthodox faith
@@ -179,7 +180,7 @@ export function NavBar() {
                     Tradition
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-2">
+                    <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-2 bg-[#1A1F2C]/90 backdrop-blur-md border border-gold/20">
                       <ListItem href="/saints" title="Lives of Saints" icon={<Users className="h-4 w-4 mr-2 text-gold" />}>
                         Stories of holiness through the ages
                       </ListItem>
