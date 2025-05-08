@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found | Orthodox Echoes</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0a0d16;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    
+    .container {
+      max-width: 600px;
+      padding: 2rem;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #D4AF37;
+    }
+    
+    p {
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+      opacity: 0.8;
+    }
+    
+    .home-button {
+      background: rgba(212, 175, 55, 0.2);
+      color: #D4AF37;
+      border: 1px solid rgba(212, 175, 55, 0.5);
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .home-button:hover {
+      background: rgba(212, 175, 55, 0.3);
+    }
+    
+    .candle {
+      width: 30px;
+      height: 100px;
+      background: linear-gradient(to right, #ddd, #fff, #ddd);
+      border-radius: 10px 10px 0 0;
+      position: relative;
+      margin: 0 auto 2rem;
+    }
+    
+    .candle::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 16px;
+      height: 30px;
+      background: radial-gradient(ellipse at bottom, #ffb338 0%, #d4af37 40%, transparent 100%);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      box-shadow: 0 0 20px 5px rgba(255, 179, 56, 0.5);
+      animation: flicker 3s infinite ease-in-out;
+    }
+    
+    @keyframes flicker {
+      0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.9; }
+      25% { transform: translateX(-51%) scale(0.9); opacity: 0.7; }
+      50% { transform: translateX(-49%) scale(1.1); opacity: 1; }
+      75% { transform: translateX(-52%) scale(0.8); opacity: 0.8; }
+    }
+    
+    .icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    
+    /* For SPA routing with GitHub Pages */
+    script {
+      display: none;
+    }
+  </style>
+  <script>
+    // Single Page Apps for GitHub Pages
+    // MIT License
+    // https://github.com/rafgraph/spa-github-pages
+    (function(l) {
+      if (l.search[1] === '/' ) {
+        var decoded = l.search.slice(1).split('&').map(function(s) { 
+          return s.replace(/~and~/g, '&')
+        }).join('?');
+        window.history.replaceState(null, null,
+            l.pathname.slice(0, -1) + decoded + l.hash
+        );
+      }
+    }(window.location))
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="candle"></div>
+    <div class="icon">☦️</div>
+    <h1>Page Not Found</h1>
+    <p>The path you are seeking appears to be missing. Let us guide you back to the right path on your spiritual journey.</p>
+    <a href="/" class="home-button">Return to Home</a>
+  </div>
+  
+  <script>
+    // Auto-redirect after 5 seconds
+    setTimeout(function() {
+      window.location.href = '/';
+    }, 5000);
+  </script>
+</body>
+</html>
