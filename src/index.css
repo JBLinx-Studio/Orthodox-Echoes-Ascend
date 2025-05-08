@@ -103,7 +103,7 @@ body::before {
 .orthodox-heading::after {
   content: '';
   position: absolute;
-  bottom: -0.25rem; /* Position it properly below the text */
+  bottom: -0.5rem; /* Fixed position - moved below the text */
   left: 0;
   width: 40%;
   height: 2px;
@@ -275,6 +275,37 @@ body::before {
   backdrop-filter: blur(10px);
   border: 1px solid rgba(212, 175, 55, 0.2);
   border-radius: 0.5rem;
+}
+
+/* Dropdown styling - ensure consistent theme */
+[data-radix-popper-content-wrapper] {
+  z-index: 50 !important;
+}
+
+.SelectContent,
+[role="menu"],
+[role="dialog"],
+[data-state="open"] {
+  background-color: rgba(26, 31, 44, 0.9) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(212, 175, 55, 0.2) !important;
+  color: white !important;
+}
+
+.SelectItem:hover,
+[role="menuitem"]:hover,
+[role="option"]:hover {
+  background-color: rgba(155, 35, 53, 0.4) !important;
+  color: white !important;
+}
+
+/* Comment section consistent styling */
+.comment-section {
+  background: rgba(26, 31, 44, 0.7) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(212, 175, 55, 0.2) !important;
+  border-radius: 0.5rem;
+  color: white !important;
 }
 
 /* Footer fix - ensure links are clickable */
