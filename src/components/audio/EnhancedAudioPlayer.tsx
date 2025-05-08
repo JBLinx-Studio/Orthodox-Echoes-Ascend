@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { 
   Play, 
@@ -38,7 +39,6 @@ export function EnhancedAudioPlayer({
   className,
   minimized: externalMinimized
 }: EnhancedAudioPlayerProps) {
-  
   const { 
     isPlaying, 
     togglePlay, 
@@ -53,62 +53,86 @@ export function EnhancedAudioPlayer({
     toggleReverb,
     reverbAmount,
     setReverbAmount,
-    isMuted,
-    muteAudio,
-    unmuteAudio,
     playlist,
     nextTrack,
     prevTrack
   } = useAudio();
   
+  const [isMuted, setIsMuted] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState("0:00");
   const [duration, setDuration] = useState("0:00");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const progressIntervalRef = useRef<number | null>(null);
+  const previousVolumeRef = useRef(volume);
 
-  // Listen for external audio element changes
+  // Initialize audio player and listen for external changes
   useEffect(() => {
-    
-    // Find the actual audio element being controlled by AudioContext
-    const audioElements = document.getElementsByTagName('audio');
-    if (audioElements.length > 0) {
-      audioRef.current = audioElements[0];
+    if (!audioRef.current) {
+      const audio = new Audio();
+      audio.src = playlist[currentTrackIndex]?.src || '';
+      audioRef.current = audio;
       
-      const updateDuration = () => {
-        if (audioRef.current && !isNaN(audioRef.current.duration)) {
-          setDuration(formatTime(audioRef.current.duration));
-        }
-      };
-      
-      const handleCanPlay = () => {
+      const handleCanPlayThrough = () => {
         setIsLoading(false);
-        updateDuration();
+        if (autoplay) {
+          void audio.play().catch(e => console.error("Autoplay prevented:", e));
+          togglePlay();
+        }
+        audio.volume = isMuted ? 0 : volume / 100;
       };
       
       const handleLoadStart = () => {
         setIsLoading(true);
       };
       
-      audioRef.current.addEventListener('canplay', handleCanPlay);
-      audioRef.current.addEventListener('loadstart', handleLoadStart);
-      audioRef.current.addEventListener('durationchange', updateDuration);
+      const handleEnded = () => {
+        nextTrack();
+      };
       
-      return () => {
-        if (audioRef.current) {
-          audioRef.current.removeEventListener('canplay', handleCanPlay);
-          audioRef.current.removeEventListener('loadstart', handleLoadStart);
-          audioRef.current.removeEventListener('durationchange', updateDuration);
+      const handleDurationChange = () => {
+        if (audio.duration && !isNaN(audio.duration)) {
+          setDuration(formatTime(audio.duration));
         }
       };
+      
+      const handleError = () => {
+        console.error("Audio error occurred");
+        setIsLoading(false);
+        toast.error("Could not play audio. Trying next track...");
+        // Try next track automatically after error
+        setTimeout(nextTrack, 1000);
+      };
+      
+      audio.addEventListener('canplaythrough', handleCanPlayThrough);
+      audio.addEventListener('loadstart', handleLoadStart);
+      audio.addEventListener('ended', handleEnded);
+      audio.addEventListener('durationchange', handleDurationChange);
+      audio.addEventListener('error', handleError);
+      
+      // Load audio metadata
+      audio.load();
+      
+      return () => {
+        audio.pause();
+        audio.removeEventListener('canplaythrough', handleCanPlayThrough);
+        audio.removeEventListener('loadstart', handleLoadStart);
+        audio.removeEventListener('ended', handleEnded);
+        audio.removeEventListener('durationchange', handleDurationChange);
+        audio.removeEventListener('error', handleError);
+      };
     }
-  }, []);
+    
+    // If we already have an audio reference, just check if we need to update volume
+    if (audioRef.current) {
+      audioRef.current.volume = isMuted ? 0 : volume / 100;
+    }
+  }, [autoplay, volume, isMuted, togglePlay, currentTrackIndex, playlist, nextTrack]);
 
   // Handle external minimized state changes
   useEffect(() => {
-    
     if (externalMinimized !== undefined) {
       if (externalMinimized) {
         minimizePlayer();
@@ -120,7 +144,6 @@ export function EnhancedAudioPlayer({
 
   // Set up progress tracking
   useEffect(() => {
-    
     const startProgressTracking = () => {
       if (progressIntervalRef.current) {
         window.clearInterval(progressIntervalRef.current);
@@ -155,16 +178,29 @@ export function EnhancedAudioPlayer({
   };
 
   const toggleMute = () => {
+    if (!audioRef.current) return;
+    
     if (isMuted) {
-      unmuteAudio();
+      setVolume(previousVolumeRef.current);
+      audioRef.current.volume = previousVolumeRef.current / 100;
+      setIsMuted(false);
+      toast.info("Audio unmuted", { duration: 2000 });
     } else {
-      muteAudio();
+      previousVolumeRef.current = volume;
+      audioRef.current.volume = 0;
+      setVolume(0);
+      setIsMuted(true);
+      toast.info("Audio muted", { duration: 2000 });
     }
   };
 
   const handleVolumeChange = (newValue: number[]) => {
     const newVolume = newValue[0];
     setVolume(newVolume);
+    if (audioRef.current) {
+      audioRef.current.volume = newVolume / 100;
+    }
+    setIsMuted(newVolume === 0);
   };
 
   const handleProgressChange = (newValue: number[]) => {
@@ -356,7 +392,7 @@ export function EnhancedAudioPlayer({
           <div className="text-sm font-medium text-gold mb-3 flex justify-between items-center">
             <span className="flex items-center">
               <Music className="h-4 w-4 mr-2" />
-              Byzantine Sacred Chants
+              Sacred Chants Collection
             </span>
             <span className="text-xs text-white/60">{currentTime} / {playlist[currentTrackIndex]?.length || "0:00"}</span>
           </div>
