@@ -1,0 +1,332 @@
+
+/* Audio visualization effects */
+.audio-visualizer {
+  display: flex;
+  align-items: center;
+  justify-center: center;
+  gap: 2px;
+  height: 16px;
+}
+
+.audio-bar {
+  background-color: #D4AF37;
+  border-radius: 1px;
+  animation: audioWave 1.2s ease-in-out infinite;
+}
+
+@keyframes audioWave {
+  0%, 100% { height: 4px; }
+  50% { height: 16px; }
+}
+
+/* Animated background elements */
+.candle-effect {
+  position: relative;
+}
+
+.candle-effect::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(255, 165, 0, 0.6) 70%);
+  border-radius: 50%;
+  box-shadow: 0 0 15px 5px rgba(255, 165, 0, 0.6);
+  animation: flameFlicker 3s infinite;
+}
+
+@keyframes flameFlicker {
+  0%, 100% { transform: translateX(-50%) scale(1); opacity: 0.9; }
+  25% { transform: translateX(-51%) scale(0.9); opacity: 0.7; }
+  50% { transform: translateX(-49%) scale(1.1); opacity: 1; }
+  75% { transform: translateX(-52%) scale(0.8); opacity: 0.8; }
+}
+
+/* Extended transition durations */
+.duration-2000 {
+  transition-duration: 2000ms;
+}
+
+/* Icon glow effects */
+.icon-glow {
+  filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.5));
+  animation: iconPulse 3s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+  0%, 100% { filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.3)); }
+  50% { filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.7)); }
+}
+
+/* Animated incense smoke */
+.incense-smoke {
+  position: absolute;
+  width: 2px;
+  height: 40px;
+  background: linear-gradient(to top, transparent, rgba(255, 255, 255, 0.3), transparent);
+  filter: blur(1px);
+  animation: smokeRise 7s ease-out infinite;
+}
+
+@keyframes smokeRise {
+  0% { transform: translateY(0) scaleY(1); opacity: 0.8; }
+  100% { transform: translateY(-100px) scaleY(2) rotate(5deg); opacity: 0; }
+}
+
+/* Holy light beams */
+.holy-light-beam {
+  position: absolute;
+  top: 0;
+  width: 40px;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(212, 175, 55, 0.1), transparent);
+  transform: rotate(20deg);
+  filter: blur(8px);
+  animation: lightBeam 15s ease-in-out infinite alternate;
+}
+
+@keyframes lightBeam {
+  0% { opacity: 0.1; transform: rotate(15deg) translateX(-20px); }
+  100% { opacity: 0.3; transform: rotate(25deg) translateX(20px); }
+}
+
+/* Byzantine cross shine effect */
+.byzantine-cross-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.byzantine-cross-shine::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent 30%, rgba(212, 175, 55, 0.4) 50%, transparent 70%);
+  transform: rotate(45deg);
+  animation: shineEffect 6s ease-in-out infinite;
+}
+
+@keyframes shineEffect {
+  0% { transform: translateX(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) rotate(45deg); }
+}
+
+/* Gold hover gleam effect */
+.gold-hover-gleam {
+  position: relative;
+  overflow: hidden;
+}
+
+.gold-hover-gleam::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+  transition: 0.5s;
+}
+
+.gold-hover-gleam:hover::before {
+  left: 100%;
+}
+
+/* Candle flame animation */
+.candle-flame {
+  position: absolute;
+  width: 15px;
+  height: 30px; 
+  background: radial-gradient(ellipse at bottom, #ffb338 0%, #d4af37 40%, transparent 100%);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  box-shadow: 0 0 20px 5px rgba(255, 179, 56, 0.5);
+  transform-origin: center bottom;
+  animation: flameWaver 3s infinite ease-in-out;
+}
+
+@keyframes flameWaver {
+  0%, 100% { transform: rotate(-2deg) scale(1); }
+  25% { transform: rotate(3deg) scale(1.05); }
+  50% { transform: rotate(-1deg) scale(1.1); }
+  75% { transform: rotate(2deg) scale(0.95); }
+}
+
+/* Improved user-friendly animations */
+.tooltip-anim {
+  position: relative;
+}
+
+.tooltip-anim:after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: rgba(26, 31, 44, 0.95);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.tooltip-anim:hover:after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Intuitive focus states */
+.focus-indicator:focus-visible {
+  outline: 2px solid #D4AF37;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.3);
+}
+
+/* Button press effect */
+.button-press {
+  transition: transform 0.1s;
+}
+
+.button-press:active {
+  transform: scale(0.96);
+}
+
+/* Card hover effect */
+.card-hover {
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Scroll indicator animation */
+.scroll-indicator {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 40px;
+  border: 2px solid rgba(212, 175, 55, 0.5);
+  border-radius: 12px;
+}
+
+.scroll-indicator::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 4px;
+  height: 8px;
+  background: #D4AF37;
+  border-radius: 2px;
+  transform: translateX(-50%);
+  animation: scrollIndicator 2s infinite;
+}
+
+@keyframes scrollIndicator {
+  0% { transform: translateX(-50%) translateY(0); opacity: 1; }
+  100% { transform: translateX(-50%) translateY(15px); opacity: 0; }
+}
+
+/* Loading indicator */
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(212, 175, 55, 0.1);
+  border-left-color: #D4AF37;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Byzantine border decoration */
+.byzantine-border {
+  position: relative;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.byzantine-border::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  right: -6px;
+  bottom: -6px;
+  border: 1px solid rgba(212, 175, 55, 0.1);
+  pointer-events: none;
+}
+
+/* Orthodox heading underline */
+.orthodox-heading {
+  position: relative;
+  display: inline-block;
+}
+
+.orthodox-heading::after {
+  content: '';
+  position: absolute;
+  width: 40%;
+  height: 2px;
+  bottom: -10px;
+  left: 30%;
+  background: linear-gradient(90deg, transparent, #D4AF37, transparent);
+}
+
+/* Prayer fade-in effect */
+.prayer-fade-in {
+  animation: prayerFadeIn 2s ease-out;
+}
+
+@keyframes prayerFadeIn {
+  0% { opacity: 0; transform: translateY(15px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Animated flicker effect */
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  25% { opacity: 0.85; }
+  50% { opacity: 0.9; }
+  75% { opacity: 0.8; }
+}
+
+.animate-flicker {
+  animation: flicker 3s infinite ease-in-out;
+}
+
+/* Focus-visible highlight for accessibility */
+:focus-visible {
+  outline: 2px solid #D4AF37;
+  outline-offset: 2px;
+}
+
+/* Skip to content accessibility link */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  padding: 8px 16px;
+  background: #1A1F2C;
+  color: #D4AF37;
+  z-index: 100;
+  transition: top 0.3s;
+}
+
+.skip-link:focus {
+  top: 0;
+}
