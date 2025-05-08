@@ -4,6 +4,8 @@
  * Centralizes theme configuration and helper functions for Orthodox and Cathedral themes
  */
 
+import React from 'react';
+
 // Enhanced Orthodox theme colors
 export const themeColors = {
   gold: "#D4AF37",
