@@ -83,19 +83,45 @@ const updateIndexHtmlForSPA = () => {
   }
 }
 
+// Function to clean the gh-pages branch if it exists
+const cleanGhPagesBranch = () => {
+  try {
+    console.log('Checking if gh-pages branch exists...');
+    const branchExists = execSync('git branch --list gh-pages').toString().trim() !== '';
+    
+    if (branchExists) {
+      console.log('Cleaning gh-pages branch...');
+      execSync('git checkout gh-pages && git rm -rf . && git clean -fxd', { stdio: 'inherit' });
+      execSync('git checkout main', { stdio: 'inherit' });
+    }
+  } catch (error) {
+    console.warn('Could not clean gh-pages branch:', error.message);
+  }
+}
+
 try {
+  // Clean the gh-pages branch if it exists
+  cleanGhPagesBranch();
+  
   // Build the project
   console.log('\n🔨 Building the project...');
+  // Add cache busting environment variable
+  const cacheBuster = new Date().getTime();
+  process.env.VITE_CACHE_BUSTER = cacheBuster;
   execSync('npm run build', { stdio: 'inherit' });
   
   // Create 404.html and update index.html for SPA routing
   create404Page();
   updateIndexHtmlForSPA();
   
+  // Create .nojekyll file to prevent Jekyll processing
+  console.log('Creating .nojekyll file...');
+  fs.writeFileSync(path.resolve(__dirname, '../../dist/.nojekyll'), '');
+  
   // Initialize gh-pages with the dist folder
   console.log('\n📤 Deploying to gh-pages branch...');
   execSync(
-    `npx gh-pages -d dist -m "Deploy to GitHub pages [skip ci]"`,
+    `npx gh-pages -d dist -m "Deploy to GitHub pages [skip ci]" --force`, // Added --force flag
     { stdio: 'inherit' }
   );
   
@@ -103,10 +129,11 @@ try {
   console.log(`\nYour site will be available at: https://<YOUR_USERNAME>.github.io/${REPO_NAME}/`);
   console.log('\n📋 Next steps:');
   console.log('1. Go to Settings > Pages in your GitHub repository');
-  console.log('2. Under "Source", select "Deploy from a branch"');
+  console.log('2. Make sure "Deploy from a branch" is selected');
   console.log('3. Select "gh-pages" branch and "/ (root)" folder');
   console.log('4. Click Save');
-  console.log('\n🔍 It may take a few minutes for your site to be available.');
+  console.log('\n🔍 Note: It may take a few minutes for your site to be available with the new changes.');
+  console.log('\n💡 Tip: If you still see old content, try clearing your browser cache or using incognito mode.');
 } catch (error) {
   console.error('❌ Deployment failed:', error);
   process.exit(1);

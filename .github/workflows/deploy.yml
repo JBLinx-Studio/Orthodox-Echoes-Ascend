@@ -26,6 +26,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v3
@@ -38,6 +40,9 @@ jobs:
         
       - name: Build
         run: npm run build
+        env:
+          # Add cache busting by using the commit hash
+          VITE_CACHE_BUSTER: ${{ github.sha }}
         
       # Create 404.html for SPA routing
       - name: Create 404.html
@@ -84,9 +89,16 @@ jobs:
             }(window.location)) \
           </script> \
           <!-- End Single Page Apps for GitHub Pages -->' ./dist/index.html
-          
+      
+      # Create a .nojekyll file to prevent Jekyll processing
+      - name: Create .nojekyll file
+        run: touch ./dist/.nojekyll
+        
+      # Update deployment script to use force push
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: dist # The folder the action should deploy
           branch: gh-pages # The branch the action should deploy to
+          clean: true # Automatically remove deleted files from the deploy branch
+          force: true # Force update even if remote history differs
