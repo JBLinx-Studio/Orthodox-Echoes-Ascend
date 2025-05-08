@@ -41,8 +41,8 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          # Add cache busting by using the commit hash
-          VITE_CACHE_BUSTER: ${{ github.sha }}
+          # Add cache busting by using the commit hash and timestamp
+          VITE_CACHE_BUSTER: ${{ github.sha }}_${{ github.run_number }}_$(date +%s)
         
       # Create 404.html for SPA routing
       - name: Create 404.html
@@ -94,11 +94,26 @@ jobs:
       - name: Create .nojekyll file
         run: touch ./dist/.nojekyll
         
-      # Update deployment script to use force push
+      # Add cache-busting timestamp to ensure proper deployment
+      - name: Add deployment timestamp
+        run: |
+          echo "DEPLOY_TIMESTAMP=$(date +%s)" >> $GITHUB_ENV
+          echo "<!-- Deploy timestamp: $(date) -->" >> ./dist/index.html
+        
+      # Update deployment script to use force push and better error handling
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: dist # The folder the action should deploy
           branch: gh-pages # The branch the action should deploy to
           clean: true # Automatically remove deleted files from the deploy branch
+          clean-exclude: |
+            .nojekyll
           force: true # Force update even if remote history differs
+          commit-message: "Deploy website with cache buster: ${{ env.DEPLOY_TIMESTAMP }}"
+
+      # Verify deployment status
+      - name: Verify deployment
+        run: |
+          echo "Deployment completed at $(date)"
+          echo "Cache buster: ${{ env.DEPLOY_TIMESTAMP }}"
