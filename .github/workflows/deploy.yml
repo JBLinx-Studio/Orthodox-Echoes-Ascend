@@ -21,33 +21,72 @@ concurrency:
 
 jobs:
   # Build job
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: "18"
           cache: 'npm'
+          
       - name: Install dependencies
         run: npm ci
+        
       - name: Build
         run: npm run build
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: "./dist"
-
-  # Deployment job
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
+        
+      # Create 404.html for SPA routing
+      - name: Create 404.html
+        run: |
+          cat > ./dist/404.html << 'EOL'
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <title>Orthodox Echoes - Page Not Found</title>
+              <script type="text/javascript">
+                var pathSegmentsToKeep = 1;
+                var l = window.location;
+                l.replace(
+                  l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+                  l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+                  l.pathname.split('/').slice(1 + pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+                  (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+                  l.hash
+                );
+              </script>
+            </head>
+            <body>
+              <h2>Redirecting...</h2>
+            </body>
+          </html>
+          EOL
+      
+      # Update index.html for SPA routing
+      - name: Update index.html for SPA
+        run: |
+          sed -i '/<head>/a \
+          <!-- Start Single Page Apps for GitHub Pages --> \
+          <script type="text/javascript"> \
+            (function(l) { \
+              if (l.search[1] === "/" ) { \
+                var decoded = l.search.slice(1).split("&").map(function(s) { \
+                  return s.replace(/~and~/g, "&"); \
+                }).join("?"); \
+                window.history.replaceState(null, null, \
+                    l.pathname.slice(0, -1) + decoded + l.hash \
+                ); \
+              } \
+            }(window.location)) \
+          </script> \
+          <!-- End Single Page Apps for GitHub Pages -->' ./dist/index.html
+          
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v1
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist # The folder the action should deploy
+          branch: gh-pages # The branch the action should deploy to
