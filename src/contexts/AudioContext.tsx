@@ -88,6 +88,32 @@ const AudioContext = createContext<AudioContextType>({
 
 export const useAudio = () => useContext(AudioContext);
 
+// Custom toast configuration to override the default position
+const showToast = (message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info') => {
+  toast(message, {
+    position: "top-center",
+    duration: 3000,
+    className: `toast-${type}`,
+    closeButton: true,
+    style: {
+      background: type === 'success' ? '#F2FCE2' :
+                 type === 'error' ? '#FFDEE2' :
+                 type === 'warning' ? '#FEF7CD' : '#FEC6A1',
+      color: type === 'success' ? '#2F7C31' :
+             type === 'error' ? '#C53030' :
+             type === 'warning' ? '#975A16' : '#9C4221',
+      border: `1px solid ${
+        type === 'success' ? '#C6F6D5' :
+        type === 'error' ? '#FED7D7' :
+        type === 'warning' ? '#FEFCBF' : '#FED7AA'
+      }`,
+      fontSize: '0.875rem',
+      paddingTop: '0.5rem',
+      paddingBottom: '0.5rem',
+    }
+  });
+}
+
 export function AudioProvider({ children }: { children: React.ReactNode }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(30);
@@ -101,6 +127,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   const sourceNodeRef = useRef<MediaElementAudioSourceNode | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
   const reverbNodeRef = useRef<ConvolverNode | null>(null);
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   
   // Initialize audio element on mount
   useEffect(() => {
@@ -155,7 +182,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         }
       }
       
-      toast.error(errorMessage);
+      showToast(errorMessage, 'error');
       setIsPlaying(false);
       
       // Try to play next track automatically after error
@@ -191,6 +218,11 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       // Clean up Web Audio API
       if (audioContextRef.current) {
         audioContextRef.current.close().catch(console.error);
+      }
+      
+      // Clear any pending toasts
+      if (toastTimerRef.current) {
+        clearTimeout(toastTimerRef.current);
       }
     };
   }, []);
@@ -321,7 +353,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
           playPromise.catch(err => {
             console.error("Error playing audio after track change:", err);
             setIsPlaying(false);
-            toast.error("Could not play audio. Please try again.");
+            showToast("Could not play audio. Please try again.", 'error');
           });
         }
       }
@@ -334,9 +366,9 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     
     if (isPlaying) {
       if (reverbEnabled) {
-        toast.success("Cathedral Reverb Enabled", { duration: 2000 });
+        showToast("Cathedral Reverb Enabled", 'success');
       } else {
-        toast.info("Cathedral Reverb Disabled", { duration: 2000 });
+        showToast("Cathedral Reverb Disabled", 'info');
       }
     }
   }, [reverbEnabled, reverbAmount]);
@@ -358,10 +390,10 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       if (playPromise !== undefined) {
         playPromise.then(() => {
           setIsPlaying(true);
-          toast.success(`Playing: ${AUDIO_TRACKS[currentTrackIndex].name}`);
+          showToast(`Playing: ${AUDIO_TRACKS[currentTrackIndex].name}`, 'success');
         }).catch(err => {
           console.error("Error playing audio:", err);
-          toast.error("Could not play audio. Please try again or select another track.");
+          showToast("Could not play audio. Please try again or select another track.", 'error');
         });
       }
     }
@@ -407,7 +439,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     }
     
     setIsMuted(true);
-    toast.info("Audio muted", { duration: 2000 });
+    showToast("Audio muted", 'info');
   };
   
   const unmuteAudio = () => {
@@ -420,7 +452,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     }
     
     setIsMuted(false);
-    toast.info("Audio unmuted", { duration: 2000 });
+    showToast("Audio unmuted", 'info');
   };
   
   const nextTrack = () => {
@@ -428,7 +460,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     if (AUDIO_TRACKS.length === 0) return;
     const nextIndex = (currentTrackIndex + 1) % AUDIO_TRACKS.length;
     setCurrentTrackIndex(nextIndex);
-    toast.info(`Now playing: ${AUDIO_TRACKS[nextIndex].name}`);
+    showToast(`Now playing: ${AUDIO_TRACKS[nextIndex].name}`, 'info');
   };
   
   const prevTrack = () => {
@@ -436,7 +468,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     if (AUDIO_TRACKS.length === 0) return;
     const prevIndex = (currentTrackIndex - 1 + AUDIO_TRACKS.length) % AUDIO_TRACKS.length;
     setCurrentTrackIndex(prevIndex);
-    toast.info(`Now playing: ${AUDIO_TRACKS[prevIndex].name}`);
+    showToast(`Now playing: ${AUDIO_TRACKS[prevIndex].name}`, 'info');
   };
   
   // Update volume when changed
@@ -471,7 +503,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       audioRef.current.pause();
     }
   }, [isPlaying]);
-  
+
   return (
     <AudioContext.Provider 
       value={{ 
@@ -503,6 +535,29 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         minimized={isMinimized}
         className="fixed bottom-0 right-0 z-50 w-full md:w-auto md:right-4 md:bottom-4"
       />
+      
+      {/* Add custom styles for the toast notifications */}
+      <style jsx global>{`
+        /* Toast styles overrides */
+        [data-sonner-toaster] {
+          --offset: 5rem !important;
+          --width: auto !important;
+          --min-width: 300px !important;
+        }
+        
+        .toast-success [data-sonner-toast] {
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+        }
+        
+        .toast-error [data-sonner-toast] {
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        }
+        
+        [data-sonner-toast][data-styled=true] {
+          padding: 12px 16px !important;
+          border-radius: 8px !important;
+        }
+      `}</style>
     </AudioContext.Provider>
   );
 }
