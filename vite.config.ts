@@ -29,15 +29,12 @@ export default defineConfig(({ mode }) => ({
     minify: 'terser',
     assetsInlineLimit: 4096, // 4kb
     cssCodeSplit: true,
-    terserOptions: {
-      // Terser specific options
-      compress: {
-        drop_console: mode === 'production', // Only drop console in production
-        drop_debugger: true,
-      }
-    },
+    // Add cache busting for assets
     rollupOptions: {
       output: {
+        entryFileNames: `assets/[name].[hash]${process.env.VITE_CACHE_BUSTER ? '_' + process.env.VITE_CACHE_BUSTER : ''}.js`,
+        chunkFileNames: `assets/[name].[hash]${process.env.VITE_CACHE_BUSTER ? '_' + process.env.VITE_CACHE_BUSTER : ''}.js`,
+        assetFileNames: `assets/[name].[hash]${process.env.VITE_CACHE_BUSTER ? '_' + process.env.VITE_CACHE_BUSTER : ''}.[ext]`,
         manualChunks: {
           react: ['react', 'react-dom'],
           router: ['react-router-dom'],
@@ -46,6 +43,13 @@ export default defineConfig(({ mode }) => ({
           charts: ['recharts'],
         }
       }
-    }
+    },
+    terserOptions: {
+      // Terser specific options
+      compress: {
+        drop_console: mode === 'production', // Only drop console in production
+        drop_debugger: true,
+      }
+    },
   },
 }));

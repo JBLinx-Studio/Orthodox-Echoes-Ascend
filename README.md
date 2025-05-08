@@ -9,21 +9,27 @@
 
 This project can be deployed to GitHub Pages using either:
 
-1. **GitHub Actions (recommended)**: Automatically builds and deploys when pushing to main branch
-2. **Manual deployment**: Run this command to deploy manually:
-   ```sh
-   node src/scripts/deploy-gh-pages.js
-   ```
+1. **GitHub Actions (recommended)**: 
+   - Automatically builds and deploys when you push to the main branch
+   - Configuration is already set up in `.github/workflows/deploy.yml`
+
+2. **Manual deployment**:
+   - Run this command to deploy manually:
+     ```sh
+     node src/scripts/deploy-gh-pages.js
+     ```
 
 After deployment, your site will be available at: `https://[YOUR_USERNAME].github.io/Orthodox-Echoes-Ascend/`
 
 ### GitHub Pages Setup
 
-After deploying, configure GitHub Pages in your repository settings:
-1. Go to Settings > Pages
+After your first deployment:
+1. Go to Settings > Pages in your GitHub repository
 2. Select "Deploy from a branch" under Build and deployment
 3. Select "gh-pages" branch and "/ (root)" folder
 4. Click Save
+
+Both deployment methods include proper SPA (Single Page Application) routing support, so all routes will work correctly even after page refresh.
 
 ## How can I edit this code?
 
