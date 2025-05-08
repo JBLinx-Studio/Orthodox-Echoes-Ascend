@@ -113,10 +113,7 @@ export function MainLayout() {
         )}
       </AnimatePresence>
       
-      {/* Fix for footer links - add position relative and z-index */}
-      <div className="relative z-20">
-        <Footer />
-      </div>
+      <Footer />
     </div>
   );
 }

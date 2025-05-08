@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar } from 'lucide-react';
-import { OrthodoxIconFrame } from '@/components/ui/orthodox-icon-frame';
 
 // Sample feast days and celebrations
 const FEAST_DAYS = [
@@ -67,34 +66,32 @@ export function LiturgicalCalendar() {
   };
   
   return (
-    <OrthodoxIconFrame frameType="cathedral" className="overflow-hidden">
-      <Card className="bg-[#1A1F2C]/70 backdrop-blur-md border-gold/20 overflow-hidden">
-        <CardHeader className="pb-3 pt-6 bg-gradient-to-r from-byzantine/10 via-gold/5 to-byzantine/10">
-          <div className="flex items-center space-x-2">
-            <Calendar className="h-5 w-5 text-gold" />
-            <CardTitle className="text-xl font-display text-gold/90">Liturgical Calendar</CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent className="pt-4 pb-6">
-          <h3 className="font-display text-lg text-white mb-3">Upcoming Celebrations</h3>
-          <div className="space-y-3">
-            {upcomingFeasts.map((feast, index) => (
-              <div 
-                key={index} 
-                className="p-3 border border-gold/10 rounded-md bg-gold/5 holy-light flex flex-col gap-1 hover:border-gold/30 transition-colors duration-300"
-              >
-                <span className="text-gold/80 font-medium">{feast.date}</span>
-                <span className="text-white">{feast.name}</span>
-              </div>
-            ))}
-          </div>
-          <div className="mt-4 text-center">
-            <a href="/calendar" className="text-gold/70 hover:text-gold text-sm inline-flex items-center border-b border-gold/20 hover:border-gold/60 transition-colors duration-300">
-              View Full Calendar <Calendar className="w-3 h-3 ml-1" />
-            </a>
-          </div>
-        </CardContent>
-      </Card>
-    </OrthodoxIconFrame>
+    <Card className="bg-[#1A1F2C]/70 backdrop-blur-md border-gold/20 overflow-hidden">
+      <CardHeader className="pb-3 pt-6 bg-gradient-to-r from-byzantine/10 via-gold/5 to-byzantine/10">
+        <div className="flex items-center space-x-2">
+          <Calendar className="h-5 w-5 text-gold" />
+          <CardTitle className="text-xl font-display text-gold/90">Liturgical Calendar</CardTitle>
+        </div>
+      </CardHeader>
+      <CardContent className="pt-4 pb-6">
+        <h3 className="font-display text-lg text-white mb-3">Upcoming Celebrations</h3>
+        <div className="space-y-3">
+          {upcomingFeasts.map((feast, index) => (
+            <div 
+              key={index} 
+              className="p-3 border border-gold/10 rounded-md bg-gold/5 holy-light flex flex-col gap-1 hover:border-gold/30 transition-colors duration-300"
+            >
+              <span className="text-gold/80 font-medium">{feast.date}</span>
+              <span className="text-white">{feast.name}</span>
+            </div>
+          ))}
+        </div>
+        <div className="mt-4 text-center">
+          <a href="/calendar" className="text-gold/70 hover:text-gold text-sm inline-flex items-center border-b border-gold/20 hover:border-gold/60 transition-colors duration-300">
+            View Full Calendar <Calendar className="w-3 h-3 ml-1" />
+          </a>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
