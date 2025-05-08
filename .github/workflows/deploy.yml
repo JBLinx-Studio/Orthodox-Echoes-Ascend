@@ -38,16 +38,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
         
-      - name: Generate timestamp for cache busting
-        run: |
-          echo "DEPLOY_TIMESTAMP=$(date +%s)" >> $GITHUB_ENV
-          echo "Generating cache buster: ${{ env.DEPLOY_TIMESTAMP }}"
-        
       - name: Build
         run: npm run build
         env:
-          # Add enhanced cache busting with both timestamp and commit hash
-          VITE_CACHE_BUSTER: ${{ github.sha }}_${{ github.run_number }}_${{ env.DEPLOY_TIMESTAMP }}
+          # Add cache busting by using the commit hash and timestamp
+          VITE_CACHE_BUSTER: ${{ github.sha }}_${{ github.run_number }}_$(date +%s)
         
       # Create 404.html for SPA routing
       - name: Create 404.html
@@ -58,7 +53,6 @@ jobs:
             <head>
               <meta charset="utf-8">
               <title>Orthodox Echoes - Page Not Found</title>
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
               <script type="text/javascript">
                 var pathSegmentsToKeep = 1;
                 var l = window.location;
@@ -100,56 +94,22 @@ jobs:
       - name: Create .nojekyll file
         run: touch ./dist/.nojekyll
         
-      # Add cache-busting timestamp to index.html
-      - name: Add cache-busting markers
+      # Add cache-busting timestamp to ensure proper deployment
+      - name: Add deployment timestamp
         run: |
-          # Add timestamp to index.html
-          echo "<!-- Deploy timestamp: $(date +%s) - $(date) -->" >> ./dist/index.html
-          
-          # Add cache busting meta tag
-          sed -i '/<head>/a \
-          <meta name="deploy-version" content="${{ github.sha }}_${{ github.run_number }}_${{ env.DEPLOY_TIMESTAMP }}">' ./dist/index.html
-          
-          # Add cache-control headers via _headers file (for Netlify and similar services)
-          echo "/*" > ./dist/_headers
-          echo "  Cache-Control: no-cache, no-store, must-revalidate" >> ./dist/_headers
-          
-          # Add cache busting to main CSS and JS files
-          find ./dist -name "*.js" -type f -exec bash -c 'mv "$1" "${1%.js}.${{ env.DEPLOY_TIMESTAMP }}.js"' _ {} \;
-          find ./dist -name "*.css" -type f -exec bash -c 'mv "$1" "${1%.css}.${{ env.DEPLOY_TIMESTAMP }}.css"' _ {} \;
-          
-          # Update references in index.html
-          for file in ./dist/*.js ./dist/*.css; do
-            if [ -f "$file" ]; then
-              filename=$(basename "$file")
-              sed -i "s|[^\.]*\.js|$filename|g" ./dist/index.html
-              sed -i "s|[^\.]*\.css|$filename|g" ./dist/index.html
-            fi
-          done
+          echo "DEPLOY_TIMESTAMP=$(date +%s)" >> $GITHUB_ENV
+          echo "<!-- Deploy timestamp: $(date) -->" >> ./dist/index.html
         
-      # Force clear of any previous cache
-      - name: Clear caches in gh-pages branch if it exists
-        continue-on-error: true
-        run: |
-          git fetch origin gh-pages || echo "No gh-pages branch found"
-          git checkout gh-pages || echo "Could not switch to gh-pages branch"
-          if [ -d ".cache" ]; then
-            rm -rf .cache
-            echo "Cleared existing cache directory"
-          fi
-          git checkout ${GITHUB_SHA}
-        
-      # Ensure clean deployment
-      - name: Deploy to GitHub Pages with cache invalidation
+      # Update deployment script to use force push and better error handling
+      - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: dist
-          branch: gh-pages
-          clean: true
+          folder: dist # The folder the action should deploy
+          branch: gh-pages # The branch the action should deploy to
+          clean: true # Automatically remove deleted files from the deploy branch
           clean-exclude: |
             .nojekyll
-            _headers
-          force: true
+          force: true # Force update even if remote history differs
           commit-message: "Deploy website with cache buster: ${{ env.DEPLOY_TIMESTAMP }}"
 
       # Verify deployment status
@@ -157,14 +117,3 @@ jobs:
         run: |
           echo "Deployment completed at $(date)"
           echo "Cache buster: ${{ env.DEPLOY_TIMESTAMP }}"
-          echo "GitHub SHA: ${{ github.sha }}"
-          echo "Run number: ${{ github.run_number }}"
-          
-      # Add a step that attempts to force GitHub Pages rebuild
-      - name: Trigger GitHub Pages rebuild
-        run: |
-          curl -X POST \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/${{ github.repository }}/pages/builds
-        continue-on-error: true

@@ -1,20 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
 import { BlogPost } from '@/types/BlogPost';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, BookOpen, Calendar, Edit, Eye, FileText, Heart, Plus, Search, Tag, User } from 'lucide-react';
-import { BlogPostDetail } from '@/components/blog/BlogPostDetail';
-import { toast } from 'sonner';
-import { motion } from 'framer-motion';
-import { OrthodoxIconFrame } from '@/components/ui/orthodox-icon-frame';
+import { ArrowLeft, BookOpen, Edit, FileText } from 'lucide-react';
 
 // Sample blog posts
-const INITIAL_ARTICLES: BlogPost[] = [
+const ARTICLES: BlogPost[] = [
   {
     id: "1",
     title: "The Divine Liturgy: A Heavenly Experience",
@@ -27,9 +20,7 @@ const INITIAL_ARTICLES: BlogPost[] = [
     featured: true,
     category: "liturgy",
     readTime: 8,
-    contentType: "article",
-    views: 145,
-    likes: 37
+    contentType: "article"
   },
   {
     id: "5",
@@ -43,10 +34,11 @@ const INITIAL_ARTICLES: BlogPost[] = [
     featured: true,
     category: "art",
     readTime: 7,
-    contentType: "article",
-    views: 124,
-    likes: 28
+    contentType: "article"
   },
+];
+
+const BLOGS: BlogPost[] = [
   {
     id: "2",
     title: "St. Athanasius and the Defense of Orthodoxy",
@@ -59,9 +51,7 @@ const INITIAL_ARTICLES: BlogPost[] = [
     featured: true,
     category: "saints",
     readTime: 12,
-    contentType: "blog",
-    views: 89,
-    likes: 19
+    contentType: "blog"
   },
   {
     id: "6",
@@ -75,10 +65,11 @@ const INITIAL_ARTICLES: BlogPost[] = [
     featured: false,
     category: "spirituality",
     readTime: 9,
-    contentType: "blog",
-    views: 62,
-    likes: 15
+    contentType: "blog"
   },
+];
+
+const BOOKS: BlogPost[] = [
   {
     id: "3",
     title: "Understanding the Holy Trinity",
@@ -91,9 +82,7 @@ const INITIAL_ARTICLES: BlogPost[] = [
     featured: false,
     category: "theology",
     readTime: 15,
-    contentType: "book",
-    views: 103,
-    likes: 24
+    contentType: "book"
   },
   {
     id: "4",
@@ -107,38 +96,13 @@ const INITIAL_ARTICLES: BlogPost[] = [
     featured: true,
     category: "history",
     readTime: 10,
-    contentType: "book",
-    views: 78,
-    likes: 18
+    contentType: "book"
   },
 ];
 
-// All available categories
-const CATEGORIES = [
-  "liturgy", "art", "saints", "spirituality", "theology", "history", "prayer", 
-  "icons", "tradition", "scripture", "church-life", "sacraments", "monasticism"
-];
-
-const fadeInUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { duration: 0.5 }
-  }
-};
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-};
-
-function PostCard({ post, onClick }: { post: BlogPost; onClick: () => void }) {
+function PostCard({ post }: { post: BlogPost }) {
+  const navigate = useNavigate();
+  
   const getContentTypeIcon = () => {
     switch (post.contentType) {
       case 'article':
@@ -153,80 +117,58 @@ function PostCard({ post, onClick }: { post: BlogPost; onClick: () => void }) {
   };
   
   return (
-    <motion.div variants={fadeInUp}>
-      <Card 
-        className="overflow-hidden bg-[#1A1F2C]/70 backdrop-blur-md border-gold/20 hover:border-gold/40 transition-all duration-300 h-full flex flex-col cursor-pointer holy-light"
-        onClick={onClick}
-      >
-        <div className="relative h-48 overflow-hidden">
-          <img
-            src={post.imageUrl}
-            alt={post.title}
-            className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-          />
-          <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-[#0a0d16]/90 to-transparent h-16" />
-          <div className="absolute top-2 left-2 flex items-center bg-byzantine/80 backdrop-blur-sm text-white text-xs px-2 py-1 rounded">
-            {getContentTypeIcon()}
-            <span className="capitalize">{post.contentType}</span>
-          </div>
-          {post.featured && (
-            <div className="absolute top-2 right-2 bg-gold/80 backdrop-blur-sm text-white text-xs px-2 py-1 rounded">
-              Featured
-            </div>
-          )}
+    <Card className="overflow-hidden bg-[#1A1F2C]/70 backdrop-blur-md border-gold/20 hover:border-gold/40 transition-all duration-300 h-full flex flex-col">
+      <div className="relative h-48 overflow-hidden">
+        <img
+          src={post.imageUrl}
+          alt={post.title}
+          className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+        />
+        <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-[#0a0d16]/90 to-transparent h-16" />
+        <div className="absolute top-2 left-2 flex items-center bg-byzantine/80 backdrop-blur-sm text-white text-xs px-2 py-1 rounded">
+          {getContentTypeIcon()}
+          <span className="capitalize">{post.contentType}</span>
         </div>
-        <CardContent className="flex-grow flex flex-col p-5">
-          <div className="mb-2 text-sm text-gold/80 flex items-center">
-            <Calendar className="w-3 h-3 mr-1" />
-            {post.publishDate}
+      </div>
+      <CardContent className="flex-grow flex flex-col p-5">
+        <div className="mb-2 text-sm text-gold/80">{post.publishDate}</div>
+        <h3 className="text-xl font-display text-white mb-3 line-clamp-2 relative orthodox-heading">
+          {post.title}
+        </h3>
+        <p className="text-white/70 line-clamp-3 mb-4 flex-grow">
+          {post.excerpt}
+        </p>
+        <div className="flex items-center justify-between mt-4 pt-4 border-t border-gold/10">
+          <div className="text-sm text-white/60">
+            By {post.author}
           </div>
-          <h3 className="text-xl font-display text-white mb-3 line-clamp-2 orthodox-heading">
-            {post.title}
-          </h3>
-          <p className="text-white/70 line-clamp-3 mb-4 flex-grow">
-            {post.excerpt}
-          </p>
-          <div className="flex items-center justify-between mt-2 pt-3 border-t border-gold/10">
-            <div className="text-sm text-white/60 flex items-center">
-              <Eye className="w-4 h-4 mr-1 text-white/40" />
-              {post.views || 0}
-              <Heart className="w-4 h-4 mr-1 ml-3 text-white/40" />
-              {post.likes || 0}
-            </div>
-            <div className="text-sm text-white/60 flex items-center">
-              <User className="w-3 h-3 mr-1" />
-              {post.author}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </motion.div>
+          <Button 
+            variant="outline" 
+            size="sm"
+            className="border-gold/30 text-gold hover:bg-gold/10 hover:border-gold/50"
+            onClick={() => navigate(`/blog/${post.id}`)}
+          >
+            Read More
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
-function ContentSection({ title, description, items, onPostClick }: { 
-  title: string; 
-  description: string; 
-  items: BlogPost[];
-  onPostClick: (post: BlogPost) => void;
-}) {
+function ContentSection({ title, description, items }: { title: string, description: string, items: BlogPost[] }) {
   return (
-    <motion.div 
-      variants={staggerContainer}
-      initial="hidden"
-      animate="visible"
-      className="mb-16"
-    >
-      <motion.div variants={fadeInUp} className="mb-8">
+    <div className="mb-16">
+      <div className="mb-8">
         <h2 className="text-3xl font-display font-bold text-white mb-2 orthodox-heading">{title}</h2>
         <p className="text-white/70">{description}</p>
-      </motion.div>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {items.map(post => (
-          <PostCard key={post.id} post={post} onClick={() => onPostClick(post)} />
+          <PostCard key={post.id} post={post} />
         ))}
       </div>
-    </motion.div>
+    </div>
   );
 }
 
@@ -234,190 +176,111 @@ function BlogPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("all");
-  const [filter, setFilter] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("all");
-  const [contentTypeFilter, setContentTypeFilter] = useState("all");
-  const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [showFeaturedOnly, setShowFeaturedOnly] = useState(false);
   
-  // Load posts from localStorage or initialize with sample data
-  useEffect(() => {
-    const savedPosts = localStorage.getItem('orthodoxEchoesBlogPosts');
-    if (savedPosts) {
-      setPosts(JSON.parse(savedPosts));
-    } else {
-      setPosts(INITIAL_ARTICLES);
-      localStorage.setItem('orthodoxEchoesBlogPosts', JSON.stringify(INITIAL_ARTICLES));
+  // If we have an ID, show a single post
+  if (id) {
+    // Find the post from any category
+    const post = [...ARTICLES, ...BLOGS, ...BOOKS].find(post => post.id === id);
+    
+    if (!post) {
+      return (
+        <div className="container mx-auto px-4 py-16">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold mb-4 text-white">Post not found</h2>
+            <Button onClick={() => navigate('/blog')}>
+              Back to Blog
+            </Button>
+          </div>
+        </div>
+      );
     }
     
-    // Check if admin
-    const adminStatus = localStorage.getItem('orthodoxEchoesAdmin');
-    setIsAdmin(adminStatus === 'true');
-  }, []);
-  
-  // Select post from URL parameter
-  useEffect(() => {
-    if (id) {
-      const post = posts.find(p => p.id === id);
-      setSelectedPost(post || null);
-    } else {
-      setSelectedPost(null);
-    }
-  }, [id, posts]);
-  
-  const handlePostClick = (post: BlogPost) => {
-    navigate(`/blog/${post.id}`);
-    
-    // Update view count
-    const updatedPosts = posts.map(p => 
-      p.id === post.id ? { ...p, views: (p.views || 0) + 1 } : p
-    );
-    setPosts(updatedPosts);
-    localStorage.setItem('orthodoxEchoesBlogPosts', JSON.stringify(updatedPosts));
-  };
-  
-  const handleCreateNew = () => {
-    navigate('/admin?newPost=true');
-    toast.info("Navigating to the admin panel to create a new post");
-  };
-  
-  // Filter and group posts
-  const getFilteredPosts = () => {
-    return posts.filter(post => {
-      const matchesSearch = filter === "" || 
-        post.title.toLowerCase().includes(filter.toLowerCase()) || 
-        post.excerpt.toLowerCase().includes(filter.toLowerCase()) ||
-        post.author.toLowerCase().includes(filter.toLowerCase()) ||
-        post.tags.some(tag => tag.toLowerCase().includes(filter.toLowerCase()));
-      
-      const matchesCategory = categoryFilter === "all" || post.category === categoryFilter;
-      const matchesType = contentTypeFilter === "all" || post.contentType === contentTypeFilter;
-      const matchesFeatured = !showFeaturedOnly || post.featured;
-      
-      return matchesSearch && matchesCategory && matchesType && matchesFeatured;
-    });
-  };
-  
-  const filteredPosts = getFilteredPosts();
-  const articles = filteredPosts.filter(post => post.contentType === "article");
-  const blogs = filteredPosts.filter(post => post.contentType === "blog");
-  const books = filteredPosts.filter(post => post.contentType === "book");
-  
-  const featuredPosts = filteredPosts.filter(post => post.featured);
-  
-  // If we have an ID and found the post, show the post detail view
-  if (selectedPost) {
     return (
-      <BlogPostDetail 
-        post={selectedPost}
-        onLike={() => {
-          // Update likes count
-          const updatedPosts = posts.map(p => 
-            p.id === selectedPost.id ? { ...p, likes: (p.likes || 0) + 1 } : p
-          );
-          setPosts(updatedPosts);
-          localStorage.setItem('orthodoxEchoesBlogPosts', JSON.stringify(updatedPosts));
-        }}
-        onEdit={(post) => {
-          navigate(`/admin?editPost=${post.id}`);
-        }}
-        onDelete={(postId) => {
-          const updatedPosts = posts.filter(p => p.id !== postId);
-          setPosts(updatedPosts);
-          localStorage.setItem('orthodoxEchoesBlogPosts', JSON.stringify(updatedPosts));
-          navigate('/blog');
-          toast.success("Post deleted successfully");
-        }}
-      />
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <Button 
+          variant="outline" 
+          className="mb-6 border-gold/30 text-gold hover:bg-gold/10 hover:border-gold/50"
+          onClick={() => navigate('/blog')}
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to all posts
+        </Button>
+        
+        <div className="bg-[#1A1F2C]/70 backdrop-blur-md border border-gold/20 rounded-lg overflow-hidden">
+          <div className="h-64 md:h-80 relative">
+            <img 
+              src={post.imageUrl} 
+              alt={post.title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-[#0a0d16] via-[#0a0d16]/70 to-transparent h-32">
+            </div>
+          </div>
+          
+          <div className="p-8">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="flex items-center bg-byzantine/80 backdrop-blur-sm text-white text-xs px-2 py-1 rounded">
+                {post.contentType === 'article' && <FileText className="h-4 w-4 text-white mr-1" />}
+                {post.contentType === 'blog' && <Edit className="h-4 w-4 text-white mr-1" />}
+                {post.contentType === 'book' && <BookOpen className="h-4 w-4 text-white mr-1" />}
+                <span className="capitalize">{post.contentType}</span>
+              </div>
+              <span className="text-sm text-gold/80">{post.publishDate}</span>
+            </div>
+            
+            <h1 className="text-3xl md:text-4xl font-display font-bold text-white mb-4 orthodox-heading">
+              {post.title}
+            </h1>
+            
+            <div className="flex items-center text-white/60 mb-6">
+              <span>By {post.author}</span>
+              <span className="mx-2">•</span>
+              <span>{post.readTime} min read</span>
+            </div>
+            
+            <div className="prose prose-invert max-w-none">
+              {/* Placeholder content since we don't have real content */}
+              <p className="text-white/80 leading-relaxed">
+                In the rich tapestry of Orthodox Christian tradition, {post.title.toLowerCase()} stands as a profound testament to the depth and beauty of our faith. This {post.contentType} explores the theological, historical, and spiritual dimensions of this topic with reverence and scholarly insight.
+              </p>
+              <p className="text-white/80 leading-relaxed mt-4">
+                {post.excerpt} Through careful examination of patristic sources and liturgical practices, we can gain a deeper understanding of how this aspect of Orthodox life connects us to the apostolic faith and the communion of saints across time.
+              </p>
+              <p className="text-white/80 leading-relaxed mt-4">
+                As we contemplate these sacred mysteries, we are invited into a deeper relationship with Christ and His Church. The wisdom of the Holy Fathers provides guidance for our spiritual journey, illuminating the path of theosis—our deification through God's grace.
+              </p>
+              <p className="text-white/80 leading-relaxed mt-4">
+                May this humble exploration serve to enrich your faith and deepen your appreciation for the inexhaustible treasures of Orthodox Christianity.
+              </p>
+            </div>
+            
+            <div className="flex flex-wrap gap-2 mt-8">
+              {post.tags.map(tag => (
+                <span 
+                  key={tag} 
+                  className="bg-gold/10 text-gold px-3 py-1 text-sm rounded-full hover:bg-gold/20 transition-colors duration-300"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
     );
   }
   
   // Otherwise show the blog listing page
   return (
     <div className="container mx-auto px-4 py-16">
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="mb-12 text-center max-w-2xl mx-auto"
-      >
-        <OrthodoxIconFrame iconType="decorative" size="lg" className="mb-6 mx-auto">
-          <div className="flex justify-center">
-            <span className="text-gold text-4xl">☦</span>
-          </div>
-        </OrthodoxIconFrame>
+      <div className="mb-12 text-center max-w-2xl mx-auto">
         <h1 className="text-4xl md:text-5xl font-display font-bold text-white mb-4 orthodox-heading">
           Orthodox Wisdom & Reflections
         </h1>
         <p className="text-white/70 text-lg">
           Explore articles, blogs, and books that illuminate the richness of Orthodox Christianity
         </p>
-      </motion.div>
-      
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-        className="mb-10 flex flex-col md:flex-row justify-between gap-4"
-      >
-        <div className="relative w-full md:w-64">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 h-4 w-4" />
-          <Input 
-            placeholder="Search posts..." 
-            className="pl-10 bg-[#1A1F2C]/40 border-gold/20"
-            value={filter}
-            onChange={e => setFilter(e.target.value)}
-          />
-        </div>
-        
-        <div className="flex flex-wrap gap-3">
-          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-            <SelectTrigger className="w-[140px] bg-[#1A1F2C]/40 border-gold/20">
-              <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent className="bg-[#1A1F2C]/90 backdrop-blur-md border-gold/20">
-              <SelectItem value="all">All Categories</SelectItem>
-              {CATEGORIES.map(category => (
-                <SelectItem key={category} value={category}>
-                  {category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' ')}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          
-          <Select value={contentTypeFilter} onValueChange={setContentTypeFilter}>
-            <SelectTrigger className="w-[140px] bg-[#1A1F2C]/40 border-gold/20">
-              <SelectValue placeholder="Content Type" />
-            </SelectTrigger>
-            <SelectContent className="bg-[#1A1F2C]/90 backdrop-blur-md border-gold/20">
-              <SelectItem value="all">All Types</SelectItem>
-              <SelectItem value="article">Articles</SelectItem>
-              <SelectItem value="blog">Blog Posts</SelectItem>
-              <SelectItem value="book">Books</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <Button
-            variant="outline"
-            className={`border-gold/20 ${showFeaturedOnly ? 'bg-gold/20 text-white' : 'bg-transparent text-gold/80'}`}
-            onClick={() => setShowFeaturedOnly(!showFeaturedOnly)}
-          >
-            {showFeaturedOnly ? 'All Posts' : 'Featured Only'}
-          </Button>
-          
-          {isAdmin && (
-            <Button 
-              onClick={handleCreateNew}
-              className="bg-byzantine hover:bg-byzantine-dark flex gap-2 items-center ml-auto text-white"
-            >
-              <Plus className="h-4 w-4" />
-              New Content
-            </Button>
-          )}
-        </div>
-      </motion.div>
+      </div>
       
       <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab} className="mb-12">
         <div className="flex justify-center">
@@ -426,143 +289,49 @@ function BlogPage() {
             <TabsTrigger value="articles">Articles</TabsTrigger>
             <TabsTrigger value="blogs">Blogs</TabsTrigger>
             <TabsTrigger value="books">Books</TabsTrigger>
-            <TabsTrigger value="featured">Featured</TabsTrigger>
           </TabsList>
         </div>
         
         <TabsContent value="all" className="mt-8">
-          {filteredPosts.length === 0 ? (
-            <div className="text-center py-12 bg-[#1A1F2C]/30 backdrop-blur-sm rounded-lg border border-gold/10 p-8">
-              <FileText className="w-12 h-12 text-gold/40 mx-auto mb-4" />
-              <p className="text-white/60 text-lg">No content matching your filters.</p>
-              {filter && <p className="mt-2 text-sm text-white/50">Try adjusting your search criteria.</p>}
-              <Button variant="outline" className="mt-4 border-gold/20 text-gold" onClick={() => {
-                setFilter('');
-                setCategoryFilter('all');
-                setContentTypeFilter('all');
-                setShowFeaturedOnly(false);
-              }}>
-                Clear Filters
-              </Button>
-            </div>
-          ) : (
-            <>
-              {articles.length > 0 && (
-                <ContentSection 
-                  title="Articles" 
-                  description="In-depth explorations of Orthodox theology and practice"
-                  items={articles}
-                  onPostClick={handlePostClick}
-                />
-              )}
-              
-              {blogs.length > 0 && (
-                <ContentSection 
-                  title="Blog Posts" 
-                  description="Personal reflections and contemporary Orthodox perspectives"
-                  items={blogs}
-                  onPostClick={handlePostClick}
-                />
-              )}
-              
-              {books.length > 0 && (
-                <ContentSection 
-                  title="Books" 
-                  description="Comprehensive works on Orthodox Christianity"
-                  items={books}
-                  onPostClick={handlePostClick}
-                />
-              )}
-            </>
-          )}
+          <ContentSection 
+            title="Articles" 
+            description="In-depth explorations of Orthodox theology and practice"
+            items={ARTICLES} 
+          />
+          <ContentSection 
+            title="Blog Posts" 
+            description="Personal reflections and contemporary Orthodox perspectives"
+            items={BLOGS} 
+          />
+          <ContentSection 
+            title="Books" 
+            description="Comprehensive works on Orthodox Christianity"
+            items={BOOKS} 
+          />
         </TabsContent>
         
         <TabsContent value="articles" className="mt-8">
-          {articles.length > 0 ? (
-            <ContentSection 
-              title="Articles" 
-              description="In-depth explorations of Orthodox theology and practice"
-              items={articles}
-              onPostClick={handlePostClick}
-            />
-          ) : (
-            <div className="text-center py-12 bg-[#1A1F2C]/30 backdrop-blur-sm rounded-lg border border-gold/10 p-8">
-              <p className="text-white/60">No articles matching your filters.</p>
-              <Button variant="outline" className="mt-4 border-gold/20 text-gold" onClick={() => {
-                setFilter('');
-                setCategoryFilter('all');
-                setShowFeaturedOnly(false);
-              }}>
-                Clear Filters
-              </Button>
-            </div>
-          )}
+          <ContentSection 
+            title="Articles" 
+            description="In-depth explorations of Orthodox theology and practice"
+            items={ARTICLES} 
+          />
         </TabsContent>
         
         <TabsContent value="blogs" className="mt-8">
-          {blogs.length > 0 ? (
-            <ContentSection 
-              title="Blog Posts" 
-              description="Personal reflections and contemporary Orthodox perspectives"
-              items={blogs}
-              onPostClick={handlePostClick}
-            />
-          ) : (
-            <div className="text-center py-12 bg-[#1A1F2C]/30 backdrop-blur-sm rounded-lg border border-gold/10 p-8">
-              <p className="text-white/60">No blog posts matching your filters.</p>
-              <Button variant="outline" className="mt-4 border-gold/20 text-gold" onClick={() => {
-                setFilter('');
-                setCategoryFilter('all');
-                setShowFeaturedOnly(false);
-              }}>
-                Clear Filters
-              </Button>
-            </div>
-          )}
+          <ContentSection 
+            title="Blog Posts" 
+            description="Personal reflections and contemporary Orthodox perspectives"
+            items={BLOGS} 
+          />
         </TabsContent>
         
         <TabsContent value="books" className="mt-8">
-          {books.length > 0 ? (
-            <ContentSection 
-              title="Books" 
-              description="Comprehensive works on Orthodox Christianity"
-              items={books} 
-              onPostClick={handlePostClick}
-            />
-          ) : (
-            <div className="text-center py-12 bg-[#1A1F2C]/30 backdrop-blur-sm rounded-lg border border-gold/10 p-8">
-              <p className="text-white/60">No books matching your filters.</p>
-              <Button variant="outline" className="mt-4 border-gold/20 text-gold" onClick={() => {
-                setFilter('');
-                setCategoryFilter('all');
-                setShowFeaturedOnly(false);
-              }}>
-                Clear Filters
-              </Button>
-            </div>
-          )}
-        </TabsContent>
-        
-        <TabsContent value="featured" className="mt-8">
-          {featuredPosts.length > 0 ? (
-            <ContentSection 
-              title="Featured Content" 
-              description="Highlighted works from our collection"
-              items={featuredPosts}
-              onPostClick={handlePostClick}
-            />
-          ) : (
-            <div className="text-center py-12 bg-[#1A1F2C]/30 backdrop-blur-sm rounded-lg border border-gold/10 p-8">
-              <p className="text-white/60">No featured content matching your filters.</p>
-              <Button variant="outline" className="mt-4 border-gold/20 text-gold" onClick={() => {
-                setFilter('');
-                setCategoryFilter('all');
-                setContentTypeFilter('all');
-              }}>
-                Clear Filters
-              </Button>
-            </div>
-          )}
+          <ContentSection 
+            title="Books" 
+            description="Comprehensive works on Orthodox Christianity"
+            items={BOOKS} 
+          />
         </TabsContent>
       </Tabs>
     </div>

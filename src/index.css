@@ -72,22 +72,13 @@
 }
 
 /* Base background styling */
-html {
-  scroll-behavior: smooth;
-}
-
 body {
-  margin: 0;
-  padding: 0;
   background-color: #0a0d16;
   background-image: url('https://images.unsplash.com/photo-1466442929976-97f336a657be?ixlib=rb-4.0.3&auto=format&fit=crop&q=80&w=2000&h=1000');
   background-size: cover;
   background-attachment: fixed;
   background-position: center;
   position: relative;
-  min-height: 100vh;
-  overflow-x: hidden;
-  will-change: transform;
 }
 
 body::before {
@@ -101,26 +92,19 @@ body::before {
   z-index: -1;
 }
 
-/* Performance optimizations */
-.gpu-accelerated {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  perspective: 1000;
-  will-change: transform;
-}
-
 /* Orthodox-specific styling */
 
-/* Fix for the yellow underline on headings - properly positioned */
+/* Fix for the yellow underline on headings - now properly positioned */
 .orthodox-heading {
   position: relative;
   display: inline-block;
+  padding-bottom: 0.5rem;
 }
 
 .orthodox-heading::after {
   content: '';
   position: absolute;
-  bottom: -0.5rem; /* Fixed position - moved below the text */
+  bottom: 0;
   left: 0;
   width: 40%;
   height: 2px;
@@ -190,20 +174,6 @@ body::before {
   to {
     transform: rotate(360deg);
   }
-}
-
-/* New shimmer animation for dividers */
-@keyframes shimmer {
-  0% {
-    left: -100%;
-  }
-  100% {
-    left: 200%;
-  }
-}
-
-.animate-shimmer {
-  animation: shimmer 4s ease-in-out infinite;
 }
 
 /* Prayer fade-in effect */
@@ -308,92 +278,8 @@ body::before {
   border-radius: 0.5rem;
 }
 
-/* Dropdown styling - ensure consistent theme */
-[data-radix-popper-content-wrapper] {
-  z-index: 50 !important;
-}
-
-.SelectContent,
-[role="menu"],
-[role="dialog"],
-[data-state="open"] {
-  background-color: rgba(26, 31, 44, 0.9) !important;
-  backdrop-filter: blur(10px) !important;
-  border: 1px solid rgba(212, 175, 55, 0.2) !important;
-  color: white !important;
-}
-
-.SelectItem:hover,
-[role="menuitem"]:hover,
-[role="option"]:hover {
-  background-color: rgba(155, 35, 53, 0.4) !important;
-  color: white !important;
-}
-
-/* Comment section consistent styling */
-.comment-section {
-  background: rgba(26, 31, 44, 0.7) !important;
-  backdrop-filter: blur(8px) !important;
-  border: 1px solid rgba(212, 175, 55, 0.2) !important;
-  border-radius: 0.5rem;
-  color: white !important;
-}
-
 /* Footer fix - ensure links are clickable */
 .footer-links {
   position: relative;
   z-index: 20;
-}
-
-/* New candle flicker animation */
-@keyframes candle-flicker {
-  0%, 100% { transform: scale(1.0); opacity: 0.9; }
-  25% { transform: scale(0.95); opacity: 1.0; }
-  50% { transform: scale(1.05); opacity: 0.8; }
-  75% { transform: scale(0.85); opacity: 0.9; }
-}
-
-/* New flame flicker animation */
-@keyframes flame-flicker {
-  0% { transform: translateX(-50%) scale(1.0) rotate(-2deg); opacity: 0.9; }
-  25% { transform: translateX(-51%) scale(0.9) rotate(2deg); opacity: 1; }
-  50% { transform: translateX(-49%) scale(1.1) rotate(-1deg); opacity: 0.8; }
-  75% { transform: translateX(-52%) scale(0.95) rotate(1deg); opacity: 0.9; }
-  100% { transform: translateX(-50%) scale(1.0) rotate(0deg); opacity: 1; }
-}
-
-/* Audio visualizer animations */
-@keyframes audioVisualize {
-  0%, 100% { height: 30%; }
-  50% { height: 100%; }
-}
-
-/* Add new animation for divine light rays */
-@keyframes divine-rays {
-  0%, 100% { 
-    opacity: 0.2;
-    transform: scale(1); 
-  }
-  50% { 
-    opacity: 0.5; 
-    transform: scale(1.1);
-  }
-}
-
-.divine-rays {
-  animation: divine-rays 4s infinite alternate ease-in-out;
-}
-
-/* New animation for holy text glow */
-@keyframes holy-text-glow {
-  0%, 100% {
-    text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
-  }
-  50% {
-    text-shadow: 0 0 20px rgba(212, 175, 55, 0.6), 0 0 30px rgba(212, 175, 55, 0.3);
-  }
-}
-
-.holy-text {
-  animation: holy-text-glow 4s infinite alternate ease-in-out;
 }
