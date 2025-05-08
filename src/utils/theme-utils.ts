@@ -157,4 +157,3 @@ export const getCathedralPattern = (type: 'crosses' | 'domes' | 'arches' | 'icon
       return '';
   }
 };
-
