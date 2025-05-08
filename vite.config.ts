@@ -6,7 +6,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: mode === 'production' ? '/mind-spark-collaborate-now/' : './', // Use repo name for GitHub Pages
+  base: mode === 'production' ? '/Orthodox-Echoes-Ascend/' : './', // Updated repo name for GitHub Pages
   server: {
     host: "::",
     port: 8080,

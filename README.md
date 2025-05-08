@@ -1,8 +1,18 @@
-# Welcome to your Lovable project
+
+# Orthodox Echoes Ascend
 
 ## Project info
 
 **URL**: https://lovable.dev/projects/709449cf-4a82-4be5-bc8b-2f8dff1338e5
+
+## Deployment Options
+
+This project can be deployed to GitHub Pages using either:
+
+1. **GitHub Actions (recommended)**: Automatically builds and deploys when pushing to main branch
+2. **gh-pages branch**: Manually deploy using the script: `node src/scripts/deploy-gh-pages.js`
+
+After deployment, your site will be available at: `https://[YOUR_USERNAME].github.io/Orthodox-Echoes-Ascend/`
 
 ## How can I edit this code?
 

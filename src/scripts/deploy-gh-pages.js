@@ -2,8 +2,8 @@
 const { execSync } = require('child_process');
 const path = require('path');
 
-// Set up the repo name from your vite config
-const REPO_NAME = 'mind-spark-collaborate-now';
+// Set up the repo name with the updated project name
+const REPO_NAME = 'Orthodox-Echoes-Ascend';
 
 try {
   // Build the project
