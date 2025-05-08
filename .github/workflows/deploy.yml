@@ -58,6 +58,7 @@ jobs:
             <head>
               <meta charset="utf-8">
               <title>Orthodox Echoes - Page Not Found</title>
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
               <script type="text/javascript">
                 var pathSegmentsToKeep = 1;
                 var l = window.location;
@@ -109,11 +110,22 @@ jobs:
           sed -i '/<head>/a \
           <meta name="deploy-version" content="${{ github.sha }}_${{ github.run_number }}_${{ env.DEPLOY_TIMESTAMP }}">' ./dist/index.html
           
-          # Add cache-control headers via .htaccess (if server supports it)
-          echo "# Cache control for better deployment updates" > ./dist/.htaccess
-          echo "Header set Cache-Control \"no-cache, no-store, must-revalidate\"" >> ./dist/.htaccess
-          echo "Header set Pragma \"no-cache\"" >> ./dist/.htaccess
-          echo "Header set Expires 0" >> ./dist/.htaccess
+          # Add cache-control headers via _headers file (for Netlify and similar services)
+          echo "/*" > ./dist/_headers
+          echo "  Cache-Control: no-cache, no-store, must-revalidate" >> ./dist/_headers
+          
+          # Add cache busting to main CSS and JS files
+          find ./dist -name "*.js" -type f -exec bash -c 'mv "$1" "${1%.js}.${{ env.DEPLOY_TIMESTAMP }}.js"' _ {} \;
+          find ./dist -name "*.css" -type f -exec bash -c 'mv "$1" "${1%.css}.${{ env.DEPLOY_TIMESTAMP }}.css"' _ {} \;
+          
+          # Update references in index.html
+          for file in ./dist/*.js ./dist/*.css; do
+            if [ -f "$file" ]; then
+              filename=$(basename "$file")
+              sed -i "s|[^\.]*\.js|$filename|g" ./dist/index.html
+              sed -i "s|[^\.]*\.css|$filename|g" ./dist/index.html
+            fi
+          done
         
       # Force clear of any previous cache
       - name: Clear caches in gh-pages branch if it exists
@@ -136,7 +148,7 @@ jobs:
           clean: true
           clean-exclude: |
             .nojekyll
-            .htaccess
+            _headers
           force: true
           commit-message: "Deploy website with cache buster: ${{ env.DEPLOY_TIMESTAMP }}"
 
@@ -148,7 +160,7 @@ jobs:
           echo "GitHub SHA: ${{ github.sha }}"
           echo "Run number: ${{ github.run_number }}"
           
-      # Add a step that attempts to force GitHub Pages to rebuild
+      # Add a step that attempts to force GitHub Pages rebuild
       - name: Trigger GitHub Pages rebuild
         run: |
           curl -X POST \
