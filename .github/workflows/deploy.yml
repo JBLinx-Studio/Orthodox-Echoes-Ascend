@@ -42,7 +42,7 @@ jobs:
         run: npm run build
         env:
           # Add cache busting by using the commit hash and timestamp
-          VITE_CACHE_BUSTER: ${{ github.sha }}_${{ github.run_number }}_$(date +%s)
+          VITE_CACHE_BUSTER: ${{ github.sha }}_${{ github.run_id }}
         
       # Create 404.html for SPA routing
       - name: Create 404.html
@@ -94,13 +94,24 @@ jobs:
       - name: Create .nojekyll file
         run: touch ./dist/.nojekyll
         
-      # Add cache-busting timestamp to ensure proper deployment
-      - name: Add deployment timestamp
+      # Clean cache in gh-pages branch
+      - name: Clean gh-pages branch
         run: |
-          echo "DEPLOY_TIMESTAMP=$(date +%s)" >> $GITHUB_ENV
-          echo "<!-- Deploy timestamp: $(date) -->" >> ./dist/index.html
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          if git ls-remote --heads origin gh-pages | grep -q 'gh-pages'; then
+            git checkout --orphan temp-branch
+            git rm -rf --cached .
+            git checkout gh-pages
+            git rm -rf .
+            git clean -fxd
+            git commit --allow-empty -m "Clean gh-pages branch"
+            git push origin gh-pages --force
+            git checkout main
+          fi
+        continue-on-error: true
         
-      # Update deployment script to use force push and better error handling
+      # Update deployment script to use force push
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
@@ -108,12 +119,6 @@ jobs:
           branch: gh-pages # The branch the action should deploy to
           clean: true # Automatically remove deleted files from the deploy branch
           clean-exclude: |
-            .nojekyll
+            .git
+            .github
           force: true # Force update even if remote history differs
-          commit-message: "Deploy website with cache buster: ${{ env.DEPLOY_TIMESTAMP }}"
-
-      # Verify deployment status
-      - name: Verify deployment
-        run: |
-          echo "Deployment completed at $(date)"
-          echo "Cache buster: ${{ env.DEPLOY_TIMESTAMP }}"
