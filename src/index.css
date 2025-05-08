@@ -88,7 +88,8 @@ body::before {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to bottom, rgba(10, 13, 22, 0.85), rgba(10, 13, 22, 0.95));
+  /* Darker gradient overlay instead of flat color */
+  background: linear-gradient(to bottom, rgba(10, 13, 22, 0.9), rgba(10, 13, 22, 0.95));
   z-index: -1;
 }
 
@@ -220,16 +221,6 @@ body::before {
   inset: 0;
   background: radial-gradient(circle at 50% 40%, rgba(212, 175, 55, 0.2), transparent 60%);
   pointer-events: none;
-}
-
-/* Cathedral dust particles effect */
-.dust-particles {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 10;
-  opacity: 0.4;
 }
 
 /* Add atmospheric animations */

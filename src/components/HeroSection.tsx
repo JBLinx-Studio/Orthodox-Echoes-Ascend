@@ -51,8 +51,13 @@ export function HeroSection({ className }: HeroSectionProps) {
     >
       {/* Extended backdrop that covers the entire hero section including behind navbar */}
       <div className="absolute inset-0 z-0">
-        {/* Dark overlay over the image */}
-        <div className="absolute inset-0 bg-[#0a0d16]/85 z-10"></div>
+        {/* Dark gradient overlay instead of grid texture, more intense at the top */}
+        <div 
+          className="absolute inset-0 bg-gradient-to-b from-[#0a0d16]/95 via-[#0a0d16]/85 to-[#0a0d16]/75 z-10"
+          style={{
+            backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(10, 13, 22, 0.8) 0%, rgba(10, 13, 22, 0.95) 100%)'
+          }}
+        ></div>
         
         {/* Cathedral image with parallax effect */}
         <motion.div 
@@ -71,6 +76,14 @@ export function HeroSection({ className }: HeroSectionProps) {
             }}
           ></div>
         </motion.div>
+
+        {/* Vignette overlay at edges to create depth */}
+        <div className="absolute inset-0 z-20 pointer-events-none" 
+             style={{ 
+               boxShadow: 'inset 0 0 150px 60px rgba(10,13,22,0.8)',
+               background: 'radial-gradient(ellipse at center, transparent 50%, rgba(10,13,22,0.6) 100%)'
+             }}>
+        </div>
 
         {/* Cinematic light rays - top ray */}
         <motion.div 
@@ -98,9 +111,9 @@ export function HeroSection({ className }: HeroSectionProps) {
           transition={{ delay: 1, duration: 2 }}
         ></motion.div>
         
-        {/* Animated dust particles */}
+        {/* Animated dust particles - more optimized for performance */}
         <div className="absolute inset-0 z-30 pointer-events-none">
-          {Array.from({ length: 40 }).map((_, i) => (
+          {Array.from({ length: 20 }).map((_, i) => (
             <motion.div
               key={`dust-${i}`}
               className="absolute w-[1px] h-[1px] rounded-full bg-gold/60"
@@ -114,7 +127,7 @@ export function HeroSection({ className }: HeroSectionProps) {
               }}
               transition={{
                 repeat: Infinity,
-                duration: 5 + Math.random() * 10,
+                duration: 5 + Math.random() * 5,
                 delay: Math.random() * 5,
                 ease: "linear"
               }}
@@ -122,25 +135,15 @@ export function HeroSection({ className }: HeroSectionProps) {
           ))}
         </div>
         
-        {/* Cathedral pattern overlay */}
-        <div 
-          className="absolute inset-0 z-20 opacity-10"
-          style={{ 
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 10v40M15 30h30' stroke='%23D4AF37' stroke-width='1' fill='none'/%3E%3C/svg%3E")`,
-            backgroundSize: '60px 60px',
-            transform: `translateY(${scrollY * 0.05}px)`
-          }}
-        ></div>
-        
-        {/* Bottom vignette */}
-        <div className="absolute bottom-0 left-0 right-0 h-[20%] z-20 bg-gradient-to-t from-[#0a0d16]/80 to-transparent pointer-events-none"></div>
+        {/* Bottom vignette for transition to next section */}
+        <div className="absolute bottom-0 left-0 right-0 h-[30%] z-20 bg-gradient-to-t from-[#0a0d16] via-[#0a0d16]/90 to-transparent pointer-events-none"></div>
         
         {/* Top vignette over the navbar */}
         <div className="absolute top-0 left-0 right-0 h-[120px] z-20 bg-gradient-to-b from-[#0a0d16] to-transparent pointer-events-none"></div>
       </div>
 
       {/* Main content */}
-      <div className="container relative mx-auto px-4 h-screen flex items-center justify-center z-40 pt-16">
+      <div className="container relative mx-auto px-4 h-screen flex items-center justify-center z-40 pt-32">
         <motion.div 
           className="max-w-4xl relative"
           initial={{ opacity: 0, y: 20 }}
@@ -148,8 +151,8 @@ export function HeroSection({ className }: HeroSectionProps) {
           transition={{ duration: 1, ease: "easeOut" }}
         >
           <div className="w-full relative rounded-lg overflow-hidden">
-            {/* Background panel with proper aesthetics */}
-            <div className="absolute inset-0 bg-[#0a0d16]/90 backdrop-blur-md z-0"></div>
+            {/* Background panel with proper aesthetics - moved down from buttons */}
+            <div className="absolute inset-0 bg-[#0a0d16]/80 backdrop-blur-md z-0"></div>
             
             {/* Beautiful border effect */}
             <div className="absolute inset-0 p-px rounded-lg overflow-hidden pointer-events-none z-10">
@@ -327,10 +330,10 @@ export function HeroSection({ className }: HeroSectionProps) {
                         </div>
                         <span>{isPlaying ? 'Sacred Chants Playing' : 'Listen to Sacred Chants'}</span>
                         
-                        {/* Audio visualizer when playing */}
+                        {/* Audio visualizer when playing - minimal for performance */}
                         {isPlaying && (
                           <div className="ml-2 flex items-end gap-[2px] h-4">
-                            {[1, 2, 3, 4].map((i) => (
+                            {[1, 2].map((i) => (
                               <motion.div
                                 key={i}
                                 className="w-[2px] bg-gold rounded-full"
@@ -409,7 +412,7 @@ export function HeroSection({ className }: HeroSectionProps) {
         </motion.div>
       </motion.div>
 
-      {/* Candles effect in the bottom corners */}
+      {/* Candles effect - reduced for performance */}
       <div className="absolute bottom-20 left-20 z-30 pointer-events-none">
         <div className="relative">
           <motion.div
@@ -434,33 +437,8 @@ export function HeroSection({ className }: HeroSectionProps) {
           />
         </div>
       </div>
-      
-      <div className="absolute bottom-40 right-20 z-30 pointer-events-none">
-        <div className="relative">
-          <motion.div
-            className="absolute w-3 h-3 rounded-full bg-gradient-to-b from-gold via-orange-300 to-red-300"
-            animate={{
-              boxShadow: ['0 0 15px 5px rgba(212,175,55,0.4)', '0 0 20px 8px rgba(212,175,55,0.6)', '0 0 15px 5px rgba(212,175,55,0.4)']
-            }}
-            transition={{ duration: 2.3, repeat: Infinity, repeatType: "reverse", delay: 0.5 }}
-          />
-          <motion.div 
-            className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-full w-1 h-6"
-            style={{ 
-              background: 'linear-gradient(to top, rgba(255,170,0,0.7), transparent)',
-              filter: 'blur(1px)'
-            }}
-            animate={{
-              height: ['4px', '6px', '4px'],
-              width: ['1px', '2px', '1px'],
-              filter: ['blur(1px)', 'blur(2px)', 'blur(1px)']
-            }}
-            transition={{ duration: 1.2, repeat: Infinity, repeatType: "reverse", delay: 0.5 }}
-          />
-        </div>
-      </div>
-      
-      {/* Orthodox symbols floating in the background */}
+
+      {/* Orthodox symbols floating in the background - reduced in number */}
       {revealed && (
         <>
           <motion.div
@@ -477,7 +455,9 @@ export function HeroSection({ className }: HeroSectionProps) {
               rotate: { duration: 10, repeat: Infinity, ease: "easeInOut" }
             }}
           >
-            ☦
+            <svg width="40" height="40" viewBox="0 0 120 120" fill="none">
+              <path d="M60 10V110M40 30H80M30 40V80H90V40H30Z" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" opacity="0.6" />
+            </svg>
           </motion.div>
           
           <motion.div
@@ -494,27 +474,15 @@ export function HeroSection({ className }: HeroSectionProps) {
               rotate: { duration: 9, repeat: Infinity, ease: "easeInOut" }
             }}
           >
-            †
-          </motion.div>
-          
-          <motion.div
-            className="absolute right-[25%] bottom-[35%] z-30 pointer-events-none text-gold/10 text-2xl"
-            initial={{ opacity: 0 }}
-            animate={{ 
-              opacity: 0.1,
-              y: [0, -8, 0],
-              rotate: [0, 3, 0]
-            }}
-            transition={{
-              opacity: { delay: 2.2, duration: 1.5 },
-              y: { duration: 8, repeat: Infinity, ease: "easeInOut" },
-              rotate: { duration: 12, repeat: Infinity, ease: "easeInOut" }
-            }}
-          >
-            ✝
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+              <path d="M12 3L14.5 8.5H19.5L15.5 12.5L17.5 18L12 14.5L6.5 18L8.5 12.5L4.5 8.5H9.5L12 3Z" fill="#D4AF37" fillOpacity="0.4" />
+            </svg>
           </motion.div>
         </>
       )}
+      
+      {/* Transition to the next section */}
+      <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#0a0d16] to-transparent z-40 pointer-events-none"></div>
     </section>
   );
 }
