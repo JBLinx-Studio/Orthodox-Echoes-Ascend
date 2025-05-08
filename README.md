@@ -10,9 +10,20 @@
 This project can be deployed to GitHub Pages using either:
 
 1. **GitHub Actions (recommended)**: Automatically builds and deploys when pushing to main branch
-2. **gh-pages branch**: Manually deploy using the script: `node src/scripts/deploy-gh-pages.js`
+2. **Manual deployment**: Run this command to deploy manually:
+   ```sh
+   node src/scripts/deploy-gh-pages.js
+   ```
 
 After deployment, your site will be available at: `https://[YOUR_USERNAME].github.io/Orthodox-Echoes-Ascend/`
+
+### GitHub Pages Setup
+
+After deploying, configure GitHub Pages in your repository settings:
+1. Go to Settings > Pages
+2. Select "Deploy from a branch" under Build and deployment
+3. Select "gh-pages" branch and "/ (root)" folder
+4. Click Save
 
 ## How can I edit this code?
 
@@ -73,6 +84,8 @@ This project is built with:
 ## How can I deploy this project?
 
 Simply open [Lovable](https://lovable.dev/projects/709449cf-4a82-4be5-bc8b-2f8dff1338e5) and click on Share -> Publish.
+
+Alternatively, run `node src/scripts/deploy-gh-pages.js` to deploy to GitHub Pages manually.
 
 ## Can I connect a custom domain to my Lovable project?
 
