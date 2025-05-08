@@ -141,7 +141,7 @@ export const getCathedralDecoration = (type: 'header' | 'divider' | 'card' | 'fo
 };
 
 /**
- * Get cathedral-themed pattern backgrounds
+ * Get cathedral-themed pattern backgrounds as CSS background values
  */
 export const getCathedralPattern = (type: 'crosses' | 'domes' | 'arches' | 'icons'): string => {
   switch (type) {
