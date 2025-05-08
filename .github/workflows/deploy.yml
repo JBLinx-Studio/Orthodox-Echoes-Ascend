@@ -108,6 +108,12 @@ jobs:
           # Add cache busting meta tag
           sed -i '/<head>/a \
           <meta name="deploy-version" content="${{ github.sha }}_${{ github.run_number }}_${{ env.DEPLOY_TIMESTAMP }}">' ./dist/index.html
+          
+          # Add cache-control headers via .htaccess (if server supports it)
+          echo "# Cache control for better deployment updates" > ./dist/.htaccess
+          echo "Header set Cache-Control \"no-cache, no-store, must-revalidate\"" >> ./dist/.htaccess
+          echo "Header set Pragma \"no-cache\"" >> ./dist/.htaccess
+          echo "Header set Expires 0" >> ./dist/.htaccess
         
       # Force clear of any previous cache
       - name: Clear caches in gh-pages branch if it exists
@@ -121,8 +127,8 @@ jobs:
           fi
           git checkout ${GITHUB_SHA}
         
-      # Deploy with force option to ensure changes take effect
-      - name: Deploy to GitHub Pages
+      # Ensure clean deployment
+      - name: Deploy to GitHub Pages with cache invalidation
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: dist
@@ -130,6 +136,7 @@ jobs:
           clean: true
           clean-exclude: |
             .nojekyll
+            .htaccess
           force: true
           commit-message: "Deploy website with cache buster: ${{ env.DEPLOY_TIMESTAMP }}"
 
@@ -140,3 +147,12 @@ jobs:
           echo "Cache buster: ${{ env.DEPLOY_TIMESTAMP }}"
           echo "GitHub SHA: ${{ github.sha }}"
           echo "Run number: ${{ github.run_number }}"
+          
+      # Add a step that attempts to force GitHub Pages to rebuild
+      - name: Trigger GitHub Pages rebuild
+        run: |
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ github.repository }}/pages/builds
+        continue-on-error: true

@@ -65,12 +65,12 @@ export function HeroSection({ className }: HeroSectionProps) {
 
   return (
     <section ref={containerRef} className="relative overflow-hidden min-h-[100vh] flex items-center justify-center">
-      {/* Cinematic background elements */}
-      <div className="absolute inset-0 z-0">
+      {/* Enhanced cinematic background elements - positioned to stretch over navbar */}
+      <div className="absolute inset-0 z-0" style={{ top: '-80px' }}>
         {/* Dynamic background with parallax effect */}
         <div className="absolute inset-0 bg-[#0a0d16] opacity-80 z-0"></div>
         
-        <div className="absolute inset-0 parallax" data-speed="0.05">
+        <div className="absolute inset-0 parallax" data-speed="0.05" style={{ top: '-50px', height: 'calc(100% + 100px)' }}>
           <img 
             src="https://images.unsplash.com/photo-1466442929976-97f336a657be?ixlib=rb-4.0.3&auto=format&fit=crop&q=80" 
             alt="Cathedral background"
