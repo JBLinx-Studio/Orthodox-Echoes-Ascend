@@ -3,7 +3,7 @@
  * Animation utilities for consistent animations across components
  */
 
-import { fadeIn, staggerContainer, slideIn, scaleIn, floating } from '@/components/ui/animation';
+import { fadeIn, staggerContainer, slideIn, scaleIn, floating, archReveal, iconGlow, candleFlicker, smoothSection, pageEnter } from '@/components/ui/animation';
 
 // Export all animation presets
 export const animations = {
@@ -11,7 +11,12 @@ export const animations = {
   staggerContainer,
   slideIn,
   scaleIn,
-  floating
+  floating,
+  archReveal,
+  iconGlow,
+  candleFlicker,
+  smoothSection,
+  pageEnter
 };
 
 // Common animation variants for reuse
@@ -62,4 +67,40 @@ export const createStaggerDelay = (items: any[], baseDelay: number = 0.1) => {
   return items.map((_, index) => ({
     transition: { delay: baseDelay * index }
   }));
+};
+
+// New additions for smoother deployment animations
+export const deploymentTransition = {
+  initial: { opacity: 0, scale: 0.95 },
+  animate: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.6,
+      ease: [0.22, 1, 0.36, 1]
+    }
+  },
+  exit: {
+    opacity: 0,
+    scale: 0.95,
+    transition: {
+      duration: 0.3,
+      ease: [0.22, 1, 0.36, 1]
+    }
+  }
+};
+
+// Optimized animations for production mode
+export const getOptimizedAnimation = (animation: any, isProduction: boolean = false) => {
+  if (isProduction) {
+    // Simpler animations for production to improve performance
+    return {
+      ...animation,
+      transition: {
+        ...animation.transition,
+        duration: (animation.transition?.duration || 0.4) * 0.8
+      }
+    };
+  }
+  return animation;
 };
