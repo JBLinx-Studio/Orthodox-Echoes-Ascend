@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { 
   Play, 
@@ -39,6 +38,7 @@ export function EnhancedAudioPlayer({
   className,
   minimized: externalMinimized
 }: EnhancedAudioPlayerProps) {
+  
   const { 
     isPlaying, 
     togglePlay, 
@@ -71,6 +71,7 @@ export function EnhancedAudioPlayer({
 
   // Listen for external audio element changes
   useEffect(() => {
+    
     // Find the actual audio element being controlled by AudioContext
     const audioElements = document.getElementsByTagName('audio');
     if (audioElements.length > 0) {
@@ -107,6 +108,7 @@ export function EnhancedAudioPlayer({
 
   // Handle external minimized state changes
   useEffect(() => {
+    
     if (externalMinimized !== undefined) {
       if (externalMinimized) {
         minimizePlayer();
@@ -118,6 +120,7 @@ export function EnhancedAudioPlayer({
 
   // Set up progress tracking
   useEffect(() => {
+    
     const startProgressTracking = () => {
       if (progressIntervalRef.current) {
         window.clearInterval(progressIntervalRef.current);
