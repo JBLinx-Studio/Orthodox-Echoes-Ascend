@@ -8,7 +8,7 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
   
   return (
-    <footer className="relative z-20 bg-[#0a0d16]/90 backdrop-blur-sm text-white border-t border-gold/10">
+    <footer className="bg-orthodox-deepblue text-white">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="md:col-span-1">
@@ -72,16 +72,16 @@ export function Footer() {
               <Input
                 type="email"
                 placeholder="Your email"
-                className="bg-[#1A1F2C]/60 border-gold/20 focus:border-gold/50 text-white placeholder:text-gray-400"
+                className="bg-transparent border-orthodox-blue focus:border-gold"
               />
-              <Button className="w-full bg-byzantine hover:bg-byzantine-dark border border-gold/20">
+              <Button className="w-full bg-byzantine hover:bg-byzantine-dark">
                 Subscribe
               </Button>
             </div>
           </div>
         </div>
         
-        <div className="mt-12 pt-8 border-t border-gold/10">
+        <div className="mt-12 pt-8 border-t border-orthodox-blue">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <Link to="/contact" className="text-sm text-gray-300 hover:text-gold flex items-center gap-1">
@@ -100,12 +100,6 @@ export function Footer() {
           </div>
         </div>
       </div>
-      
-      {/* Cathedral style decoration */}
-      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-gold/20 to-transparent"></div>
-      
-      {/* Subtle gold glow at the top of the footer */}
-      <div className="absolute -top-8 left-0 right-0 h-8 bg-gradient-to-t from-gold/5 to-transparent"></div>
     </footer>
   );
 }
