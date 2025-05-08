@@ -36,44 +36,22 @@ export function MainLayout() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-[#0a0d16] to-[#161a26]">
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-[#0a0d16] to-[#161a26] overflow-x-hidden">
       {/* Accessibility: Skip to content link */}
-      <a href="#main-content" onClick={handleSkipToContent} className="skip-link">
+      <a 
+        href="#main-content" 
+        onClick={handleSkipToContent} 
+        className="skip-link fixed top-0 left-0 p-4 m-3 bg-byzantine text-white z-[1000] transform -translate-y-full focus:translate-y-0 transition-transform"
+      >
         Skip to content
       </a>
       
       {/* Enhanced cathedral background */}
       <div className="fixed inset-0 z-0">
-        {/* Base texture */}
-        <div className="absolute inset-0 bg-[url('/images/noise-pattern.png')] opacity-5"></div>
-        
-        {/* Animated particles and patterns */}
         <AnimatedBackground intensity="medium" theme="gold" />
-        
-        {/* Cathedral vignette effect */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0d16] via-transparent to-transparent"></div>
-        <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.8)]"></div>
-        
-        {/* Enhanced candle glow effects with more dynamics */}
-        <div className="absolute bottom-20 left-1/4 w-40 h-40 rounded-full bg-gold/5 blur-3xl animate-[pulse_4s_ease-in-out_infinite]"></div>
-        <div className="absolute top-40 right-1/3 w-48 h-48 rounded-full bg-byzantine/5 blur-3xl animate-[pulse_5s_ease-in-out_infinite]" style={{animationDelay: "1.5s"}}></div>
-        <div className="absolute top-1/3 left-1/2 w-36 h-36 rounded-full bg-gold/8 blur-3xl animate-[pulse_6s_ease-in-out_infinite]" style={{animationDelay: "0.7s"}}></div>
-        
-        {/* Candle flickering effects */}
-        <div className="absolute bottom-40 right-1/3 w-3 h-3 bg-gold/70 rounded-full animate-[candle-flicker_4s_ease-in-out_infinite]"></div>
-        <div className="absolute top-1/3 right-1/4 w-2 h-2 bg-gold/60 rounded-full animate-[candle-flicker_3s_ease-in-out_infinite]" style={{animationDelay: "0.5s"}}></div>
-        <div className="absolute bottom-1/3 left-1/3 w-2.5 h-2.5 bg-gold/60 rounded-full animate-[candle-flicker_5s_ease-in-out_infinite]" style={{animationDelay: "1.2s"}}></div>
-        
-        {/* Cathedral light rays */}
-        <div className="absolute top-0 left-1/3 w-20 h-screen bg-gold/3 -rotate-6 animate-[pulse_12s_ease-in-out_infinite]"></div>
-        <div className="absolute top-0 right-1/4 w-32 h-screen bg-gold/2 rotate-12 animate-[pulse_15s_ease-in-out_infinite]"></div>
-        <div className="absolute top-0 left-2/3 w-24 h-screen bg-gold/3 -rotate-3 animate-[pulse_10s_ease-in-out_infinite]" style={{animationDelay: "2s"}}></div>
-        
-        {/* Icon glow effects */}
-        <div className="absolute top-60 left-20 w-20 h-20 rounded-full bg-byzantine/10 blur-xl animate-[pulse_7s_ease-in-out_infinite]"></div>
-        <div className="absolute bottom-80 right-40 w-24 h-24 rounded-full bg-byzantine/10 blur-xl animate-[pulse_9s_ease-in-out_infinite]"></div>
       </div>
       
+      {/* Navigation with z-index ensuring it's above other elements */}
       <NavBar />
       
       <AnimatePresence mode="wait">
