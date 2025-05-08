@@ -11,6 +11,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, BookOpen, Calendar, Edit, Eye, FileText, Heart, Plus, Search, Tag, User } from 'lucide-react';
 import { BlogPostDetail } from '@/components/blog/BlogPostDetail';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
+import { OrthodoxIconFrame } from '@/components/ui/orthodox-icon-frame';
 
 // Sample blog posts
 const INITIAL_ARTICLES: BlogPost[] = [
@@ -125,6 +127,25 @@ const TAGS = [
   "Scripture", "Monasticism", "Family", "Modern Life", "Patristics"
 ];
 
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.5 }
+  }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
 function PostCard({ post, onClick }: { post: BlogPost; onClick: () => void }) {
   const getContentTypeIcon = () => {
     switch (post.contentType) {
@@ -140,60 +161,67 @@ function PostCard({ post, onClick }: { post: BlogPost; onClick: () => void }) {
   };
   
   return (
-    <Card 
-      className="overflow-hidden bg-[#1A1F2C]/70 backdrop-blur-md border-gold/20 hover:border-gold/40 transition-all duration-300 h-full flex flex-col cursor-pointer"
-      onClick={onClick}
-    >
-      <div className="relative h-48 overflow-hidden">
-        <img
-          src={post.imageUrl}
-          alt={post.title}
-          className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-        />
-        <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-[#0a0d16]/90 to-transparent h-16" />
-        <div className="absolute top-2 left-2 flex items-center bg-byzantine/80 backdrop-blur-sm text-white text-xs px-2 py-1 rounded">
-          {getContentTypeIcon()}
-          <span className="capitalize">{post.contentType}</span>
-        </div>
-        {post.featured && (
-          <div className="absolute top-2 right-2 bg-gold/80 backdrop-blur-sm text-white text-xs px-2 py-1 rounded">
-            Featured
+    <motion.div variants={fadeInUp}>
+      <Card 
+        className="overflow-hidden bg-[#1A1F2C]/70 backdrop-blur-md border-gold/20 hover:border-gold/40 transition-all duration-300 h-full flex flex-col cursor-pointer holy-light"
+        onClick={onClick}
+      >
+        <div className="relative h-48 overflow-hidden">
+          <img
+            src={post.imageUrl}
+            alt={post.title}
+            className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+          />
+          <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-[#0a0d16]/90 to-transparent h-16" />
+          <div className="absolute top-2 left-2 flex items-center bg-byzantine/80 backdrop-blur-sm text-white text-xs px-2 py-1 rounded">
+            {getContentTypeIcon()}
+            <span className="capitalize">{post.contentType}</span>
           </div>
-        )}
-      </div>
-      <CardContent className="flex-grow flex flex-col p-5">
-        <div className="mb-2 text-sm text-gold/80">{post.publishDate}</div>
-        <h3 className="text-xl font-display text-white mb-3 line-clamp-2 orthodox-heading">
-          {post.title}
-        </h3>
-        <p className="text-white/70 line-clamp-3 mb-4 flex-grow">
-          {post.excerpt}
-        </p>
-        <div className="flex gap-2 flex-wrap mb-3">
-          {post.tags.slice(0, 2).map((tag, i) => (
-            <span key={i} className="text-xs bg-gold/10 text-gold/80 px-2 py-0.5 rounded-full">
-              {tag}
-            </span>
-          ))}
-          {post.tags.length > 2 && (
-            <span className="text-xs bg-gold/10 text-gold/80 px-2 py-0.5 rounded-full">
-              +{post.tags.length - 2}
-            </span>
+          {post.featured && (
+            <div className="absolute top-2 right-2 bg-gold/80 backdrop-blur-sm text-white text-xs px-2 py-1 rounded">
+              Featured
+            </div>
           )}
         </div>
-        <div className="flex items-center justify-between mt-2 pt-3 border-t border-gold/10">
-          <div className="text-sm text-white/60 flex items-center">
-            <Eye className="w-4 h-4 mr-1 text-white/40" />
-            {post.views || 0}
-            <Heart className="w-4 h-4 mr-1 ml-3 text-white/40" />
-            {post.likes || 0}
+        <CardContent className="flex-grow flex flex-col p-5">
+          <div className="mb-2 text-sm text-gold/80 flex items-center">
+            <Calendar className="w-3 h-3 mr-1" />
+            {post.publishDate}
           </div>
-          <div className="text-sm text-white/60">
-            By {post.author}
+          <h3 className="text-xl font-display text-white mb-3 line-clamp-2 orthodox-heading">
+            {post.title}
+          </h3>
+          <p className="text-white/70 line-clamp-3 mb-4 flex-grow">
+            {post.excerpt}
+          </p>
+          <div className="flex gap-2 flex-wrap mb-3">
+            {post.tags.slice(0, 2).map((tag, i) => (
+              <span key={i} className="text-xs bg-gold/10 text-gold/80 px-2 py-0.5 rounded-full flex items-center">
+                <Tag className="w-3 h-3 mr-1" />
+                {tag}
+              </span>
+            ))}
+            {post.tags.length > 2 && (
+              <span className="text-xs bg-gold/10 text-gold/80 px-2 py-0.5 rounded-full">
+                +{post.tags.length - 2}
+              </span>
+            )}
           </div>
-        </div>
-      </CardContent>
-    </Card>
+          <div className="flex items-center justify-between mt-2 pt-3 border-t border-gold/10">
+            <div className="text-sm text-white/60 flex items-center">
+              <Eye className="w-4 h-4 mr-1 text-white/40" />
+              {post.views || 0}
+              <Heart className="w-4 h-4 mr-1 ml-3 text-white/40" />
+              {post.likes || 0}
+            </div>
+            <div className="text-sm text-white/60 flex items-center">
+              <User className="w-3 h-3 mr-1" />
+              {post.author}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }
 
@@ -204,17 +232,22 @@ function ContentSection({ title, description, items, onPostClick }: {
   onPostClick: (post: BlogPost) => void;
 }) {
   return (
-    <div className="mb-16">
-      <div className="mb-8">
+    <motion.div 
+      variants={staggerContainer}
+      initial="hidden"
+      animate="visible"
+      className="mb-16"
+    >
+      <motion.div variants={fadeInUp} className="mb-8">
         <h2 className="text-3xl font-display font-bold text-white mb-2 orthodox-heading">{title}</h2>
         <p className="text-white/70">{description}</p>
-      </div>
+      </motion.div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {items.map(post => (
           <PostCard key={post.id} post={post} onClick={() => onPostClick(post)} />
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -228,6 +261,7 @@ function BlogPage() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [showFeaturedOnly, setShowFeaturedOnly] = useState(false);
   
   // Load posts from localStorage or initialize with sample data
   useEffect(() => {
@@ -256,6 +290,13 @@ function BlogPage() {
   
   const handlePostClick = (post: BlogPost) => {
     navigate(`/blog/${post.id}`);
+    
+    // Update view count
+    const updatedPosts = posts.map(p => 
+      p.id === post.id ? { ...p, views: (p.views || 0) + 1 } : p
+    );
+    setPosts(updatedPosts);
+    localStorage.setItem('orthodoxEchoesBlogPosts', JSON.stringify(updatedPosts));
   };
   
   const handleCreateNew = () => {
@@ -274,8 +315,9 @@ function BlogPage() {
       
       const matchesCategory = categoryFilter === "all" || post.category === categoryFilter;
       const matchesType = contentTypeFilter === "all" || post.contentType === contentTypeFilter;
+      const matchesFeatured = !showFeaturedOnly || post.featured;
       
-      return matchesSearch && matchesCategory && matchesType;
+      return matchesSearch && matchesCategory && matchesType && matchesFeatured;
     });
   };
   
@@ -283,6 +325,8 @@ function BlogPage() {
   const articles = filteredPosts.filter(post => post.contentType === "article");
   const blogs = filteredPosts.filter(post => post.contentType === "blog");
   const books = filteredPosts.filter(post => post.contentType === "book");
+  
+  const featuredPosts = filteredPosts.filter(post => post.featured);
   
   // If we have an ID and found the post, show the post detail view
   if (selectedPost) {
@@ -314,16 +358,31 @@ function BlogPage() {
   // Otherwise show the blog listing page
   return (
     <div className="container mx-auto px-4 py-16">
-      <div className="mb-12 text-center max-w-2xl mx-auto">
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="mb-12 text-center max-w-2xl mx-auto"
+      >
+        <OrthodoxIconFrame iconType="decorative" size="lg" className="mb-6 mx-auto">
+          <div className="flex justify-center">
+            <span className="text-gold text-4xl">☦</span>
+          </div>
+        </OrthodoxIconFrame>
         <h1 className="text-4xl md:text-5xl font-display font-bold text-white mb-4 orthodox-heading">
           Orthodox Wisdom & Reflections
         </h1>
         <p className="text-white/70 text-lg">
           Explore articles, blogs, and books that illuminate the richness of Orthodox Christianity
         </p>
-      </div>
+      </motion.div>
       
-      <div className="mb-10 flex flex-col md:flex-row justify-between gap-4">
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+        className="mb-10 flex flex-col md:flex-row justify-between gap-4"
+      >
         <div className="relative w-full md:w-64">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40 h-4 w-4" />
           <Input 
@@ -339,7 +398,7 @@ function BlogPage() {
             <SelectTrigger className="w-[140px] bg-[#1A1F2C]/40 border-gold/20">
               <SelectValue placeholder="Category" />
             </SelectTrigger>
-            <SelectContent className="bg-[#1A1F2C] border-gold/20">
+            <SelectContent className="bg-[#1A1F2C]/90 backdrop-blur-md border-gold/20">
               <SelectItem value="all">All Categories</SelectItem>
               {CATEGORIES.map(category => (
                 <SelectItem key={category} value={category}>
@@ -353,7 +412,7 @@ function BlogPage() {
             <SelectTrigger className="w-[140px] bg-[#1A1F2C]/40 border-gold/20">
               <SelectValue placeholder="Content Type" />
             </SelectTrigger>
-            <SelectContent className="bg-[#1A1F2C] border-gold/20">
+            <SelectContent className="bg-[#1A1F2C]/90 backdrop-blur-md border-gold/20">
               <SelectItem value="all">All Types</SelectItem>
               <SelectItem value="article">Articles</SelectItem>
               <SelectItem value="blog">Blog Posts</SelectItem>
@@ -361,17 +420,25 @@ function BlogPage() {
             </SelectContent>
           </Select>
           
+          <Button
+            variant="outline"
+            className={`border-gold/20 ${showFeaturedOnly ? 'bg-gold/20 text-white' : 'bg-transparent text-gold/80'}`}
+            onClick={() => setShowFeaturedOnly(!showFeaturedOnly)}
+          >
+            {showFeaturedOnly ? 'All Posts' : 'Featured Only'}
+          </Button>
+          
           {isAdmin && (
             <Button 
               onClick={handleCreateNew}
-              className="bg-byzantine hover:bg-byzantine-dark flex gap-2 items-center"
+              className="bg-byzantine hover:bg-byzantine-dark flex gap-2 items-center ml-auto"
             >
               <Plus className="h-4 w-4" />
               New Content
             </Button>
           )}
         </div>
-      </div>
+      </motion.div>
       
       <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab} className="mb-12">
         <div className="flex justify-center">
@@ -380,14 +447,24 @@ function BlogPage() {
             <TabsTrigger value="articles">Articles</TabsTrigger>
             <TabsTrigger value="blogs">Blogs</TabsTrigger>
             <TabsTrigger value="books">Books</TabsTrigger>
+            <TabsTrigger value="featured">Featured</TabsTrigger>
           </TabsList>
         </div>
         
         <TabsContent value="all" className="mt-8">
           {filteredPosts.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-white/60">No content matching your filters.</p>
+            <div className="text-center py-12 bg-[#1A1F2C]/30 backdrop-blur-sm rounded-lg border border-gold/10 p-8">
+              <FileText className="w-12 h-12 text-gold/40 mx-auto mb-4" />
+              <p className="text-white/60 text-lg">No content matching your filters.</p>
               {filter && <p className="mt-2 text-sm text-white/50">Try adjusting your search criteria.</p>}
+              <Button variant="outline" className="mt-4 border-gold/20 text-gold" onClick={() => {
+                setFilter('');
+                setCategoryFilter('all');
+                setContentTypeFilter('all');
+                setShowFeaturedOnly(false);
+              }}>
+                Clear Filters
+              </Button>
             </div>
           ) : (
             <>
@@ -430,8 +507,15 @@ function BlogPage() {
               onPostClick={handlePostClick}
             />
           ) : (
-            <div className="text-center py-12">
+            <div className="text-center py-12 bg-[#1A1F2C]/30 backdrop-blur-sm rounded-lg border border-gold/10 p-8">
               <p className="text-white/60">No articles matching your filters.</p>
+              <Button variant="outline" className="mt-4 border-gold/20 text-gold" onClick={() => {
+                setFilter('');
+                setCategoryFilter('all');
+                setShowFeaturedOnly(false);
+              }}>
+                Clear Filters
+              </Button>
             </div>
           )}
         </TabsContent>
@@ -445,8 +529,15 @@ function BlogPage() {
               onPostClick={handlePostClick}
             />
           ) : (
-            <div className="text-center py-12">
+            <div className="text-center py-12 bg-[#1A1F2C]/30 backdrop-blur-sm rounded-lg border border-gold/10 p-8">
               <p className="text-white/60">No blog posts matching your filters.</p>
+              <Button variant="outline" className="mt-4 border-gold/20 text-gold" onClick={() => {
+                setFilter('');
+                setCategoryFilter('all');
+                setShowFeaturedOnly(false);
+              }}>
+                Clear Filters
+              </Button>
             </div>
           )}
         </TabsContent>
@@ -460,12 +551,60 @@ function BlogPage() {
               onPostClick={handlePostClick}
             />
           ) : (
-            <div className="text-center py-12">
+            <div className="text-center py-12 bg-[#1A1F2C]/30 backdrop-blur-sm rounded-lg border border-gold/10 p-8">
               <p className="text-white/60">No books matching your filters.</p>
+              <Button variant="outline" className="mt-4 border-gold/20 text-gold" onClick={() => {
+                setFilter('');
+                setCategoryFilter('all');
+                setShowFeaturedOnly(false);
+              }}>
+                Clear Filters
+              </Button>
+            </div>
+          )}
+        </TabsContent>
+        
+        <TabsContent value="featured" className="mt-8">
+          {featuredPosts.length > 0 ? (
+            <ContentSection 
+              title="Featured Content" 
+              description="Highlighted works from our collection"
+              items={featuredPosts}
+              onPostClick={handlePostClick}
+            />
+          ) : (
+            <div className="text-center py-12 bg-[#1A1F2C]/30 backdrop-blur-sm rounded-lg border border-gold/10 p-8">
+              <p className="text-white/60">No featured content matching your filters.</p>
+              <Button variant="outline" className="mt-4 border-gold/20 text-gold" onClick={() => {
+                setFilter('');
+                setCategoryFilter('all');
+                setContentTypeFilter('all');
+              }}>
+                Clear Filters
+              </Button>
             </div>
           )}
         </TabsContent>
       </Tabs>
+      
+      {/* Content tags section */}
+      <div className="mt-16 mb-10">
+        <h3 className="text-2xl font-display font-bold text-gold mb-4">Popular Tags</h3>
+        <div className="flex flex-wrap gap-2">
+          {TAGS.map(tag => (
+            <Button 
+              key={tag}
+              variant="outline" 
+              size="sm"
+              className="border-gold/20 hover:border-gold/50 text-white/80 hover:text-white"
+              onClick={() => setFilter(tag)}
+            >
+              <Tag className="h-3 w-3 mr-1" />
+              {tag}
+            </Button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
