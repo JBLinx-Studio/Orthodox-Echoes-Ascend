@@ -22,7 +22,6 @@ export const themeColors = {
   // Icon colors
   iconBlue: "#1A3E5F",
   iconRed: "#9B2335",
-  // Add more theme colors as needed
 };
 
 // Theme mode helpers
