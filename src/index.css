@@ -313,6 +313,16 @@ body::before {
   color: white !important;
 }
 
+/* Button shine animation */
+@keyframes shine {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 /* Comment section consistent styling */
 .comment-section {
   background: rgba(26, 31, 44, 0.7) !important;
