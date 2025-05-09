@@ -4,8 +4,6 @@
  * Centralizes theme configuration and helper functions for Orthodox and Cathedral themes
  */
 
-import React from 'react';
-
 // Enhanced Orthodox theme colors
 export const themeColors = {
   gold: "#D4AF37",
@@ -19,8 +17,10 @@ export const themeColors = {
   muted: "#8A898C",
   candle: "#FFF4E0",
   incense: "#E5E4D7",
+  // Icon colors
   iconBlue: "#1A3E5F",
   iconRed: "#9B2335",
+  // Add more theme colors as needed
 };
 
 // Theme mode helpers
@@ -98,7 +98,7 @@ export const getThemeClass = (element: string, mode: ThemeMode): string => {
 /**
  * Get cathedral-themed decorative elements for UI components
  */
-export const getCathedralDecoration = (type: 'header' | 'divider' | 'card' | 'footer'): JSX.Element | null => {
+export const getCathedralDecoration = (type: 'header' | 'divider' | 'card' | 'footer'): React.ReactNode => {
   switch (type) {
     case 'header':
       return (
@@ -138,17 +138,20 @@ export const getCathedralDecoration = (type: 'header' | 'divider' | 'card' | 'fo
   }
 };
 
-// SVG pattern data for cathedral backgrounds - properly formatted string literals
-export const patternData = {
-  crosses: `url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 10v40M15 30h30' stroke='%23D4AF37' stroke-width='1' fill='none' opacity='.2'/%3E%3C/svg%3E")`,
-  domes: `url("data:image/svg+xml,%3Csvg width='100' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 60C25 20 75 20 100 60' stroke='%23D4AF37' stroke-width='1' fill='none' opacity='.1'/%3E%3C/svg%3E")`,
-  arches: `url("data:image/svg+xml,%3Csvg width='80' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 40C20 10 60 10 80 40' stroke='%23D4AF37' stroke-width='.8' fill='none' opacity='.15'/%3E%3C/svg%3E")`,
-  icons: `url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100' height='100' fill='none' stroke='%23D4AF37' stroke-width='.5' opacity='.1'/%3E%3Cpath d='M50 25v50M30 50h40' stroke='%23D4AF37' stroke-width='.7' opacity='.2'/%3E%3C/svg%3E")`
-};
-
 /**
  * Get cathedral-themed pattern backgrounds
  */
 export const getCathedralPattern = (type: 'crosses' | 'domes' | 'arches' | 'icons'): string => {
-  return patternData[type] || '';
+  switch (type) {
+    case 'crosses':
+      return `url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 10v40M15 30h30' stroke='%23D4AF37' stroke-width='1' fill='none' opacity='.2'/%3E%3C/svg%3E")`;
+    case 'domes':
+      return `url("data:image/svg+xml,%3Csvg width='100' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 60C25 20 75 20 100 60' stroke='%23D4AF37' stroke-width='1' fill='none' opacity='.1'/%3E%3C/svg%3E")`;
+    case 'arches':
+      return `url("data:image/svg+xml,%3Csvg width='80' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 40C20 10 60 10 80 40' stroke='%23D4AF37' stroke-width='.8' fill='none' opacity='.15'/%3E%3C/svg%3E")`;
+    case 'icons':
+      return `url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100' height='100' fill='none' stroke='%23D4AF37' stroke-width='.5' opacity='.1'/%3E%3Cpath d='M50 25v50M30 50h40' stroke='%23D4AF37' stroke-width='.7' opacity='.2'/%3E%3C/svg%3E")`;
+    default:
+      return '';
+  }
 };
