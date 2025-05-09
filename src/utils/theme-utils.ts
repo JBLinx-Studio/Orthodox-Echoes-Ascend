@@ -96,10 +96,13 @@ export const getThemeClass = (element: string, mode: ThemeMode): string => {
   }
 };
 
+// Type definition for cathedral decoration components
+export type CathedralDecorationType = 'header' | 'divider' | 'card' | 'footer';
+
 /**
  * Get cathedral-themed decorative elements for UI components
  */
-export const getCathedralDecoration = (type: 'header' | 'divider' | 'card' | 'footer'): JSX.Element | null => {
+export const getCathedralDecoration = (type: CathedralDecorationType): JSX.Element | null => {
   switch (type) {
     case 'header':
       return (
@@ -139,7 +142,7 @@ export const getCathedralDecoration = (type: 'header' | 'divider' | 'card' | 'fo
   }
 };
 
-// SVG pattern data for cathedral backgrounds properly escaped
+// SVG pattern data properly formatted for cathedral backgrounds
 export const patternData = {
   crosses: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 10v40M15 30h30' stroke='%23D4AF37' stroke-width='1' fill='none' opacity='.2'/%3E%3C/svg%3E\")",
   domes: "url(\"data:image/svg+xml,%3Csvg width='100' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 60C25 20 75 20 100 60' stroke='%23D4AF37' stroke-width='1' fill='none' opacity='.1'/%3E%3C/svg%3E\")",

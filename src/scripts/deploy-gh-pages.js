@@ -2,9 +2,15 @@
 const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 // Set up the repo name with the updated project name
 const REPO_NAME = 'Orthodox-Echoes-Ascend';
+
+// Generate a unique hash for cache busting
+const generateHash = () => {
+  return crypto.randomBytes(8).toString('hex');
+};
 
 // Create a 404.html file that redirects to index.html for SPA routing
 const create404Page = () => {
@@ -42,9 +48,9 @@ const create404Page = () => {
     fs.mkdirSync(distDir, { recursive: true });
   }
   fs.writeFileSync(path.join(distDir, '404.html'), html404);
-}
+};
 
-// Add SPA redirect script to index.html
+// Add SPA redirect script to index.html and cache busting headers
 const updateIndexHtmlForSPA = () => {
   console.log('Updating index.html for SPA routing...');
   const indexPath = path.resolve(__dirname, '../../dist/index.html');
@@ -52,9 +58,16 @@ const updateIndexHtmlForSPA = () => {
   if (fs.existsSync(indexPath)) {
     let indexContent = fs.readFileSync(indexPath, 'utf8');
     
-    // Check if the SPA script is already added
+    // Add cache control meta tags
+    const cacheBustTag = `
+  <!-- Cache Busting -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="cache-version" content="${generateHash()}">`;
+    
+    // Add the SPA redirect script right after the <head> tag if not already there
     if (!indexContent.includes('window.location.pathname.indexOf("?")')) {
-      // Add the SPA redirect script right after the <head> tag
       const scriptToAdd = `
   <!-- Start Single Page Apps for GitHub Pages -->
   <script type="text/javascript">
@@ -73,7 +86,7 @@ const updateIndexHtmlForSPA = () => {
       }
     }(window.location))
   </script>
-  <!-- End Single Page Apps for GitHub Pages -->`;
+  <!-- End Single Page Apps for GitHub Pages -->${cacheBustTag}`;
       
       indexContent = indexContent.replace('<head>', '<head>' + scriptToAdd);
       fs.writeFileSync(indexPath, indexContent);
@@ -81,7 +94,7 @@ const updateIndexHtmlForSPA = () => {
   } else {
     console.warn('Warning: Could not find index.html in the dist folder.');
   }
-}
+};
 
 // Function to clean the gh-pages branch if it exists
 const cleanGhPagesBranch = () => {
@@ -97,7 +110,35 @@ const cleanGhPagesBranch = () => {
   } catch (error) {
     console.warn('Could not clean gh-pages branch:', error.message);
   }
-}
+};
+
+// Add timestamp to filenames in dist folder for cache busting
+const addTimestampToAssets = () => {
+  console.log('Adding cache busting to assets...');
+  const distDir = path.resolve(__dirname, '../../dist');
+  const assetsDir = path.join(distDir, 'assets');
+  
+  if (fs.existsSync(assetsDir)) {
+    const timestamp = Date.now();
+    const assets = fs.readdirSync(assetsDir);
+    
+    assets.forEach(asset => {
+      if (!asset.includes('.')) return; // Skip folders
+      
+      const ext = path.extname(asset);
+      const name = path.basename(asset, ext);
+      
+      // Skip if it already has a timestamp
+      if (name.includes('-')) return;
+      
+      const newName = `${name}-${timestamp}${ext}`;
+      fs.renameSync(
+        path.join(assetsDir, asset),
+        path.join(assetsDir, newName)
+      );
+    });
+  }
+};
 
 try {
   // Clean the gh-pages branch if it exists
@@ -106,13 +147,17 @@ try {
   // Build the project
   console.log('\n🔨 Building the project...');
   // Add cache busting environment variable
-  const cacheBuster = new Date().getTime();
+  const cacheBuster = generateHash();
   process.env.VITE_CACHE_BUSTER = cacheBuster;
-  execSync('npm run build', { stdio: 'inherit' });
+  process.env.VITE_BUILD_TIMESTAMP = Date.now().toString();
+  execSync(`VITE_CACHE_BUSTER=${cacheBuster} npm run build`, { stdio: 'inherit' });
   
   // Create 404.html and update index.html for SPA routing
   create404Page();
   updateIndexHtmlForSPA();
+  
+  // Add timestamp to assets for cache busting
+  addTimestampToAssets();
   
   // Create .nojekyll file to prevent Jekyll processing
   console.log('Creating .nojekyll file...');
@@ -121,7 +166,7 @@ try {
   // Initialize gh-pages with the dist folder
   console.log('\n📤 Deploying to gh-pages branch...');
   execSync(
-    `npx gh-pages -d dist -m "Deploy to GitHub pages [skip ci]" --force`, // Added --force flag
+    `npx gh-pages -d dist -m "Deploy to GitHub pages [cache bust: ${cacheBuster}] [skip ci]" --force`,
     { stdio: 'inherit' }
   );
   
@@ -133,7 +178,7 @@ try {
   console.log('3. Select "gh-pages" branch and "/ (root)" folder');
   console.log('4. Click Save');
   console.log('\n🔍 Note: It may take a few minutes for your site to be available with the new changes.');
-  console.log('\n💡 Tip: If you still see old content, try clearing your browser cache or using incognito mode.');
+  console.log('\n💡 Tip: If you still see old content, try clearing your browser cache by pressing Ctrl+F5 or using incognito mode.');
 } catch (error) {
   console.error('❌ Deployment failed:', error);
   process.exit(1);
