@@ -1,26 +1,20 @@
-
 name: Deploy to GitHub Pages
 
 on:
-  # Runs on pushes targeting the default branch
   push:
     branches: ["main"]
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: write
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment
 concurrency:
   group: "pages"
   cancel-in-progress: true
 
 jobs:
-  # Build job
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
@@ -29,23 +23,22 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node
-        uses: actions/setup-node@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
         with:
-          node-version: "18"
+          node-version: "14.x" # Use the LTS version of Node.js
           cache: 'npm'
-          
-      - name: Install dependencies
-        run: npm ci
-        
+
+      - name: Install Dependencies
+        run: npm install # Use npm install unless npm ci is specifically required
+
       - name: Build
-        run: npm run build
-        env:
+        run: |
+          npm run build
           # Add dynamic cache busting with commit hash and timestamp
-          VITE_CACHE_BUSTER: ${{ github.sha }}_${{ github.run_number }}_$(date +%s)
-        
-      # Create 404.html for SPA routing
-      - name: Create 404.html
+          VITE_CACHE_BUSTER="${{ github.sha }}_${{ github.run_number }}_$(date +%s)"
+
+      - name: Create 404.html for SPA Routing
         run: |
           cat > ./dist/404.html << 'EOL'
           <!DOCTYPE html>
@@ -70,9 +63,8 @@ jobs:
             </body>
           </html>
           EOL
-      
-      # Update index.html for SPA routing and add cache busting meta tag
-      - name: Update index.html for SPA
+
+      - name: Update index.html for SPA Routing and Cache Busting
         run: |
           sed -i '/<head>/a \
           <!-- Cache control meta tags --> \
@@ -93,18 +85,16 @@ jobs:
             }(window.location)) \
           </script> \
           <!-- End Single Page Apps for GitHub Pages -->' ./dist/index.html
-      
-      # Create a .nojekyll file to prevent Jekyll processing
-      - name: Create .nojekyll file
+
+      - name: Create .nojekyll File to Disable Jekyll Processing
         run: touch ./dist/.nojekyll
-        
-      # Update deployment script to use force push with clean strategy
+
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: dist # The folder the action should deploy
-          branch: gh-pages # The branch the action should deploy to
-          clean: true # Automatically remove deleted files from the deploy branch
-          clean-exclude: .nojekyll # Don't remove .nojekyll file
-          force: true # Force update even if remote history differs
+          folder: dist
+          branch: gh-pages
+          clean: true
+          clean-exclude: .nojekyll
+          force: true
           commit-message: "Deploy website to GitHub Pages [skip ci]"
