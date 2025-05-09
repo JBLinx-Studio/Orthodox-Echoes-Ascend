@@ -13,11 +13,7 @@ const create404Page = () => {
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Orthodox Echoes - Page Not Found</title>
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
     <script type="text/javascript">
       // Single Page Apps for GitHub Pages
       // MIT License
@@ -77,11 +73,7 @@ const updateIndexHtmlForSPA = () => {
       }
     }(window.location))
   </script>
-  <!-- End Single Page Apps for GitHub Pages -->
-  <!-- Cache control -->
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />`;
+  <!-- End Single Page Apps for GitHub Pages -->`;
       
       indexContent = indexContent.replace('<head>', '<head>' + scriptToAdd);
       fs.writeFileSync(indexPath, indexContent);
@@ -111,12 +103,12 @@ try {
   // Clean the gh-pages branch if it exists
   cleanGhPagesBranch();
   
-  // Build the project with cache busting
+  // Build the project
   console.log('\n🔨 Building the project...');
   // Add cache busting environment variable
   const cacheBuster = new Date().getTime();
   process.env.VITE_CACHE_BUSTER = cacheBuster;
-  execSync('npm run build', { stdio: 'inherit', env: process.env });
+  execSync('npm run build', { stdio: 'inherit' });
   
   // Create 404.html and update index.html for SPA routing
   create404Page();

@@ -1,7 +1,6 @@
 
 /**
  * Animation utilities for consistent animations across components
- * With enhanced performance optimizations
  */
 
 import { fadeIn, staggerContainer, slideIn, scaleIn, floating, archReveal, iconGlow, candleFlicker, smoothSection, pageEnter } from '@/components/ui/animation';
@@ -25,7 +24,7 @@ export const pageTransition = {
   initial: { opacity: 0 },
   animate: { opacity: 1 },
   exit: { opacity: 0 },
-  transition: { duration: 0.4 } // Reduced from 0.5 for better performance
+  transition: { duration: 0.5 }
 };
 
 export const staggerChildren = {
@@ -36,27 +35,27 @@ export const staggerChildren = {
 
 // Enhanced section transitions for Orthodox theme
 export const sectionTransition = {
-  initial: { opacity: 0, y: 20 }, // Reduced y-offset from 30 for better performance
+  initial: { opacity: 0, y: 30 },
   whileInView: { 
     opacity: 1, 
     y: 0,
     transition: { 
-      duration: 0.6, // Reduced from 0.8 for better performance
+      duration: 0.8,
       ease: [0.22, 1, 0.36, 1] // Custom easing for smoother transitions
     }
   },
   viewport: { once: true, margin: "-50px" }
 };
 
-// Byzantine-inspired decorative element animations - optimized
+// Byzantine-inspired decorative element animations
 export const iconReveal = {
-  initial: { opacity: 0, scale: 0.95, filter: "blur(5px)" }, // Reduced blur for better performance
+  initial: { opacity: 0, scale: 0.9, filter: "blur(8px)" },
   whileInView: { 
     opacity: 1, 
     scale: 1, 
     filter: "blur(0px)",
     transition: { 
-      duration: 0.8, // Reduced from 1.2 for better performance
+      duration: 1.2,
       ease: "easeOut"
     }
   },
@@ -64,7 +63,7 @@ export const iconReveal = {
 };
 
 // Helper to create animation delay sequences
-export const createStaggerDelay = (items: any[], baseDelay: number = 0.08) => { // Reduced delay from 0.1
+export const createStaggerDelay = (items: any[], baseDelay: number = 0.1) => {
   return items.map((_, index) => ({
     transition: { delay: baseDelay * index }
   }));
@@ -72,20 +71,20 @@ export const createStaggerDelay = (items: any[], baseDelay: number = 0.08) => { 
 
 // New additions for smoother deployment animations
 export const deploymentTransition = {
-  initial: { opacity: 0, scale: 0.97 }, // Increased scale from 0.95 for subtler effect
+  initial: { opacity: 0, scale: 0.95 },
   animate: {
     opacity: 1,
     scale: 1,
     transition: {
-      duration: 0.5, // Reduced from 0.6 for better performance
+      duration: 0.6,
       ease: [0.22, 1, 0.36, 1]
     }
   },
   exit: {
     opacity: 0,
-    scale: 0.97, // Increased scale from 0.95 for subtler effect
+    scale: 0.95,
     transition: {
-      duration: 0.25, // Reduced from 0.3 for better performance
+      duration: 0.3,
       ease: [0.22, 1, 0.36, 1]
     }
   }
@@ -99,20 +98,9 @@ export const getOptimizedAnimation = (animation: any, isProduction: boolean = fa
       ...animation,
       transition: {
         ...animation.transition,
-        duration: (animation.transition?.duration || 0.4) * 0.75 // Further reduction from 0.8 to 0.75
+        duration: (animation.transition?.duration || 0.4) * 0.8
       }
     };
   }
   return animation;
-};
-
-// New reduced motion optimizations
-export const shouldReduceMotion = (): boolean => {
-  if (typeof window === 'undefined') return false;
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-};
-
-// Get appropriate animations based on user preferences
-export const getAccessibleAnimation = (fullAnimation: any, reducedAnimation: any = { opacity: [0, 1] }) => {
-  return shouldReduceMotion() ? reducedAnimation : fullAnimation;
 };
