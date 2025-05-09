@@ -41,8 +41,8 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          # Add cache busting by using the commit hash
-          VITE_CACHE_BUSTER: ${{ github.sha }}
+          # Add cache busting by using the commit hash and timestamp
+          VITE_CACHE_BUSTER: ${{ github.sha }}-${{ github.run_number }}-${{ github.run_attempt }}
         
       # Create 404.html for SPA routing
       - name: Create 404.html
@@ -53,6 +53,7 @@ jobs:
             <head>
               <meta charset="utf-8">
               <title>Orthodox Echoes - Page Not Found</title>
+              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
               <script type="text/javascript">
                 var pathSegmentsToKeep = 1;
                 var l = window.location;
@@ -71,7 +72,7 @@ jobs:
           </html>
           EOL
       
-      # Update index.html for SPA routing
+      # Update index.html for SPA routing with better caching control
       - name: Update index.html for SPA
         run: |
           sed -i '/<head>/a \
@@ -89,16 +90,25 @@ jobs:
             }(window.location)) \
           </script> \
           <!-- End Single Page Apps for GitHub Pages -->' ./dist/index.html
+          
+          sed -i '/<head>/a \
+          <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" /> \
+          <meta http-equiv="Pragma" content="no-cache" /> \
+          <meta http-equiv="Expires" content="0" />' ./dist/index.html
       
       # Create a .nojekyll file to prevent Jekyll processing
       - name: Create .nojekyll file
         run: touch ./dist/.nojekyll
         
-      # Update deployment script to use force push
+      # Update deployment script to use force push and clear cache
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: dist # The folder the action should deploy
           branch: gh-pages # The branch the action should deploy to
           clean: true # Automatically remove deleted files from the deploy branch
+          clean-exclude: |
+            .nojekyll
           force: true # Force update even if remote history differs
+          commit-message: "Deploy to GitHub Pages [ci skip]"
+

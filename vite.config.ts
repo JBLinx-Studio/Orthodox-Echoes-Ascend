@@ -32,9 +32,15 @@ export default defineConfig(({ mode }) => ({
     // Add cache busting for assets
     rollupOptions: {
       output: {
-        entryFileNames: 'assets/[name].[hash].js',
-        chunkFileNames: 'assets/[name].[hash].js',
-        assetFileNames: 'assets/[name].[hash].[ext]',
+        entryFileNames: mode === 'production' 
+          ? 'assets/[name].[hash].[timestamp].js' 
+          : 'assets/[name].[hash].js',
+        chunkFileNames: mode === 'production'
+          ? 'assets/[name].[hash].[timestamp].js'
+          : 'assets/[name].[hash].js',
+        assetFileNames: mode === 'production'
+          ? 'assets/[name].[hash].[timestamp].[ext]'
+          : 'assets/[name].[hash].[ext]',
         manualChunks: {
           react: ['react', 'react-dom'],
           router: ['react-router-dom'],
@@ -51,5 +57,11 @@ export default defineConfig(({ mode }) => ({
         drop_debugger: true,
       }
     },
+  },
+  define: {
+    // Add cache busting timestamp that will be available in the app
+    __CACHE_BUSTER__: JSON.stringify(new Date().getTime()),
+    __BUILD_VERSION__: JSON.stringify(process.env.npm_package_version),
+    __BUILD_DATE__: JSON.stringify(new Date().toISOString()),
   },
 }));

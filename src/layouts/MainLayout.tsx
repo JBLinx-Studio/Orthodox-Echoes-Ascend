@@ -36,33 +36,22 @@ export function MainLayout() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-[#0a0d16] to-[#161a26]">
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-[#0a0d16] to-[#161a26] overflow-x-hidden">
       {/* Accessibility: Skip to content link */}
-      <a href="#main-content" onClick={handleSkipToContent} className="skip-link">
+      <a 
+        href="#main-content" 
+        onClick={handleSkipToContent} 
+        className="skip-link fixed top-0 left-0 p-4 m-3 bg-byzantine text-white z-[1000] transform -translate-y-full focus:translate-y-0 transition-transform"
+      >
         Skip to content
       </a>
       
-      {/* Enhanced animated background with particle effects and soft candle glow */}
+      {/* Enhanced cathedral background */}
       <div className="fixed inset-0 z-0">
-        <div className="absolute inset-0 bg-[url('/images/noise-pattern.png')] opacity-5"></div>
-        <AnimatedBackground />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0d16] via-transparent to-transparent"></div>
-        
-        {/* Enhanced candle glow effects with more dynamics */}
-        <div className="absolute bottom-20 left-1/4 w-40 h-40 rounded-full bg-gold/5 blur-3xl animate-pulse"></div>
-        <div className="absolute top-40 right-1/3 w-48 h-48 rounded-full bg-byzantine/5 blur-3xl animate-pulse" style={{animationDelay: "1.5s"}}></div>
-        <div className="absolute top-1/3 left-1/2 w-36 h-36 rounded-full bg-gold/8 blur-3xl animate-pulse" style={{animationDelay: "0.7s"}}></div>
-        
-        {/* New floating light particles */}
-        <div className="absolute top-1/4 right-1/4 w-2 h-2 rounded-full bg-gold/40 animate-ping" style={{animationDuration: "4s"}}></div>
-        <div className="absolute bottom-1/3 left-1/3 w-1 h-1 rounded-full bg-gold/60 animate-ping" style={{animationDuration: "3s"}}></div>
-        <div className="absolute top-1/2 left-1/4 w-2 h-2 rounded-full bg-byzantine/30 animate-ping" style={{animationDuration: "5s"}}></div>
-        
-        {/* Cathedral light rays */}
-        <div className="absolute top-0 left-1/3 w-20 h-screen bg-gold/3 -rotate-6 animate-pulse" style={{animationDuration: "12s"}}></div>
-        <div className="absolute top-0 right-1/4 w-32 h-screen bg-gold/2 rotate-12 animate-pulse" style={{animationDuration: "15s"}}></div>
+        <AnimatedBackground intensity="medium" theme="gold" />
       </div>
       
+      {/* Navigation with z-index ensuring it's above other elements */}
       <NavBar />
       
       <AnimatePresence mode="wait">
@@ -75,12 +64,16 @@ export function MainLayout() {
             className="fixed inset-0 flex items-center justify-center z-40 bg-[#0c111f]/90 backdrop-blur-md"
           >
             <div className="flex flex-col items-center">
+              {/* Enhanced Orthodox loading symbol */}
               <div className="relative w-16 h-16">
                 <div className="absolute inset-0 rounded-full bg-byzantine/30 animate-ping"></div>
                 <div className="relative flex items-center justify-center w-16 h-16">
                   <span className="absolute inset-0 rounded-full bg-gradient-to-br from-byzantine to-byzantine-dark opacity-80"></span>
-                  <span className="relative text-white font-display font-bold text-3xl">Ω</span>
+                  <span className="relative text-white font-display font-bold text-3xl">☦</span>
                 </div>
+                {/* Added candle glow effect */}
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-1.5 h-6 bg-gradient-to-t from-gold via-gold/70 to-white/80 rounded-full animate-[candle-flicker_3s_ease-in-out_infinite]"></div>
+                <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-3 h-3 bg-gold/30 rounded-full blur-md animate-[pulse_2s_ease-in-out_infinite]"></div>
               </div>
               <div className="mt-4 flex space-x-2">
                 <div className="w-2 h-2 bg-gold rounded-full animate-bounce" style={{animationDelay: "0s"}}></div>
@@ -102,6 +95,16 @@ export function MainLayout() {
             transition={{ duration: 0.5, ease: "easeInOut" }}
             className="flex-1 pt-16 relative z-10 focus:outline-none"
           >
+            {/* Byzantine-style page decoration */}
+            <div className="absolute top-0 left-0 right-0 h-6 overflow-hidden opacity-20 pointer-events-none">
+              <div className="flex justify-center">
+                <svg width="800" height="24" viewBox="0 0 800 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0,12 C100,4 200,20 300,12 C400,4 500,20 600,12 C700,4 800,20 800,12" stroke="#D4AF37" strokeWidth="1.5" fill="none"/>
+                  <path d="M0,12 C100,20 200,4 300,12 C400,20 500,4 600,12 C700,20 800,4 800,12" stroke="#D4AF37" strokeWidth="1.5" fill="none"/>
+                </svg>
+              </div>
+            </div>
+            
             <Outlet />
             
             {/* Back to top button - appears when scrolled down */}
@@ -147,12 +150,11 @@ function BackToTopButton() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 10 }}
           onClick={scrollToTop}
-          className="fixed bottom-6 right-6 w-10 h-10 rounded-full bg-byzantine/70 text-white flex items-center justify-center shadow-lg backdrop-blur-sm button-press z-40 hover:bg-byzantine focus-indicator"
+          className="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-byzantine/70 text-white flex items-center justify-center shadow-lg backdrop-blur-sm button-press z-40 hover:bg-byzantine focus-indicator border border-gold/30"
           aria-label="Back to top"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
-          </svg>
+          {/* Orthodox cross icon */}
+          <span className="text-gold text-xl">☦</span>
         </motion.button>
       )}
     </AnimatePresence>
