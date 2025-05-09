@@ -1,39 +1,44 @@
-
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Orthodox Echoes - Eastern Orthodox Wisdom & Community</title>
-    <meta name="description" content="Explore the ancient traditions and teachings of Eastern Orthodoxy. Join our community to learn, grow, and connect with the rich Orthodox heritage." />
-    <meta name="author" content="Orthodox Echoes" />
-
-    <meta property="og:title" content="Orthodox Echoes - Eastern Orthodox Wisdom & Community" />
-    <meta property="og:description" content="Explore the ancient traditions and teachings of Eastern Orthodoxy. Join our community to learn, grow, and connect with the rich Orthodox heritage." />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@orthodox_echoes" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Serif+Pro:wght@400;600;700&display=swap">
-    
-    <!-- Custom favicon -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
-    
-    <!-- Preload critical assets -->
-    <link rel="preload" href="/images/noise-pattern.png" as="image" />
-    
-    <!-- Cache busting meta tag -->
-    <meta name="version" content="%VITE_CACHE_BUSTER%" />
-  </head>
-
-  <body>
-    <div id="root"></div>
-    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orthodox Echoes - Eastern Orthodox Wisdom & Community</title>
+  <meta name="description" content="Explore the ancient traditions and teachings of Eastern Orthodoxy. Join our community to learn, grow, and connect with the rich Orthodox heritage.">
+  <meta name="author" content="Orthodox Echoes">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:title" content="Orthodox Echoes - Eastern Orthodox Wisdom & Community">
+  <meta property="og:description" content="Explore the ancient traditions and teachings of Eastern Orthodoxy. Join our community to learn, grow, and connect with the rich Orthodox heritage.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png">
+  <meta property="og:image:alt" content="Orthodox Echoes Logo">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@orthodox_echoes">
+  <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png">
+  
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Serif+Pro:wght@400;600;700&display=swap">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  
+  <!-- Preload and Prefetch -->
+  <link rel="preload" href="/images/noise-pattern.png" as="image">
+  <link rel="prefetch" href="/src/main.tsx">
+  
+  <!-- Cache busting meta tag -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  
+  <!-- Deferred Scripts -->
+  <script defer src="https://cdn.gpteng.co/gptengineer.js"></script>
+  <script type="module" src="/src/main.tsx" defer></script>
+</head>
+<body>
+  <div id="root"></div>
+</body>
 </html>
