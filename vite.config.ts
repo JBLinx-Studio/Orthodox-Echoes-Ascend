@@ -32,9 +32,9 @@ export default defineConfig(({ mode }) => ({
     // Add cache busting for assets
     rollupOptions: {
       output: {
-        entryFileNames: `assets/[name].[hash]${process.env.VITE_CACHE_BUSTER ? '_' + process.env.VITE_CACHE_BUSTER : ''}.js`,
-        chunkFileNames: `assets/[name].[hash]${process.env.VITE_CACHE_BUSTER ? '_' + process.env.VITE_CACHE_BUSTER : ''}.js`,
-        assetFileNames: `assets/[name].[hash]${process.env.VITE_CACHE_BUSTER ? '_' + process.env.VITE_CACHE_BUSTER : ''}.[ext]`,
+        entryFileNames: 'assets/[name].[hash].js',
+        chunkFileNames: 'assets/[name].[hash].js',
+        assetFileNames: 'assets/[name].[hash].[ext]',
         manualChunks: {
           react: ['react', 'react-dom'],
           router: ['react-router-dom'],

@@ -12,7 +12,6 @@ import Admin from "./pages/Admin";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Blog from "./pages/Blog";
-import Learn from "./pages/Learn";
 import NotFound from "./pages/NotFound";
 import { useEffect, useState } from "react";
 import "./styles/audioEffects.css";
@@ -132,7 +131,7 @@ const App = () => {
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/blog/:id" element={<Blog />} />
                 <Route path="/profile" element={<Profile />} />
-                <Route path="/learn" element={<Learn />} />
+                <Route path="/learn" element={<PlaceholderPage title="Learning Center" />} />
                 <Route path="/doctrine" element={<PlaceholderPage title="Orthodox Doctrine" />} />
                 <Route path="/saints" element={<PlaceholderPage title="Lives of Saints" />} />
                 <Route path="/calendar" element={<PlaceholderPage title="Liturgical Calendar" />} />
