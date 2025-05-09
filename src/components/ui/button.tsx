@@ -1,3 +1,4 @@
+
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
@@ -9,21 +10,27 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        default: "bg-byzantine text-white hover:bg-byzantine-dark shadow-lg hover:shadow-xl",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+          "border border-gold/30 bg-transparent text-gold hover:bg-gold/10 hover:border-gold/50",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+        link: "text-byzantine underline-offset-4 hover:underline",
+        gold: "bg-gradient-to-r from-gold-dark via-gold to-gold-dark text-white hover:from-gold hover:to-gold shadow-lg hover:shadow-xl",
+        byzantineGold: "bg-gradient-to-r from-gold/20 via-byzantine to-gold/20 text-white hover:from-gold/30 hover:to-gold/30 border border-gold/20 shadow-lg hover:shadow-xl",
+        divine: "bg-gradient-to-r from-byzantineLight/80 via-gold/40 to-byzantineDark/80 text-white border border-gold/30 shadow-xl hover:shadow-2xl hover:border-gold/50 hover:from-byzantineLight hover:to-byzantineDark transition-all duration-300",
+        holy: "relative bg-gradient-to-br from-gold/80 via-gold/20 to-gold/80 text-white border border-gold/50 shadow-xl hover:shadow-2xl transition-all duration-300 hover:from-gold hover:to-gold/80 overflow-hidden after:content-[''] after:absolute after:inset-0 after:bg-gradient-to-r after:from-transparent after:via-white/20 after:to-transparent after:translate-x-[-100%] hover:after:translate-x-[100%] after:transition-all after:duration-1000",
+        ethereal: "bg-transparent backdrop-blur-sm border border-gold/30 text-gold hover:bg-byzantine/10 hover:border-gold/50 shadow-lg hover:shadow-xl transition-all duration-300"
       },
       size: {
         default: "h-10 px-4 py-2",
         sm: "h-9 rounded-md px-3",
         lg: "h-11 rounded-md px-8",
         icon: "h-10 w-10",
+        xl: "h-14 rounded-md px-10 text-base",
       },
     },
     defaultVariants: {
