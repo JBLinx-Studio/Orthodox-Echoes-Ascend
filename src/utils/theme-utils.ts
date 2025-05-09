@@ -4,8 +4,6 @@
  * Centralizes theme configuration and helper functions for Orthodox and Cathedral themes
  */
 
-import React from 'react';
-
 // Enhanced Orthodox theme colors
 export const themeColors = {
   gold: "#D4AF37",
@@ -22,6 +20,7 @@ export const themeColors = {
   // Icon colors
   iconBlue: "#1A3E5F",
   iconRed: "#9B2335",
+  // Add more theme colors as needed
 };
 
 // Theme mode helpers
@@ -139,7 +138,7 @@ export const getCathedralDecoration = (type: 'header' | 'divider' | 'card' | 'fo
   }
 };
 
-// SVG pattern data for cathedral backgrounds properly escaped
+// SVG pattern data for cathedral backgrounds - Fixed the syntax issues with proper string escaping
 export const patternData = {
   crosses: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 10v40M15 30h30' stroke='%23D4AF37' stroke-width='1' fill='none' opacity='.2'/%3E%3C/svg%3E\")",
   domes: "url(\"data:image/svg+xml,%3Csvg width='100' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 60C25 20 75 20 100 60' stroke='%23D4AF37' stroke-width='1' fill='none' opacity='.1'/%3E%3C/svg%3E\")",
