@@ -137,7 +137,9 @@ const App = () => {
                 <Route path="/calendar" element={<PlaceholderPage title="Liturgical Calendar" />} />
                 <Route path="/community" element={<PlaceholderPage title="Orthodox Community" />} />
                 <Route path="/support" element={<PlaceholderPage title="Support Our Mission" />} />
-                <Route path="/articles" element={<PlaceholderPage title="Articles & Blog" />} />
+                <Route path="/articles" element={<PlaceholderPage title="Sacred Articles" />} />
+                <Route path="/books" element={<PlaceholderPage title="Sacred Library" />} />
+                <Route path="/liturgy" element={<PlaceholderPage title="Liturgical Life" />} />
                 <Route path="/article/:id" element={<PlaceholderPage title="Article Details" />} />
                 <Route path="/prayers" element={<PlaceholderPage title="Prayer Guide" />} />
                 <Route path="/icons" element={<PlaceholderPage title="Sacred Iconography" />} />
