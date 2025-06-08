@@ -1,464 +1,252 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Source+Serif+Pro:wght@400;600;700&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Serif+Pro:wght@400;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
+:root {
+  /* Enhanced color palette */
+  --byzantine: #6B46C1;
+  --byzantine-dark: #553C9A;
+  --byzantine-light: #8B5CF6;
+  --gold: #F59E0B;
+  --gold-dark: #D97706;
+  --gold-light: #FCD34D;
+  --deep-blue: #1E3A8A;
+  --cream: #FEF3C7;
+  --dark-navy: #1A1F2C;
+  --warm-brown: #92400E;
+  
+  /* Enhanced spacing */
+  --content-padding: 1rem;
+  --section-padding: 4rem 0;
+  
+  /* Animation variables */
+  --animation-slow: 3s;
+  --animation-medium: 1.5s;
+  --animation-fast: 0.5s;
+}
+
+@media (min-width: 768px) {
   :root {
-    --background: 220 33% 13%;
-    --foreground: 220 14% 96%;
-
-    --card: 220 33% 17%;
-    --card-foreground: 220 14% 96%;
-
-    --popover: 220 33% 13%;
-    --popover-foreground: 220 14% 96%;
-
-    --primary: 220 14% 96%;
-    --primary-foreground: 220 33% 13%;
-
-    --secondary: 42 60% 52%; /* Gold */
-    --secondary-foreground: 220 33% 13%;
-
-    --muted: 220 33% 20%;
-    --muted-foreground: 220 14% 80%;
-
-    --accent: 42 60% 52%; /* Gold */
-    --accent-foreground: 220 33% 13%;
-
-    --destructive: 0 62% 30%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 220 33% 20%;
-    --input: 220 33% 20%;
-    --ring: 224 76% 48%;
-    
-    --radius: 0.5rem;
-
-    --orthodox-blue: 215 23% 16%;
-    --gold: 42 57% 52%;
-    --byzantine: 342 53% 40%;
-    --byzantine-dark: 342 53% 35%;
-    --byzantine-light: 342 53% 45%;
+    --content-padding: 2rem;
+    --section-padding: 6rem 0;
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground font-body;
-    /* Enriched background with gradient for depth */
-    background: radial-gradient(circle at center, #111725 0%, #0a0d16 70%, #050710 100%);
-    /* Box shadow for vignette effect */
-    box-shadow: inset 0 0 250px rgba(0, 0, 0, 0.8);
-    min-height: 100vh;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-display;
-  }
-}
-
-@layer components {
-  /* Enhanced Byzantine border with cathedral motifs */
-  .byzantine-border {
-    @apply border border-byzantine/30 rounded-md p-4 relative;
-    background-image: linear-gradient(to bottom, rgba(155, 35, 53, 0.03), rgba(212, 175, 55, 0.03));
-  }
-
-  .byzantine-border::before {
-    content: "";
-    @apply absolute -top-2 -left-2 w-4 h-4 border-t border-l border-gold;
-  }
-  
-  .byzantine-border::after {
-    content: "";
-    @apply absolute -bottom-2 -right-2 w-4 h-4 border-b border-r border-gold;
-  }
-
-  /* Cathedral-style icon frame */
-  .icon-frame {
-    @apply relative overflow-hidden bg-[#1A1F2C] border border-gold/40 rounded-md shadow-lg;
-    background-image: linear-gradient(to bottom, rgba(26, 31, 44, 0.9), rgba(10, 13, 22, 0.95));
-  }
-
-  .icon-frame::before {
-    content: "";
-    @apply absolute inset-0 bg-gradient-to-b from-gold/10 to-transparent opacity-50;
-  }
-  
-  /* Cathedral heading style with ornamental decoration */
-  .orthodox-heading {
-    @apply font-display relative inline-block pb-2 px-6;
-  }
-  
-  .orthodox-heading::before,
-  .orthodox-heading::after {
-    content: "✦";
-    @apply absolute text-sm text-gold/80 top-1/2 -translate-y-1/2;
-  }
-  
-  .orthodox-heading::before {
-    @apply -left-4;
-  }
-  
-  .orthodox-heading::after {
-    @apply -right-4;
-  }
-  
-  .orthodox-heading::after {
-    content: "";
-    @apply absolute bottom-0 left-1/4 right-1/4 h-0.5 bg-gradient-to-r from-transparent via-gold/50 to-transparent;
-  }
-
-  /* Cathedral-style navigation links */
-  .nav-link {
-    @apply relative text-foreground hover:text-gold transition-colors duration-300;
-  }
-  
-  .nav-link::after {
-    content: "";
-    @apply absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-gold/80 to-transparent transform scale-x-0 transition-transform duration-300;
-    transform-origin: center;
-  }
-  
-  .nav-link:hover::after {
-    @apply scale-x-100;
-  }
-
-  .active-nav-link {
-    @apply text-gold;
-  }
-  
-  .active-nav-link::after {
-    @apply scale-x-100;
-  }
-  
-  /* Candle glow effect */
-  .candle-glow {
-    @apply relative;
-    filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.6));
-  }
-  
-  .candle-glow::after {
-    content: "";
-    @apply absolute -top-6 left-1/2 -translate-x-1/2 w-1.5 h-6 bg-gradient-to-t from-gold via-gold/70 to-white/80 rounded-full;
-    animation: candle-flicker 3s ease-in-out infinite;
-  }
-  
-  /* Cathedral scroll with ornate edges */
-  .scroll-parchment {
-    @apply bg-gradient-to-b from-[#3d3223] to-[#2a231b] border-y border-gold/30 px-6 py-4 relative;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
-  }
-  
-  .scroll-parchment::before,
-  .scroll-parchment::after {
-    content: "";
-    @apply absolute h-4 left-0 right-0 bg-[#3d3223];
-    clip-path: polygon(0% 0%, 5% 100%, 10% 0%, 15% 100%, 20% 0%, 25% 100%, 30% 0%, 35% 100%, 40% 0%, 45% 100%, 50% 0%, 55% 100%, 60% 0%, 65% 100%, 70% 0%, 75% 100%, 80% 0%, 85% 100%, 90% 0%, 95% 100%, 100% 0%);
-  }
-  
-  .scroll-parchment::before {
-    @apply -top-4 transform rotate-180;
-  }
-  
-  .scroll-parchment::after {
-    @apply -bottom-4;
-  }
-  
-  /* Enhanced icon glow */
-  .icon-glow {
-    filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.5));
-    animation: iconGlow 3s ease-in-out infinite;
-  }
-  
-  @keyframes iconGlow {
-    0%, 100% { filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.3)); }
-    50% { filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.7)); }
-  }
-  
-  /* Cathedral holy light effect */
-  .holy-light {
-    @apply relative overflow-hidden;
-  }
-  
-  .holy-light::before {
-    content: "";
-    @apply absolute inset-0 bg-gradient-to-tr from-gold/10 via-transparent to-gold/10;
-    animation: holyShimmer 8s ease-in-out infinite;
-  }
-  
-  @keyframes holyShimmer {
-    0%, 100% { opacity: 0.1; }
-    50% { opacity: 0.3; }
-  }
-  
-  /* Orthodox incense smoke effect */
-  .incense-smoke {
-    @apply absolute w-1 h-20 bg-gradient-to-t from-transparent via-white/20 to-transparent;
-    filter: blur(3px);
-    animation: incenseRise 5s ease-out infinite;
-  }
-  
-  @keyframes incenseRise {
-    0% { transform: translateY(0) scaleY(1) rotate(0deg); opacity: 0.7; }
-    100% { transform: translateY(-100px) scaleY(2) rotate(5deg); opacity: 0; }
-  }
-
-  /* Byzantine cathedral-style page titles */
-  .byzantine-title {
-    @apply font-display text-4xl text-gold relative inline-block mb-8;
-  }
-
-  .byzantine-title::before,
-  .byzantine-title::after {
-    content: "☦";
-    @apply absolute text-xl text-gold/70 top-1/2 -translate-y-1/2;
-  }
-
-  .byzantine-title::before {
-    @apply -left-10;
-  }
-
-  .byzantine-title::after {
-    @apply -right-10;
-  }
-  
-  /* Cathedral dome card style */
-  .cathedral-card {
-    @apply bg-[#1A1F2C]/60 backdrop-blur-sm rounded-t-3xl rounded-b-md border border-gold/20 shadow-lg overflow-hidden;
-    background-image: linear-gradient(to bottom, rgba(26, 31, 44, 0.6), rgba(10, 13, 22, 0.8));
-  }
-  
-  .cathedral-card::before {
-    content: "";
-    @apply absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-gold/50 to-transparent;
-  }
-  
-  /* Orthodox candle effect */
-  .orthodox-candle {
-    @apply relative inline-block;
-  }
-  
-  .orthodox-candle::before {
-    content: "";
-    @apply absolute -top-6 left-1/2 -translate-x-1/2 w-1.5 h-6 bg-gradient-to-t from-gold/80 via-gold/50 to-white/90 rounded-t-lg;
-    animation: candle-flicker 3s ease-in-out infinite;
-  }
-  
-  .orthodox-candle::after {
-    content: "";
-    @apply absolute -top-8 left-1/2 -translate-x-1/2 w-4 h-4 bg-gold/30 rounded-full blur-md;
-    animation: flame-glow 3s ease-in-out infinite;
-  }
-}
-
-/* Page appearance animation */
-@keyframes appear {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.animate-appear {
-  animation: appear 0.8s ease-out forwards;
-}
-
-/* Cathedral prayer reveal animation */
-.prayer-reveal {
-  opacity: 0;
-  transform: translateY(10px);
-  animation: prayerReveal 1.5s ease-out forwards;
-}
-
-@keyframes prayerReveal {
-  0% { opacity: 0; transform: translateY(10px); }
-  30% { opacity: 0.3; transform: translateY(5px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-
-/* Make the scrolling smooth */
+/* Enhanced base styles */
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
-/* Font classes */
+body {
+  font-family: 'Source Serif Pro', serif;
+  background: linear-gradient(135deg, var(--dark-navy) 0%, #2A1810 50%, var(--dark-navy) 100%);
+  color: #E5E7EB;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Enhanced typography */
 .font-display {
   font-family: 'Playfair Display', serif;
 }
 
-.font-body {
-  font-family: 'Source Serif Pro', serif;
+.orthodox-heading {
+  @apply font-display text-transparent bg-clip-text bg-gradient-to-r from-gold via-gold-light to-gold;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
-/* Enhanced glassmorphism effect for cathedral ambiance */
-.glass-morphism {
-  @apply backdrop-blur-xl bg-white/5 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.3)];
+/* Enhanced component styles */
+.byzantine-border {
+  @apply border border-gold/30 shadow-lg;
+  background: linear-gradient(135deg, rgba(107, 70, 193, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
+  backdrop-filter: blur(10px);
 }
 
-/* Enhanced holy light effects */
-.holy-light {
+.nav-link {
+  @apply relative text-sm font-medium text-white/80 hover:text-gold transition-all duration-300;
   position: relative;
-  overflow: hidden;
 }
 
-.holy-light::before {
+.nav-link::after {
   content: '';
   position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
-  opacity: 0.7;
-  z-index: -1;
-  animation: pulse-light 8s infinite ease-in-out;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  transition: width 0.3s ease;
 }
 
-.holy-glow-sm {
-  box-shadow: 0 0 15px 1px rgba(212, 175, 55, 0.2);
+.nav-link:hover::after,
+.active-nav-link::after {
+  width: 100%;
 }
 
-.holy-glow-md {
-  box-shadow: 0 0 25px 2px rgba(212, 175, 55, 0.3);
+.active-nav-link {
+  @apply text-gold;
 }
 
-.holy-glow-lg {
-  box-shadow: 0 0 35px 3px rgba(212, 175, 55, 0.4);
-}
-
-@keyframes pulse-light {
-  0% { opacity: 0.5; transform: scale(0.9); }
-  50% { opacity: 0.8; transform: scale(1.1); }
-  100% { opacity: 0.5; transform: scale(0.9); }
-}
-
-/* Enhanced candle glow animation */
-.candle-glow {
-  animation: float 4s ease-in-out infinite;
-  box-shadow: 0 0 10px 2px rgba(212, 175, 55, 0.6);
-}
-
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
-}
-
-/* Candle flicker animation */
-@keyframes candle-flicker {
-  0%, 100% { 
-    transform: translateX(-50%) scale(0.9) rotate(-2deg); 
-    opacity: 0.8;
-    box-shadow: 0 0 6px 2px rgba(255, 220, 180, 0.5);
+/* Enhanced animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  25% { 
-    transform: translateX(-48%) scale(1.1) rotate(1deg); 
+  to {
     opacity: 1;
-    box-shadow: 0 0 10px 3px rgba(255, 220, 180, 0.7);
-  }
-  50% { 
-    transform: translateX(-52%) scale(1) rotate(-1deg); 
-    opacity: 0.9;
-    box-shadow: 0 0 8px 2px rgba(255, 220, 180, 0.6);
-  }
-  75% { 
-    transform: translateX(-49%) scale(1.05) rotate(1.5deg); 
-    opacity: 1;
-    box-shadow: 0 0 12px 4px rgba(255, 220, 180, 0.8);
+    transform: translateY(0);
   }
 }
 
-@keyframes flame-glow {
-  0%, 100% { 
-    transform: translateX(-50%) scale(0.9); 
-    opacity: 0.8;
-    filter: blur(4px);
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
   }
-  50% { 
-    transform: translateX(-50%) scale(1.2); 
-    opacity: 1;
-    filter: blur(6px);
+  33% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+  66% {
+    transform: translateY(5px) rotate(-1deg);
   }
 }
 
-/* Audio visualization */
-.audio-visualizer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-5%, -10%); }
+  20% { transform: translate(-15%, 5%); }
+  30% { transform: translate(7%, -25%); }
+  40% { transform: translate(-5%, 25%); }
+  50% { transform: translate(-15%, 10%); }
+  60% { transform: translate(15%, 0%); }
+  70% { transform: translate(0%, 15%); }
+  80% { transform: translate(3%, 35%); }
+  90% { transform: translate(-10%, 10%); }
 }
 
-.audio-bar {
-  width: 3px;
-  height: 15px;
-  background-color: #D4AF37;
-  border-radius: 3px;
-  animation: audio-wave 1.2s ease-in-out infinite;
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
 }
 
-.audio-bar:nth-child(1) {
-  animation-delay: 0s;
+@keyframes pulse-gold {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(245, 158, 11, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.6), 0 0 30px rgba(245, 158, 11, 0.4);
+  }
 }
 
-.audio-bar:nth-child(2) {
-  animation-delay: 0.3s;
+/* Enhanced utility classes */
+.animate-fade-in {
+  animation: fade-in 0.8s ease-out forwards;
+  opacity: 0;
 }
 
-.audio-bar:nth-child(3) {
-  animation-delay: 0.6s;
+.animate-float-slow {
+  animation: float-slow 6s ease-in-out infinite;
 }
 
-.audio-bar:nth-child(4) {
-  animation-delay: 0.9s;
+.animate-grain {
+  animation: grain 8s steps(10) infinite;
 }
 
-@keyframes audio-wave {
-  0%, 100% { height: 5px; }
-  50% { height: 15px; }
+.animate-flicker {
+  animation: flicker 2s ease-in-out infinite;
 }
 
-/* Cathedral-style custom scrollbar */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 5px;
+.animate-pulse-gold {
+  animation: pulse-gold 2s ease-in-out infinite;
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(26, 31, 44, 0.3);
-  border-radius: 10px;
+/* Enhanced responsive utilities */
+.container {
+  @apply mx-auto px-4;
+  max-width: 1200px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(212, 175, 55, 0.3);
-  border-radius: 10px;
+@media (min-width: 640px) {
+  .container {
+    @apply px-6;
+  }
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(212, 175, 55, 0.5);
+@media (min-width: 1024px) {
+  .container {
+    @apply px-8;
+  }
 }
 
-/* Global scrollbar styling */
+/* Enhanced scroll styles */
 ::-webkit-scrollbar {
   width: 8px;
-  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(26, 31, 44, 0.5);
+  background: var(--dark-navy);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(155, 35, 53, 0.4);
+  background: linear-gradient(to bottom, var(--gold), var(--byzantine));
   border-radius: 4px;
-  border: 1px solid rgba(212, 175, 55, 0.2);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(155, 35, 53, 0.6);
+  background: linear-gradient(to bottom, var(--gold-light), var(--byzantine-light));
+}
+
+/* Enhanced focus styles for accessibility */
+.focus-visible:focus-visible {
+  @apply outline-none ring-2 ring-gold ring-offset-2 ring-offset-dark-navy;
+}
+
+/* Enhanced button styles */
+.btn-primary {
+  @apply bg-gradient-to-r from-byzantine to-byzantine-dark text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105;
+}
+
+.btn-secondary {
+  @apply bg-gradient-to-r from-gold to-gold-dark text-dark-navy font-semibold py-3 px-6 rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105;
+}
+
+/* Enhanced card styles */
+.card-orthodox {
+  @apply bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm border border-gold/20 rounded-xl shadow-xl;
+  transition: all 0.3s ease;
+}
+
+.card-orthodox:hover {
+  @apply border-gold/40 shadow-2xl;
+  transform: translateY(-2px);
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+}
+
+/* Enhanced loading states */
+.loading-skeleton {
+  @apply bg-gradient-to-r from-white/5 via-white/10 to-white/5 animate-pulse rounded;
+}
+
+/* Enhanced form styles */
+.form-input {
+  @apply bg-white/5 border border-white/20 rounded-lg px-4 py-3 text-white placeholder-white/50 focus:border-gold focus:ring-2 focus:ring-gold/20 transition-all duration-300;
+}
+
+.form-input:focus {
+  background: rgba(255, 255, 255, 0.1);
 }

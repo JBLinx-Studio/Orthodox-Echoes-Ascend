@@ -1,243 +1,127 @@
 
-import { HeroSection } from '@/components/HeroSection';
-import { FeaturedArticles } from '@/components/FeaturedArticles';
-import { FeaturesSection } from '@/components/FeaturesSection';
-import { DonationSection } from '@/components/DonationSection';
-import { SaintsFeatured } from '@/components/SaintsFeatured';
-import { useEffect } from 'react';
-import { toast } from 'sonner';
-import { useAudio } from '@/contexts/AudioContext';
-import { PrayerOfTheDay } from '@/components/PrayerOfTheDay';
-import { LiturgicalCalendar } from '@/components/LiturgicalCalendar';
-import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { ArrowRight, Calendar, Users, Bookmark, Edit } from 'lucide-react';
-import { Link } from 'react-router-dom';
-
-const fadeInUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { duration: 0.6 }
-  }
-};
-
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2
-    }
-  }
-};
+import { useEffect, useState } from "react";
+import { HeroSection } from "@/components/HeroSection";
+import { FeaturesSection } from "@/components/FeaturesSection";
+import { FeaturedArticles } from "@/components/FeaturedArticles";
+import { SaintsFeatured } from "@/components/SaintsFeatured";
+import { PrayerOfTheDay } from "@/components/PrayerOfTheDay";
+import { LiturgicalCalendar } from "@/components/LiturgicalCalendar";
+import { DonationSection } from "@/components/DonationSection";
 
 const Index = () => {
-  const { expandPlayer, togglePlay, isPlaying } = useAudio();
-  
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [scrollPosition, setScrollPosition] = useState(0);
+
   useEffect(() => {
-    // Welcome toast notification with enhanced options
+    // Enhanced loading with stagger effect
     const timer = setTimeout(() => {
-      toast.success(
-        "Welcome to Orthodox Echoes", 
-        { 
-          description: "Experience sacred traditions and ancient wisdom with divine Byzantine chants.",
-          duration: 5000,
-          action: {
-            label: isPlaying ? "Pause Sacred Chants" : "Play Sacred Chants",
-            onClick: () => {
-              expandPlayer();
-              togglePlay();
-            }
-          }
-        }
-      );
-    }, 2000);
+      setIsLoaded(true);
+    }, 100);
+
+    const handleScroll = () => {
+      setScrollPosition(window.scrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll);
     
-    return () => clearTimeout(timer);
-  }, [expandPlayer, togglePlay, isPlaying]);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  // Parallax effect for background
+  const parallaxOffset = scrollPosition * 0.5;
 
   return (
-    <div className="min-h-screen">
-      <HeroSection />
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Enhanced background with parallax */}
+      <div 
+        className="fixed inset-0 bg-gradient-to-br from-[#1A1F2C] via-[#2A1810] to-[#1A1F2C] -z-10"
+        style={{ transform: `translateY(${parallaxOffset}px)` }}
+      />
       
-      {/* Featured content section */}
-      <motion.section 
-        className="py-16 bg-[#0c111f]/70"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-        variants={staggerContainer}
-      >
-        <div className="container mx-auto px-4">
-          <motion.div variants={fadeInUp} className="mb-12 text-center">
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-gold mb-4">Faith in Practice</h2>
-            <div className="w-20 h-1 bg-byzantine/70 mx-auto mb-6"></div>
-            <p className="text-white/70 max-w-2xl mx-auto">Discover how Orthodox Christianity continues to transform lives through timeless wisdom and sacred traditions.</p>
-          </motion.div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            <motion.div 
-              variants={fadeInUp}
-              className="bg-[#1A1F2C]/60 backdrop-blur-sm rounded-lg border border-gold/10 p-6 shadow-lg hover:border-gold/30 transition-all"
-            >
-              <div className="w-12 h-12 rounded-full bg-byzantine/20 mb-4 flex items-center justify-center">
-                <Calendar className="h-6 w-6 text-gold" />
+      {/* Animated grain overlay */}
+      <div className="fixed inset-0 opacity-[0.015] mix-blend-overlay pointer-events-none -z-10">
+        <div className="absolute inset-0 bg-repeat animate-grain" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          backgroundSize: '256px 256px'
+        }} />
+      </div>
+
+      {/* Floating orthodox symbols */}
+      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+        {[...Array(6)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute text-gold/5 animate-float-slow"
+            style={{
+              left: `${15 + i * 15}%`,
+              top: `${20 + (i % 3) * 30}%`,
+              animationDelay: `${i * 2}s`,
+              fontSize: `${2 + (i % 3)}rem`,
+              transform: `translateY(${parallaxOffset * (0.2 + i * 0.1)}px)`
+            }}
+          >
+            ☦
+          </div>
+        ))}
+      </div>
+
+      {/* Main content with enhanced animations */}
+      <main className={`relative transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+        <div className="animate-fade-in">
+          <HeroSection />
+        </div>
+        
+        <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
+          <FeaturesSection />
+        </div>
+        
+        {/* Enhanced grid layout for featured content */}
+        <section className="py-16 md:py-24">
+          <div className="container mx-auto px-4">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+              <div className="lg:col-span-2 animate-fade-in" style={{ animationDelay: '0.4s' }}>
+                <FeaturedArticles />
               </div>
-              <h3 className="text-xl font-display text-gold mb-3">Liturgical Calendar</h3>
-              <p className="text-white/70 mb-4">Follow the ancient rhythm of prayer, feast, and fast that guides Orthodox life throughout the year.</p>
-              <Link to="/calendar" className="text-gold inline-flex items-center text-sm hover:underline">
-                View Calendar
-                <ArrowRight className="ml-1 h-4 w-4" />
-              </Link>
-            </motion.div>
-            
-            <motion.div 
-              variants={fadeInUp}
-              className="bg-[#1A1F2C]/60 backdrop-blur-sm rounded-lg border border-gold/10 p-6 shadow-lg hover:border-gold/30 transition-all"
-            >
-              <div className="w-12 h-12 rounded-full bg-byzantine/20 mb-4 flex items-center justify-center">
-                <Users className="h-6 w-6 text-gold" />
+              <div className="space-y-8">
+                <div className="animate-fade-in" style={{ animationDelay: '0.6s' }}>
+                  <PrayerOfTheDay />
+                </div>
+                <div className="animate-fade-in" style={{ animationDelay: '0.8s' }}>
+                  <LiturgicalCalendar />
+                </div>
               </div>
-              <h3 className="text-xl font-display text-gold mb-3">Lives of Saints</h3>
-              <p className="text-white/70 mb-4">Explore the inspiring stories of holy men and women who exemplify the Orthodox path to sanctity.</p>
-              <Link to="/saints" className="text-gold inline-flex items-center text-sm hover:underline">
-                Meet the Saints
-                <ArrowRight className="ml-1 h-4 w-4" />
-              </Link>
-            </motion.div>
-            
-            <motion.div 
-              variants={fadeInUp}
-              className="bg-[#1A1F2C]/60 backdrop-blur-sm rounded-lg border border-gold/10 p-6 shadow-lg hover:border-gold/30 transition-all"
-            >
-              <div className="w-12 h-12 rounded-full bg-byzantine/20 mb-4 flex items-center justify-center">
-                <Bookmark className="h-6 w-6 text-gold" />
-              </div>
-              <h3 className="text-xl font-display text-gold mb-3">Prayer Guide</h3>
-              <p className="text-white/70 mb-4">Learn traditional Orthodox prayers and develop a consistent prayer life with our comprehensive guide.</p>
-              <Link to="/prayers" className="text-gold inline-flex items-center text-sm hover:underline">
-                Begin Praying
-                <ArrowRight className="ml-1 h-4 w-4" />
-              </Link>
-            </motion.div>
+            </div>
+          </div>
+        </section>
+        
+        <div className="animate-fade-in" style={{ animationDelay: '1s' }}>
+          <SaintsFeatured />
+        </div>
+        
+        <div className="animate-fade-in" style={{ animationDelay: '1.2s' }}>
+          <DonationSection />
+        </div>
+      </main>
+
+      {/* Scroll indicator */}
+      <div className="fixed bottom-8 right-8 z-40">
+        <div className="relative">
+          <div 
+            className="w-2 h-20 bg-gold/20 rounded-full overflow-hidden"
+          >
+            <div 
+              className="bg-gradient-to-t from-gold to-gold/60 rounded-full transition-all duration-300"
+              style={{ 
+                height: `${Math.min(100, (scrollPosition / (document.documentElement.scrollHeight - window.innerHeight)) * 100)}%`,
+                width: '100%'
+              }}
+            />
           </div>
         </div>
-      </motion.section>
-      
-      {/* Blog and sidebar section */}
-      <motion.div 
-        className="container mx-auto px-4 py-16"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-        variants={staggerContainer}
-      >
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <motion.div 
-            className="lg:col-span-2"
-            variants={fadeInUp}
-          >
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-display font-bold text-gold">Latest Articles</h2>
-              <Link to="/blog" className="text-gold hover:underline flex items-center">
-                View All 
-                <ArrowRight className="ml-1 h-4 w-4" />
-              </Link>
-            </div>
-            <FeaturedArticles />
-            <div className="mt-16">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-3xl font-display font-bold text-gold">Featured Saints</h2>
-                <Link to="/saints" className="text-gold hover:underline flex items-center">
-                  View All 
-                  <ArrowRight className="ml-1 h-4 w-4" />
-                </Link>
-              </div>
-              <SaintsFeatured />
-            </div>
-          </motion.div>
-          
-          <motion.div 
-            className="lg:col-span-1 space-y-8"
-            variants={fadeInUp}
-          >
-            <div className="bg-[#1A1F2C]/60 backdrop-blur-sm p-6 rounded-lg border border-gold/20 shadow-lg">
-              <h3 className="text-gold text-xl font-semibold mb-4 flex items-center">
-                <Edit className="mr-2 h-5 w-5" />
-                From Our Blog
-              </h3>
-              <div className="space-y-4">
-                {[1, 2, 3].map((item) => (
-                  <div key={item} className="p-3 bg-[#0c111f]/40 rounded-md border border-gold/10 hover:border-gold/30 transition-all">
-                    <h4 className="text-white font-medium mb-1">Understanding Orthodox Iconography</h4>
-                    <p className="text-white/60 text-sm mb-2 line-clamp-2">Icons serve as windows to heaven, bridging the gap between the divine and earthly realms...</p>
-                    <div className="flex justify-between items-center text-xs text-gold/70">
-                      <span>Fr. Thomas</span>
-                      <span>Read 4 min</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <Button asChild className="w-full mt-4 bg-byzantine hover:bg-byzantine-dark text-white">
-                <Link to="/blog">
-                  Visit Blog
-                </Link>
-              </Button>
-            </div>
-            
-            <div className="bg-[#1A1F2C]/60 backdrop-blur-sm p-6 rounded-lg border border-gold/20 shadow-lg">
-              <PrayerOfTheDay />
-            </div>
-            
-            <div className="bg-[#1A1F2C]/60 backdrop-blur-sm p-6 rounded-lg border border-gold/20 shadow-lg">
-              <LiturgicalCalendar />
-            </div>
-            
-            <div className="bg-[#1A1F2C]/60 backdrop-blur-sm p-6 rounded-lg border border-gold/20 shadow-lg">
-              <h3 className="text-gold text-xl font-semibold mb-4 flex items-center">
-                <span className="mr-2 text-2xl">☦️</span>
-                Sacred Sounds
-              </h3>
-              <p className="text-white/80 mb-4">
-                Experience the timeless beauty of Orthodox chants that have echoed through cathedrals for centuries.
-              </p>
-              <button 
-                onClick={() => {
-                  expandPlayer();
-                  if (!isPlaying) {
-                    togglePlay();
-                  }
-                }}
-                className="w-full py-3 px-4 bg-byzantine/20 hover:bg-byzantine/30 text-gold border border-gold/30 rounded-md transition-all flex items-center justify-center group"
-              >
-                <span className="mr-2">🎵</span>
-                <span>{isPlaying ? "Open Chants Player" : "Listen to Sacred Chants"}</span>
-                <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity">→</span>
-              </button>
-            </div>
-          </motion.div>
-        </div>
-      </motion.div>
-      
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.8 }}
-      >
-        <FeaturesSection />
-      </motion.div>
-      
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.8 }}
-      >
-        <DonationSection />
-      </motion.div>
+      </div>
     </div>
   );
 };

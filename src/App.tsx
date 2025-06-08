@@ -7,6 +7,7 @@ import { HashRouter, Routes, Route } from "react-router-dom";
 import { MainLayout } from "./layouts/MainLayout";
 import { AudioProvider } from "./contexts/AudioContext";
 import { AuthGuard } from "./components/auth/AuthGuard";
+import { VersionTracker } from "./components/VersionTracker";
 import Index from "./pages/Index";
 import Admin from "./pages/Admin";
 import Login from "./pages/Login";
@@ -124,6 +125,7 @@ const App = () => {
         <AudioProvider>
           <Toaster />
           <Sonner />
+          <VersionTracker />
           <HashRouter>
             <Routes>
               <Route element={<MainLayout />}>
