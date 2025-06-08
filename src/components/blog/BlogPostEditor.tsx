@@ -1,9 +1,9 @@
-
 import React, { useState } from 'react';
+import { Editor } from '@tinymce/tinymce-react';
+import { useEditor } from '@tinymce/tinymce-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from "@/components/ui/switch"
 import { toast } from 'sonner';
@@ -16,7 +16,7 @@ interface BlogPostEditorProps {
   isAdmin: boolean;
 }
 
-// Updated content type definition to match the BlogPost type
+// Updated content type definition to match the usage
 type ContentType = "article" | "blog" | "book" | "chant" | "liturgy" | "music" | "video" | "prayer" | "doctrine" | "saint" | "icon";
 
 export function BlogPostEditor({ post, onSave, onCancel, isAdmin }: BlogPostEditorProps) {
@@ -31,6 +31,8 @@ export function BlogPostEditor({ post, onSave, onCancel, isAdmin }: BlogPostEdit
   const [contentType, setContentType] = useState<ContentType>(post?.contentType as ContentType || 'article');
   const [audioUrl, setAudioUrl] = useState(post?.audioUrl || '');
   const [videoUrl, setVideoUrl] = useState(post?.videoUrl || '');
+  
+  const editorRef = useEditor();
   
   const categories = [
     { id: "liturgy", name: "Liturgy & Worship" },
@@ -50,7 +52,7 @@ export function BlogPostEditor({ post, onSave, onCancel, isAdmin }: BlogPostEdit
     { id: "blog", name: "Blog Post", description: "Personal reflections and spiritual insights" },
     { id: "book", name: "Book", description: "Complete works and comprehensive studies" },
     { id: "chant", name: "Sacred Music", description: "Chants, hymns, and liturgical music" },
-    { id: "video", name: "Video", description: "Educational and liturgical videos" },
+    { id: "liturgy", name: "Video", description: "Educational and liturgical videos" },
     { id: "prayer", name: "Prayer", description: "Traditional and contemporary prayers" },
     { id: "doctrine", name: "Doctrine", description: "Orthodox theological teachings" },
     { id: "saint", name: "Saint Biography", description: "Lives and teachings of Orthodox saints" },
@@ -78,7 +80,7 @@ export function BlogPostEditor({ post, onSave, onCancel, isAdmin }: BlogPostEdit
       category,
       contentType,
       audioUrl: contentType === 'chant' ? audioUrl : undefined,
-      videoUrl: contentType === 'video' ? videoUrl : undefined,
+      videoUrl: contentType === 'liturgy' ? videoUrl : undefined,
       likes: post?.likes || 0,
       views: post?.views || 0
     };
@@ -98,7 +100,7 @@ export function BlogPostEditor({ post, onSave, onCancel, isAdmin }: BlogPostEdit
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <Label htmlFor="title">Title *</Label>
+            <Label htmlFor="title">Title</Label>
             <Input
               type="text"
               id="title"
@@ -106,12 +108,11 @@ export function BlogPostEditor({ post, onSave, onCancel, isAdmin }: BlogPostEdit
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter title"
               className="bg-[#1A1F2C]/70 border-gold/30"
-              required
             />
           </div>
           
           <div>
-            <Label htmlFor="author">Author *</Label>
+            <Label htmlFor="author">Author</Label>
             <Input
               type="text"
               id="author"
@@ -119,14 +120,13 @@ export function BlogPostEditor({ post, onSave, onCancel, isAdmin }: BlogPostEdit
               onChange={(e) => setAuthor(e.target.value)}
               placeholder="Enter author name"
               className="bg-[#1A1F2C]/70 border-gold/30"
-              required
             />
           </div>
 
           <div>
             <Label htmlFor="contentType">Content Type</Label>
             <Select value={contentType} onValueChange={(value: ContentType) => setContentType(value)}>
-              <SelectTrigger className="bg-[#1A1F2C]/70 border-gold/30">
+              <SelectTrigger>
                 <SelectValue placeholder="Select content type" />
               </SelectTrigger>
               <SelectContent>
@@ -145,7 +145,7 @@ export function BlogPostEditor({ post, onSave, onCancel, isAdmin }: BlogPostEdit
           <div>
             <Label htmlFor="category">Category</Label>
             <Select value={category} onValueChange={(value) => setCategory(value)}>
-              <SelectTrigger className="bg-[#1A1F2C]/70 border-gold/30">
+              <SelectTrigger>
                 <SelectValue placeholder="Select category" />
               </SelectTrigger>
               <SelectContent>
@@ -172,32 +172,41 @@ export function BlogPostEditor({ post, onSave, onCancel, isAdmin }: BlogPostEdit
         </div>
 
         <div>
-          <Label htmlFor="content">Content *</Label>
-          <Textarea
-            id="content"
+          <Label htmlFor="content">Content</Label>
+          <Editor
+            apiKey="YOUR_API_KEY"
+            onInit={(evt, editor) => editorRef.current = editor}
             value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="Enter your content here... You can use HTML formatting."
-            className="bg-[#1A1F2C]/70 border-gold/30 min-h-[400px]"
-            required
+            onEditorChange={(newContent) => setContent(newContent)}
+            init={{
+              height: 500,
+              menubar: true,
+              plugins: [
+                'advlist autolink lists link image charmap print preview anchor',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media table paste code help wordcount'
+              ],
+              toolbar: 'undo redo | formatselect | ' +
+              'bold italic backcolor | alignleft aligncenter ' +
+              'alignright alignjustify | bullist numlist outdent indent | ' +
+              'removeformat | help',
+              content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+            }}
           />
-          <p className="text-sm text-white/50 mt-2">
-            You can use HTML tags for formatting (e.g., &lt;h2&gt;, &lt;p&gt;, &lt;strong&gt;, &lt;em&gt;)
-          </p>
         </div>
 
         {/* Media Upload Section */}
-        <div className="space-y-4 border border-gold/20 rounded-lg p-6">
+        <div className="space-y-4">
           <h3 className="text-lg font-semibold text-gold">Media Content</h3>
           
           <div>
             <Label htmlFor="imageUrl">Image URL</Label>
             <Input
-              type="url"
+              type="text"
               id="imageUrl"
               value={imageUrl}
               onChange={(e) => setImageUrl(e.target.value)}
-              placeholder="https://example.com/image.jpg"
+              placeholder="Enter image URL"
               className="bg-[#1A1F2C]/70 border-gold/30"
             />
           </div>
@@ -207,7 +216,6 @@ export function BlogPostEditor({ post, onSave, onCancel, isAdmin }: BlogPostEdit
             <div>
               <Label htmlFor="audioUrl">Audio URL (for chants and hymns)</Label>
               <Input
-                type="url"
                 id="audioUrl"
                 value={audioUrl}
                 onChange={(e) => setAudioUrl(e.target.value)}
@@ -218,11 +226,10 @@ export function BlogPostEditor({ post, onSave, onCancel, isAdmin }: BlogPostEdit
           )}
 
           {/* Video Upload */}
-          {contentType === "video" && (
+          {contentType === "liturgy" && (
             <div>
-              <Label htmlFor="videoUrl">Video URL</Label>
+              <Label htmlFor="videoUrl">Video URL (for liturgical content)</Label>
               <Input
-                type="url"
                 id="videoUrl"
                 value={videoUrl}
                 onChange={(e) => setVideoUrl(e.target.value)}
@@ -240,26 +247,24 @@ export function BlogPostEditor({ post, onSave, onCancel, isAdmin }: BlogPostEdit
             id="tags"
             value={tags}
             onChange={(e) => setTags(e.target.value)}
-            placeholder="theology, spirituality, saints"
+            placeholder="Enter tags"
             className="bg-[#1A1F2C]/70 border-gold/30"
           />
         </div>
 
         {isAdmin && (
           <div className="flex items-center space-x-2">
+            <Label htmlFor="featured">Featured</Label>
             <Switch
               id="featured"
               checked={featured}
               onCheckedChange={(checked) => setFeatured(checked)}
             />
-            <Label htmlFor="featured">Mark as Featured Content</Label>
           </div>
         )}
 
-        <div className="flex justify-end space-x-4 pt-6 border-t border-gold/20">
-          <Button variant="ghost" onClick={onCancel} type="button">
-            Cancel
-          </Button>
+        <div className="flex justify-end space-x-4">
+          <Button variant="ghost" onClick={onCancel}>Cancel</Button>
           <Button type="submit" className="bg-byzantine hover:bg-byzantine-dark">
             {post ? 'Update Content' : 'Create Content'}
           </Button>

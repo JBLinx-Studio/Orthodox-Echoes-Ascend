@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -7,66 +6,47 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { supabase } from '@/integrations/supabase/client';
+import { checkPassword, login, registerUser } from '@/utils/auth-utils';
 import { GoogleAuth } from '@/components/auth/GoogleAuth';
 
 export default function Login() {
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   
   useEffect(() => {
     document.title = "Login | Orthodox Echoes";
-
-    // Check if user is already logged in
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        navigate('/');
-      }
-    };
-
-    checkAuth();
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session) {
-        navigate('/');
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, []);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: password,
-      });
-
-      if (error) {
-        toast.error(error.message);
-        return;
-      }
-
-      if (data.user) {
-        toast.success(`Welcome back!`, {
-          description: "You've successfully signed in."
+    if (username && password) {
+      if (checkPassword(password)) {
+        login(username, true);
+        toast.success(`Welcome, ${username}!`, {
+          description: "You've successfully signed in as an administrator."
         });
+        navigate('/admin');
+      } else {
+        const users = JSON.parse(localStorage.getItem('orthodoxEchoesUsers') || '{}');
+        const user = users[username];
+        
+        if (user && user.password === password) {
+          login(username, false);
+          toast.success(`Welcome, ${username}!`, {
+            description: "You've successfully signed in."
+          });
+          navigate('/');
+        } else {
+          toast.error("Invalid credentials. Please check your username and password.");
+        }
       }
-    } catch (error: any) {
-      toast.error("An unexpected error occurred. Please try again.");
-    } finally {
-      setIsLoading(false);
+    } else {
+      toast.error("Please enter both username and password.");
     }
   };
 
@@ -78,37 +58,15 @@ export default function Login() {
       return;
     }
     
-    setIsLoading(true);
-
     try {
-      const redirectUrl = `${window.location.origin}/`;
-      
-      const { data, error } = await supabase.auth.signUp({
-        email: email,
-        password: password,
-        options: {
-          emailRedirectTo: redirectUrl,
-          data: {
-            username: username,
-          }
-        }
+      registerUser(username, password);
+      toast.success(`Welcome, ${username}!`, {
+        description: "Your account has been created successfully."
       });
-
-      if (error) {
-        toast.error(error.message);
-        return;
-      }
-
-      if (data.user) {
-        toast.success(`Welcome, ${username}!`, {
-          description: "Please check your email to confirm your account."
-        });
-      }
+      navigate('/');
     } catch (error: any) {
       console.error("Registration failed:", error);
-      toast.error("Registration failed. Please try again.");
-    } finally {
-      setIsLoading(false);
+      toast.error(error.message || "Registration failed. Please try again.");
     }
   };
 
@@ -153,15 +111,14 @@ export default function Login() {
             <TabsContent value="signin" className="space-y-4">
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div>
-                  <Label htmlFor="signInEmail">Email</Label>
+                  <Label htmlFor="signInUsername">Username</Label>
                   <Input
-                    type="email"
-                    id="signInEmail"
-                    placeholder="Enter your email"
+                    type="text"
+                    id="signInUsername"
+                    placeholder="Enter your username"
                     className="bg-[#1A1F2C]/70 border-gold/30"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                   />
                 </div>
                 <div>
@@ -174,7 +131,6 @@ export default function Login() {
                       className="bg-[#1A1F2C]/70 border-gold/30 pr-10"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      required
                     />
                     <Button
                       type="button"
@@ -188,11 +144,8 @@ export default function Login() {
                     </Button>
                   </div>
                 </div>
-                <Button 
-                  className="w-full bg-byzantine hover:bg-byzantine-dark"
-                  disabled={isLoading}
-                >
-                  {isLoading ? 'Signing In...' : 'Sign In'}
+                <Button className="w-full bg-byzantine hover:bg-byzantine-dark">
+                  Sign In
                 </Button>
               </form>
 
@@ -219,19 +172,6 @@ export default function Login() {
                     className="bg-[#1A1F2C]/70 border-gold/30"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="signUpEmail">Email</Label>
-                  <Input
-                    type="email"
-                    id="signUpEmail"
-                    placeholder="Enter your email"
-                    className="bg-[#1A1F2C]/70 border-gold/30"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
                   />
                 </div>
                 <div>
@@ -244,7 +184,6 @@ export default function Login() {
                       className="bg-[#1A1F2C]/70 border-gold/30 pr-10"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      required
                     />
                     <Button
                       type="button"
@@ -268,7 +207,6 @@ export default function Login() {
                       className="bg-[#1A1F2C]/70 border-gold/30 pr-10"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      required
                     />
                     <Button
                       type="button"
@@ -282,11 +220,8 @@ export default function Login() {
                     </Button>
                   </div>
                 </div>
-                <Button 
-                  className="w-full bg-byzantine hover:bg-byzantine-dark"
-                  disabled={isLoading}
-                >
-                  {isLoading ? 'Creating Account...' : 'Create Account'}
+                <Button className="w-full bg-byzantine hover:bg-byzantine-dark">
+                  Create Account
                 </Button>
               </form>
 

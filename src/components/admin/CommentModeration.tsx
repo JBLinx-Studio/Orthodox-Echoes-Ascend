@@ -18,67 +18,52 @@ const getSavedComments = (): Comment[] => {
   return [
     { 
       id: "1", 
-      postId: "1",
       author: 'John D.', 
       content: 'Thank you for this insightful article on the Divine Liturgy. I\'ve learned so much!', 
-      createdAt: '2 hours ago',
-      approved: true,
-      // Legacy properties for backward compatibility
-      article: 'The Divine Liturgy: A Heavenly Experience',
+      article: 'The Divine Liturgy: A Heavenly Experience', 
       articleId: '1',
       date: '2 hours ago',
+      approved: true,
       flagged: false 
     },
     { 
       id: "2", 
-      postId: "4",
       author: 'Maria S.', 
       content: 'I appreciate the balanced perspective on the historical events surrounding the Great Schism.', 
-      createdAt: '1 day ago',
-      approved: true,
-      // Legacy properties
-      article: 'The Great Schism of 1054',
+      article: 'The Great Schism of 1054', 
       articleId: '4',
       date: '1 day ago',
+      approved: true,
       flagged: false 
     },
     { 
       id: "3", 
-      postId: "3",
       author: 'Anonymous', 
       content: 'This is completely wrong. Orthodox Christianity is just as misguided as other religions.', 
-      createdAt: '3 days ago',
-      approved: false,
-      // Legacy properties
-      article: 'Understanding the Holy Trinity',
+      article: 'Understanding the Holy Trinity', 
       articleId: '3',
       date: '3 days ago',
+      approved: false,
       flagged: true 
     },
     { 
       id: "4", 
-      postId: "5",
       author: 'Peter K.', 
       content: 'Beautiful explanation of iconography! I\'ve been studying this for years and still learned something new.', 
-      createdAt: '4 days ago',
-      approved: true,
-      // Legacy properties
-      article: 'The Meaning of Orthodox Iconography',
+      article: 'The Meaning of Orthodox Iconography', 
       articleId: '5',
       date: '4 days ago',
+      approved: true,
       flagged: false 
     },
     { 
       id: "5", 
-      postId: "2",
       author: 'Rebecca L.', 
       content: 'Can you provide more sources for these claims? I\'d like to read more about this topic.', 
-      createdAt: '1 week ago',
-      approved: true,
-      // Legacy properties
-      article: 'St. Athanasius and the Defense of Orthodoxy',
+      article: 'St. Athanasius and the Defense of Orthodoxy', 
       articleId: '2',
       date: '1 week ago',
+      approved: true,
       flagged: false 
     },
   ];
@@ -139,9 +124,7 @@ export function CommentModeration() {
                     <div className="flex items-start justify-between">
                       <div>
                         <p className="font-medium">{comment.author}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {comment.date || comment.createdAt} on <span className="italic">{comment.article || 'Unknown Article'}</span>
-                        </p>
+                        <p className="text-sm text-muted-foreground">{comment.date} on <span className="italic">{comment.article}</span></p>
                       </div>
                       {comment.flagged && (
                         <span className="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800">
