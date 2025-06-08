@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -9,165 +10,112 @@ import { BlogPost, BlogCategory } from '@/types/BlogPost';
 import { BlogPostCard } from '@/components/blog/BlogPostCard';
 import { BlogPostDetail } from '@/components/blog/BlogPostDetail';
 import { BlogPostEditor } from '@/components/blog/BlogPostEditor';
-import { Search, Edit, Plus, X, BookOpen, Feather, Library } from 'lucide-react';
+import { Search, Edit, Plus, X, BookOpen, Feather, Library, Music, Video, Heart } from 'lucide-react';
 
 // Get sample blog posts from localStorage or use defaults
 const getSavedBlogPosts = (): BlogPost[] => {
   const savedPosts = localStorage.getItem('orthodoxEchoesBlogPosts');
   if (savedPosts) {
     const posts = JSON.parse(savedPosts);
-    // Filter out draft posts for public display
     return posts.filter((post: BlogPost) => !post.draft);
   }
   
-  // Sample content with proper categorization
   return [
     {
       id: "1",
       title: "The Divine Liturgy: A Heavenly Experience",
       excerpt: "Exploring the profound mysteries of the Orthodox Divine Liturgy and its celestial symbolism.",
-      content: `
-        <p>The Divine Liturgy stands at the center of Orthodox Christian worship, representing heaven on earth through sacred ritual and profound symbolism. Dating back to the early Church, it has remained remarkably consistent through the centuries.</p>
-        
-        <p>When entering an Orthodox church during the Divine Liturgy, one is immediately transported to a different realm. The incense, representing the prayers of the faithful rising to heaven, fills the air. Icons of Christ, the Theotokos, and the saints surround the worshippers, creating a tangible connection between heaven and earth.</p>
-        
-        <p>The liturgy itself unfolds in a series of carefully choreographed movements, each rich with meaning. The priest, vested in garments representing Christ's glory, leads the faithful through prayers, scripture readings, and ultimately to the Holy Eucharist – the very Body and Blood of Christ.</p>
-        
-        <p>Through the Divine Liturgy, Orthodox Christians participate in the Heavenly Liturgy, joining with angels and saints in worship before the throne of God. It transcends time, connecting worshippers to the eternal reality of God's Kingdom.</p>
-      `,
+      content: `<p>The Divine Liturgy stands at the center of Orthodox Christian worship...</p>`,
       author: "Fr. Seraphim",
       publishDate: "March 15, 2025",
-      imageUrl: "https://images.unsplash.com/photo-1574039677318-3febf1c5c8e3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+      imageUrl: "https://images.unsplash.com/photo-1574039677318-3febf1c5c8e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80",
       tags: ["Liturgy", "Worship", "Theology"],
       featured: true,
       category: "articles",
-      contentType: "article"
+      contentType: "article",
+      likes: 45,
+      views: 234
     },
     {
       id: "2",
-      title: "St. Athanasius and the Defense of Orthodoxy",
-      excerpt: "How one man's unwavering faith preserved the Orthodox understanding of Christ's divinity.",
-      content: `
-        <p>St. Athanasius of Alexandria (c. 296-373) stands as one of the most important figures in Christian history, particularly for his steadfast defense of Orthodox doctrine during the Arian controversy.</p>
-        
-        <p>During a time when the heresy of Arianism—which denied the full divinity of Christ—was gaining widespread acceptance even among church leaders, Athanasius remained unwavering in his commitment to the truth of the Nicene Creed.</p>
-        
-        <p>As Bishop of Alexandria, Athanasius faced exile five times for his beliefs, earning him the title "Athanasius Contra Mundum" (Athanasius Against the World). Despite overwhelming opposition, he continued to write, teach, and defend the Orthodox understanding of Christ's nature.</p>
-        
-        <p>His theological work, particularly "On the Incarnation," remains one of the most profound explanations of why God became man. His steadfastness ensured that the Church maintained the full understanding of Christ as both fully God and fully human—essential to our salvation.</p>
-        
-        <p>St. Athanasius reminds us of the importance of standing firm in truth, even when it seems the entire world stands against us.</p>
-      `,
-      author: "Dr. Timothy Orthodox",
-      publishDate: "April 2, 2025",
-      imageUrl: "https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-      tags: ["Saints", "Church History", "Theology"],
-      featured: true,
-      category: "articles",
-      contentType: "article"
-    },
-    {
-      id: "3",
       title: "Modern Faith in Ancient Traditions",
       excerpt: "Navigating contemporary life while staying true to Orthodox principles.",
-      content: `
-        <p>In our rapidly changing world, Orthodox Christians face unique challenges in maintaining their faith while engaging with modern society. This personal reflection explores how we can live authentically Orthodox lives in the 21st century.</p>
-        
-        <p>The beauty of Orthodoxy lies in its timeless wisdom that speaks to every generation. While the world around us transforms, the fundamental truths of our faith remain constant, offering stability and direction in uncertain times.</p>
-        
-        <p>Through prayer, fasting, and participation in the sacraments, we find ways to sanctify our daily lives, transforming ordinary moments into opportunities for spiritual growth and communion with God.</p>
-      `,
+      content: `<p>In our rapidly changing world, Orthodox Christians face unique challenges...</p>`,
       author: "Maria Christodoulou",
       publishDate: "April 5, 2025",
-      imageUrl: "https://images.unsplash.com/photo-1595118216242-53018840a9f3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+      imageUrl: "https://images.unsplash.com/photo-1595118216242-53018840a9f3?auto=format&fit=crop&w=1170&q=80",
       tags: ["Modern Life", "Spirituality", "Personal Reflection"],
       featured: false,
       category: "blog",
-      contentType: "blog"
+      contentType: "blog",
+      likes: 28,
+      views: 156
     },
     {
-      id: "4",
+      id: "3",
       title: "The Mystical Theology of St. John Chrysostom",
       excerpt: "Chapter 1: Introduction to the Golden-Mouthed Preacher's Spiritual Teachings",
-      content: `
-        <h2>Chapter 1: The Foundation of Mystical Understanding</h2>
-        
-        <p>St. John Chrysostom, known as the Golden-Mouthed preacher, offers us profound insights into the mystical dimensions of Orthodox theology. His homilies and writings reveal a deep understanding of the relationship between divine revelation and human experience.</p>
-        
-        <p>In this comprehensive study, we explore how Chrysostom's theological method bridges the gap between academic theology and lived spiritual experience. His approach to Scripture interpretation demonstrates how divine truth is not merely intellectual but transformative.</p>
-        
-        <p>The Archbishop of Constantinople understood that true theology must lead to theosis—the divine transformation of the human person. This book examines how his teachings can guide modern Orthodox Christians toward deeper spiritual maturity.</p>
-        
-        <h3>The Method of Divine Contemplation</h3>
-        
-        <p>Chrysostom's approach to divine contemplation was both rigorous and accessible. He believed that every Christian, regardless of their educational background, could access the profound mysteries of faith through humble prayer and careful attention to Scripture...</p>
-      `,
+      content: `<h2>Chapter 1: The Foundation of Mystical Understanding</h2><p>St. John Chrysostom offers profound insights...</p>`,
       author: "Metropolitan Kallistos",
       publishDate: "March 20, 2025",
-      imageUrl: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+      imageUrl: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=1170&q=80",
       tags: ["Patristics", "Mystical Theology", "St. John Chrysostom"],
       featured: true,
       category: "books",
-      contentType: "book"
+      contentType: "book",
+      likes: 67,
+      views: 445
+    },
+    {
+      id: "4",
+      title: "Kyrie Eleison - Ancient Chant",
+      excerpt: "Traditional Byzantine chant expressing the cry for God's mercy",
+      content: `<p>This ancient chant has been sung in Orthodox churches for centuries...</p>`,
+      author: "Byzantine Choir",
+      publishDate: "April 1, 2025",
+      imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1170&q=80",
+      tags: ["Chant", "Music", "Byzantine"],
+      featured: false,
+      category: "songs",
+      contentType: "chant",
+      audioUrl: "/audio/kyrie-eleison.mp3",
+      likes: 89,
+      views: 312
     },
     {
       id: "5",
-      title: "Living the Orthodox Way: A Complete Guide",
-      excerpt: "A comprehensive manual for Orthodox Christian living in the modern world",
-      content: `
-        <h2>Table of Contents</h2>
-        
-        <h3>Part I: Foundations of Faith</h3>
-        <ul>
-          <li>Chapter 1: Understanding Orthodox Theology</li>
-          <li>Chapter 2: The Holy Trinity and Divine Economy</li>
-          <li>Chapter 3: Christ and Salvation</li>
-        </ul>
-        
-        <h3>Part II: Sacramental Life</h3>
-        <ul>
-          <li>Chapter 4: Baptism and Chrismation</li>
-          <li>Chapter 5: The Divine Liturgy</li>
-          <li>Chapter 6: Marriage and Monasticism</li>
-        </ul>
-        
-        <h3>Part III: Spiritual Practices</h3>
-        <ul>
-          <li>Chapter 7: Prayer and Contemplation</li>
-          <li>Chapter 8: Fasting and Feasting</li>
-          <li>Chapter 9: Reading the Fathers</li>
-        </ul>
-        
-        <p>This comprehensive guide provides practical wisdom for living an authentic Orthodox life, drawing from Scripture, the Church Fathers, and centuries of spiritual tradition...</p>
-      `,
-      author: "Archimandrite Sophrony",
-      publishDate: "February 15, 2025",
-      imageUrl: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-      tags: ["Practical Orthodox", "Spiritual Life", "Guide"],
+      title: "Orthodox Wedding Ceremony Explained",
+      excerpt: "Understanding the beautiful symbolism of Orthodox marriage traditions",
+      content: `<p>The Orthodox wedding ceremony is rich with ancient traditions...</p>`,
+      author: "Fr. Michael",
+      publishDate: "March 28, 2025",
+      imageUrl: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1170&q=80",
+      tags: ["Marriage", "Sacraments", "Tradition"],
       featured: false,
-      category: "books",
-      contentType: "book"
+      category: "videos",
+      contentType: "liturgy",
+      videoUrl: "/videos/orthodox-wedding.mp4",
+      likes: 156,
+      views: 678
     }
   ];
 };
 
-// Get categories from localStorage
 const getCategories = (): BlogCategory[] => {
   const savedCategories = localStorage.getItem('orthodoxEchoesCategories');
   if (savedCategories) {
     return JSON.parse(savedCategories);
   }
   
-  // Default categories
   return [
-    { id: "articles", name: "Sacred Articles", slug: "articles" },
-    { id: "blog", name: "Spiritual Blog", slug: "blog" },
-    { id: "books", name: "Sacred Library", slug: "books" },
-    { id: "theology", name: "Theology", slug: "theology" },
-    { id: "liturgy", name: "Liturgy", slug: "liturgy" },
-    { id: "spirituality", name: "Spirituality", slug: "spirituality" },
-    { id: "history", name: "Church History", slug: "history" },
-    { id: "saints", name: "Saints", slug: "saints" }
+    { id: "articles", name: "Sacred Articles", slug: "articles", description: "In-depth theological studies" },
+    { id: "blog", name: "Spiritual Blog", slug: "blog", description: "Personal reflections and insights" },
+    { id: "books", name: "Sacred Library", slug: "books", description: "Complete books and works" },
+    { id: "songs", name: "Sacred Music", slug: "songs", description: "Chants and hymns" },
+    { id: "videos", name: "Visual Teaching", slug: "videos", description: "Educational videos" },
+    { id: "prayers", name: "Prayer Collection", slug: "prayers", description: "Traditional prayers" },
+    { id: "saints", name: "Lives of Saints", slug: "saints", description: "Hagiographies and stories" },
+    { id: "theology", name: "Theology", slug: "theology", description: "Theological discourse" }
   ];
 };
 
@@ -186,7 +134,6 @@ export default function Blog() {
   useEffect(() => {
     document.title = "Sacred Content | Orthodox Echoes";
     
-    // Check if user is admin
     const adminData = localStorage.getItem('orthodoxEchoesAdmin');
     setIsAdmin(!!adminData);
     
@@ -194,35 +141,24 @@ export default function Blog() {
       const post = posts.find(post => post.id === id);
       if (post) {
         setSelectedPost(post);
-        // Track view
-        const updatedPosts = posts.map(p => 
-          p.id === post.id ? { ...p, views: (p.views || 0) + 1 } : p
-        );
-        setPosts(updatedPosts);
-        savePosts(updatedPosts);
+        handleViewPost(post.id);
       } else {
-        toast.error("Content not found", {
-          description: "The content you're looking for doesn't exist or has been removed."
-        });
+        toast.error("Content not found");
         navigate('/blog');
       }
     } else {
       setSelectedPost(null);
     }
-  }, [id, posts, navigate]);
+  }, [id, navigate]);
   
   const savePosts = (updatedPosts: BlogPost[]) => {
-    // Get full posts list including drafts
     const savedPosts = localStorage.getItem('orthodoxEchoesBlogPosts');
     if (savedPosts) {
       const allPosts = JSON.parse(savedPosts);
       const draftPosts = allPosts.filter((post: BlogPost) => post.draft);
-      
-      // Merge published posts with draft posts
       const combinedPosts = [...updatedPosts, ...draftPosts.filter((draft: BlogPost) => 
         !updatedPosts.some(post => post.id === draft.id)
       )];
-      
       localStorage.setItem('orthodoxEchoesBlogPosts', JSON.stringify(combinedPosts));
     } else {
       localStorage.setItem('orthodoxEchoesBlogPosts', JSON.stringify(updatedPosts));
@@ -230,17 +166,20 @@ export default function Blog() {
   };
   
   const filteredPosts = posts.filter(post => {
-    // First apply tab filter
+    // Apply tab filter
     if (activeTab === 'featured' && !post.featured) return false;
     if (activeTab === 'articles' && post.contentType !== 'article') return false;
     if (activeTab === 'blog' && post.contentType !== 'blog') return false;
     if (activeTab === 'books' && post.contentType !== 'book') return false;
-    if (activeTab !== 'featured' && activeTab !== 'articles' && activeTab !== 'blog' && activeTab !== 'books') {
+    if (activeTab === 'songs' && post.contentType !== 'chant') return false;
+    if (activeTab === 'videos' && post.contentType !== 'liturgy') return false;
+    if (activeTab !== 'featured' && activeTab !== 'articles' && activeTab !== 'blog' && 
+        activeTab !== 'books' && activeTab !== 'songs' && activeTab !== 'videos') {
       const categorySlug = categories.find(cat => cat.name.toLowerCase() === activeTab.toLowerCase())?.id;
       if (categorySlug && post.category !== categorySlug) return false;
     }
     
-    // Then apply search filter
+    // Apply search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       return (
@@ -254,11 +193,6 @@ export default function Blog() {
     
     return true;
   });
-  
-  const featuredPosts = posts.filter(post => post.featured);
-  const articlePosts = posts.filter(post => post.contentType === 'article');
-  const blogPosts = posts.filter(post => post.contentType === 'blog');
-  const bookPosts = posts.filter(post => post.contentType === 'book');
 
   const handleLikePost = (postId: string) => {
     const updatedPosts = posts.map(post => 
@@ -266,7 +200,23 @@ export default function Blog() {
     );
     setPosts(updatedPosts);
     savePosts(updatedPosts);
-    toast.success("Content liked!");
+    
+    // Update selected post if it's the one being liked
+    if (selectedPost && selectedPost.id === postId) {
+      setSelectedPost({ ...selectedPost, likes: (selectedPost.likes || 0) + 1 });
+    }
+    
+    toast.success("Content liked!", {
+      description: "Thank you for your feedback!"
+    });
+  };
+
+  const handleViewPost = (postId: string) => {
+    const updatedPosts = posts.map(post => 
+      post.id === postId ? { ...post, views: (post.views || 0) + 1 } : post
+    );
+    setPosts(updatedPosts);
+    savePosts(updatedPosts);
   };
   
   const handleAddPost = () => {
@@ -288,28 +238,22 @@ export default function Blog() {
       updatedPosts = posts.map(p => p.id === post.id ? post : p);
       setPosts(updatedPosts);
       savePosts(updatedPosts);
-      
       setIsEditingPost(false);
       setSelectedPost(post);
     } else {
       updatedPosts = [...posts, post];
       setPosts(updatedPosts);
       savePosts(updatedPosts);
-      
       setIsAddingPost(false);
       setSelectedPost(post);
     }
+    
+    toast.success("Content saved successfully!");
   };
   
   const handleCancelEdit = () => {
     if (isEditingPost) {
       setIsEditingPost(false);
-      // If we were editing an existing post, go back to viewing it
-      if (selectedPost) {
-        // Maintain the selected post
-      } else {
-        navigate('/blog');
-      }
     } else {
       setIsAddingPost(false);
       navigate('/blog');
@@ -374,7 +318,7 @@ export default function Blog() {
           <div>
             <h1 className="text-3xl md:text-4xl font-bold orthodox-heading text-gold mb-2">Sacred Content Library</h1>
             <p className="text-white/70 max-w-2xl">
-              Explore our comprehensive collection of Orthodox articles, spiritual blogs, and sacred books to deepen your understanding of the faith.
+              Explore our comprehensive collection of Orthodox articles, spiritual blogs, sacred books, hymns, and educational content.
             </p>
           </div>
           
@@ -415,8 +359,9 @@ export default function Blog() {
         </div>
         
         <Tabs defaultValue={activeTab} value={activeTab} onValueChange={setActiveTab} className="mb-12">
-          <TabsList className="bg-[#1A1F2C]/70 border border-gold/20">
+          <TabsList className="bg-[#1A1F2C]/70 border border-gold/20 grid-cols-6">
             <TabsTrigger value="featured" className="flex items-center gap-2">
+              <Heart className="h-4 w-4" />
               Featured
             </TabsTrigger>
             <TabsTrigger value="articles" className="flex items-center gap-2">
@@ -431,9 +376,14 @@ export default function Blog() {
               <Library className="h-4 w-4" />
               Books
             </TabsTrigger>
-            <TabsTrigger value="theology">Theology</TabsTrigger>
-            <TabsTrigger value="history">History</TabsTrigger>
-            <TabsTrigger value="spirituality">Spirituality</TabsTrigger>
+            <TabsTrigger value="songs" className="flex items-center gap-2">
+              <Music className="h-4 w-4" />
+              Songs
+            </TabsTrigger>
+            <TabsTrigger value="videos" className="flex items-center gap-2">
+              <Video className="h-4 w-4" />
+              Videos
+            </TabsTrigger>
           </TabsList>
           
           <TabsContent value="featured" className="pt-6">
@@ -442,17 +392,14 @@ export default function Blog() {
               <p className="text-white/60 mb-6">Our most important and inspiring content, carefully selected for spiritual growth.</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {featuredPosts.length > 0 ? (
-                featuredPosts.map(post => (
-                  <BlogPostCard 
-                    key={post.id} 
-                    post={post} 
-                    onLike={() => handleLikePost(post.id)} 
-                  />
-                ))
-              ) : (
-                <p className="text-white/70">No featured content available.</p>
-              )}
+              {posts.filter(post => post.featured).map(post => (
+                <BlogPostCard 
+                  key={post.id} 
+                  post={post} 
+                  onLike={() => handleLikePost(post.id)} 
+                  onEdit={isAdmin ? handleEditPost : undefined}
+                />
+              ))}
             </div>
           </TabsContent>
           
@@ -463,22 +410,18 @@ export default function Blog() {
               </div>
               <div>
                 <h2 className="text-2xl font-semibold text-gold">Sacred Articles</h2>
-                <p className="text-white/60">In-depth theological studies and scholarly discourse on Orthodox Christianity</p>
+                <p className="text-white/60">In-depth theological studies and scholarly discourse</p>
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {articlePosts.length > 0 ? (
-                articlePosts.map(post => (
-                  <BlogPostCard 
-                    key={post.id} 
-                    post={post} 
-                    onLike={() => handleLikePost(post.id)} 
-                    onEdit={isAdmin ? handleEditPost : undefined}
-                  />
-                ))
-              ) : (
-                <p className="text-white/70">No articles available.</p>
-              )}
+              {posts.filter(post => post.contentType === 'article').map(post => (
+                <BlogPostCard 
+                  key={post.id} 
+                  post={post} 
+                  onLike={() => handleLikePost(post.id)} 
+                  onEdit={isAdmin ? handleEditPost : undefined}
+                />
+              ))}
             </div>
           </TabsContent>
           
@@ -489,22 +432,18 @@ export default function Blog() {
               </div>
               <div>
                 <h2 className="text-2xl font-semibold text-gold">Spiritual Blog</h2>
-                <p className="text-white/60">Personal reflections and contemporary insights for modern Orthodox living</p>
+                <p className="text-white/60">Personal reflections and contemporary insights</p>
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {blogPosts.length > 0 ? (
-                blogPosts.map(post => (
-                  <BlogPostCard 
-                    key={post.id} 
-                    post={post} 
-                    onLike={() => handleLikePost(post.id)} 
-                    onEdit={isAdmin ? handleEditPost : undefined}
-                  />
-                ))
-              ) : (
-                <p className="text-white/70">No blog posts available.</p>
-              )}
+              {posts.filter(post => post.contentType === 'blog').map(post => (
+                <BlogPostCard 
+                  key={post.id} 
+                  post={post} 
+                  onLike={() => handleLikePost(post.id)} 
+                  onEdit={isAdmin ? handleEditPost : undefined}
+                />
+              ))}
             </div>
           </TabsContent>
           
@@ -515,44 +454,64 @@ export default function Blog() {
               </div>
               <div>
                 <h2 className="text-2xl font-semibold text-gold">Sacred Library</h2>
-                <p className="text-white/60">Complete books and comprehensive works on Orthodox theology and tradition</p>
+                <p className="text-white/60">Complete books and comprehensive works</p>
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {bookPosts.length > 0 ? (
-                bookPosts.map(post => (
-                  <BlogPostCard 
-                    key={post.id} 
-                    post={post} 
-                    onLike={() => handleLikePost(post.id)} 
-                    onEdit={isAdmin ? handleEditPost : undefined}
-                  />
-                ))
-              ) : (
-                <p className="text-white/70">No books available.</p>
-              )}
+              {posts.filter(post => post.contentType === 'book').map(post => (
+                <BlogPostCard 
+                  key={post.id} 
+                  post={post} 
+                  onLike={() => handleLikePost(post.id)} 
+                  onEdit={isAdmin ? handleEditPost : undefined}
+                />
+              ))}
             </div>
           </TabsContent>
           
-          {/* Dynamic category tabs */}
-          {['theology', 'history', 'spirituality'].map(categoryName => (
-            <TabsContent key={categoryName} value={categoryName} className="pt-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredPosts.length > 0 ? (
-                  filteredPosts.map(post => (
-                    <BlogPostCard 
-                      key={post.id} 
-                      post={post}
-                      onLike={() => handleLikePost(post.id)}
-                      onEdit={isAdmin ? handleEditPost : undefined}
-                    />
-                  ))
-                ) : (
-                  <p className="text-white/70">No content available in this category.</p>
-                )}
+          <TabsContent value="songs" className="pt-6">
+            <div className="mb-6 flex items-center gap-3">
+              <div className="p-2 bg-gold/10 rounded-lg">
+                <Music className="h-6 w-6 text-gold" />
               </div>
-            </TabsContent>
-          ))}
+              <div>
+                <h2 className="text-2xl font-semibold text-gold">Sacred Music</h2>
+                <p className="text-white/60">Byzantine chants and traditional hymns</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {posts.filter(post => post.contentType === 'chant').map(post => (
+                <BlogPostCard 
+                  key={post.id} 
+                  post={post} 
+                  onLike={() => handleLikePost(post.id)} 
+                  onEdit={isAdmin ? handleEditPost : undefined}
+                />
+              ))}
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="videos" className="pt-6">
+            <div className="mb-6 flex items-center gap-3">
+              <div className="p-2 bg-byzantine/10 rounded-lg">
+                <Video className="h-6 w-6 text-byzantine" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-semibold text-gold">Visual Teaching</h2>
+                <p className="text-white/60">Educational videos and liturgical ceremonies</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {posts.filter(post => post.contentType === 'liturgy').map(post => (
+                <BlogPostCard 
+                  key={post.id} 
+                  post={post} 
+                  onLike={() => handleLikePost(post.id)} 
+                  onEdit={isAdmin ? handleEditPost : undefined}
+                />
+              ))}
+            </div>
+          </TabsContent>
         </Tabs>
       </motion.div>
     </div>
