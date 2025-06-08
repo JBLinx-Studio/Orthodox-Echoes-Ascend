@@ -1,5 +1,3 @@
-
-import React, { useEffect, useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -19,6 +17,7 @@ import PrayerGuide from "./pages/PrayerGuide";
 import CoreDoctrine from "./pages/CoreDoctrine";
 import DailyReadings from "./pages/DailyReadings";
 import LearningCenter from "./pages/LearningCenter";
+import { useEffect, useState } from "react";
 import "./styles/audioEffects.css";
 
 // Create more visually appealing placeholder page with cathedral theme
@@ -98,6 +97,7 @@ const App = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  // Using proper function component for TooltipProvider to fix the runtime error
   if (isLoading) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-[#1A1F2C] z-50">
@@ -121,6 +121,7 @@ const App = () => {
     );
   }
 
+  // Using HashRouter instead of BrowserRouter for GitHub Pages compatibility
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
