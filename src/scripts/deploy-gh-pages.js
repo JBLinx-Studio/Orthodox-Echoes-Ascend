@@ -3,7 +3,7 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-// Set up the repo name with the updated project name
+// Set up the repo name
 const REPO_NAME = 'Orthodox-Echoes-Ascend';
 
 // Create a 404.html file that redirects to index.html for SPA routing
@@ -33,7 +33,10 @@ const create404Page = () => {
     </script>
   </head>
   <body>
-    <h2>Redirecting...</h2>
+    <div style="text-align: center; padding: 50px; font-family: 'Playfair Display', serif;">
+      <h2 style="color: #D4AF37;">Redirecting to Orthodox Echoes...</h2>
+      <p style="color: #666;">Please wait while we redirect you to the correct page.</p>
+    </div>
   </body>
 </html>`;
 
@@ -104,7 +107,7 @@ try {
   cleanGhPagesBranch();
   
   // Build the project
-  console.log('\n🔨 Building the project...');
+  console.log('\n🔨 Building Orthodox Echoes...');
   // Add cache busting environment variable
   const cacheBuster = new Date().getTime();
   process.env.VITE_CACHE_BUSTER = cacheBuster;
@@ -119,14 +122,14 @@ try {
   fs.writeFileSync(path.resolve(__dirname, '../../dist/.nojekyll'), '');
   
   // Initialize gh-pages with the dist folder
-  console.log('\n📤 Deploying to gh-pages branch...');
+  console.log('\n📤 Deploying to GitHub Pages...');
   execSync(
-    `npx gh-pages -d dist -m "Deploy to GitHub pages [skip ci]" --force`, // Added --force flag
+    `npx gh-pages -d dist -m "Deploy Orthodox Echoes to GitHub Pages [skip ci]" --force`,
     { stdio: 'inherit' }
   );
   
-  console.log(`\n✅ Successfully deployed to GitHub Pages!`);
-  console.log(`\nYour site will be available at: https://<YOUR_USERNAME>.github.io/${REPO_NAME}/`);
+  console.log(`\n✅ Successfully deployed Orthodox Echoes to GitHub Pages!`);
+  console.log(`\nYour Orthodox Echoes website will be available at: https://<YOUR_USERNAME>.github.io/${REPO_NAME}/`);
   console.log('\n📋 Next steps:');
   console.log('1. Go to Settings > Pages in your GitHub repository');
   console.log('2. Make sure "Deploy from a branch" is selected');
