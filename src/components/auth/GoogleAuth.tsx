@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { login } from '@/utils/auth-utils';
+import { supabase } from '@/integrations/supabase/client';
 
 // Google OAuth configuration
 const GOOGLE_CLIENT_ID = "1019903498866-5q0lubbt5hasule4duhh6tcmq1d6emm6.apps.googleusercontent.com";
@@ -19,72 +19,33 @@ export function GoogleAuth({ onSuccess, variant = "signin" }: GoogleAuthProps) {
     setIsLoading(true);
     
     try {
-      // Initialize Google OAuth
-      if (!window.google) {
-        // Load Google Identity Services
-        const script = document.createElement('script');
-        script.src = 'https://accounts.google.com/gsi/client';
-        script.async = true;
-        document.head.appendChild(script);
-        
-        await new Promise((resolve) => {
-          script.onload = resolve;
-        });
-      }
-
-      // Initialize Google Identity Services
-      window.google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: handleCredentialResponse,
+      const redirectUrl = `${window.location.origin}/`;
+      
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: redirectUrl,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        }
       });
 
-      // Prompt the user to sign in
-      window.google.accounts.id.prompt();
+      if (error) {
+        console.error('Google Auth Error:', error);
+        toast.error('Authentication failed. Please try again.');
+        return;
+      }
+
+      // If we get here, the redirect will happen automatically
+      toast.success('Redirecting to Google...');
       
     } catch (error) {
       console.error('Google Auth Error:', error);
       toast.error('Authentication failed. Please try again.');
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleCredentialResponse = (response: any) => {
-    try {
-      // Decode the JWT token to get user info
-      const userInfo = parseJwt(response.credential);
-      
-      if (userInfo) {
-        // Log in the user
-        login(userInfo.name || userInfo.email, false);
-        
-        toast.success(`Welcome, ${userInfo.name || 'Orthodox Friend'}!`, {
-          description: "You've successfully signed in with Google."
-        });
-        
-        if (onSuccess) {
-          onSuccess();
-        }
-      }
-    } catch (error) {
-      console.error('Error processing Google credential:', error);
-      toast.error('Authentication failed. Please try again.');
-    }
-  };
-
-  // Helper function to parse JWT token
-  const parseJwt = (token: string) => {
-    try {
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map((c) => {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-      
-      return JSON.parse(jsonPayload);
-    } catch (error) {
-      console.error('Error parsing JWT:', error);
-      return null;
     }
   };
 
@@ -116,11 +77,4 @@ export function GoogleAuth({ onSuccess, variant = "signin" }: GoogleAuthProps) {
       {isLoading ? "Connecting..." : `${variant === "signup" ? "Sign up" : "Sign in"} with Google`}
     </Button>
   );
-}
-
-// Extend the Window interface to include Google
-declare global {
-  interface Window {
-    google: any;
-  }
 }
