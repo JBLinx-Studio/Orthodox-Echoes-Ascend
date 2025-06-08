@@ -42,7 +42,7 @@ export function MainLayout() {
         Skip to content
       </a>
       
-      {/* Enhanced cathedral background */}
+      {/* Enhanced cathedral background - Fixed z-index */}
       <div className="fixed inset-0 z-0">
         {/* Base texture */}
         <div className="absolute inset-0 bg-[url('/images/noise-pattern.png')] opacity-5"></div>
@@ -74,7 +74,10 @@ export function MainLayout() {
         <div className="absolute bottom-80 right-40 w-24 h-24 rounded-full bg-byzantine/10 blur-xl animate-[pulse_9s_ease-in-out_infinite]"></div>
       </div>
       
-      <NavBar />
+      {/* NavBar with proper z-index */}
+      <div className="relative z-50">
+        <NavBar />
+      </div>
       
       <AnimatePresence mode="wait">
         {isPageLoading ? (
@@ -135,7 +138,10 @@ export function MainLayout() {
         )}
       </AnimatePresence>
       
-      <Footer />
+      {/* Footer with proper z-index */}
+      <div className="relative z-20">
+        <Footer />
+      </div>
     </div>
   );
 }
@@ -172,7 +178,7 @@ function BackToTopButton() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 10 }}
           onClick={scrollToTop}
-          className="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-byzantine/70 text-white flex items-center justify-center shadow-lg backdrop-blur-sm button-press z-40 hover:bg-byzantine focus-indicator border border-gold/30"
+          className="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-byzantine/70 text-white flex items-center justify-center shadow-lg backdrop-blur-sm button-press z-30 hover:bg-byzantine focus-indicator border border-gold/30"
           aria-label="Back to top"
         >
           {/* Orthodox cross icon */}

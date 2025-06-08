@@ -387,7 +387,7 @@ export default function Blog() {
                 onClick={handleAddPost} 
                 className="bg-byzantine hover:bg-byzantine-dark shadow-gold/10 shadow-lg whitespace-nowrap"
               >
-                <Plus className="h-4 w-4 mr-2" /> New Content
+                <Plus className="h-4 w-4 mr-2" /> Create Content
               </Button>
             )}
           </div>
