@@ -24,7 +24,9 @@ import {
   Home,
   Info,
   Heart,
-  ChevronDown
+  ChevronDown,
+  Feather,
+  Library
 } from 'lucide-react';
 import { AudioPlayer } from '@/components/audio/AudioPlayer';
 import { motion, AnimatePresence } from 'framer-motion';
