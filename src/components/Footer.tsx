@@ -1,6 +1,5 @@
-
 import { Link } from 'react-router-dom';
-import { Mail, Church, Heart } from 'lucide-react';
+import { Mail, Church, Heart, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -90,12 +89,17 @@ export function Footer() {
               <Link to="/parishes" className="text-sm text-gray-300 hover:text-gold flex items-center gap-1">
                 <Church className="h-4 w-4" /> Find a Parish
               </Link>
+              <a href="/LICENSE.md" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-300 hover:text-gold flex items-center gap-1">
+                <FileText className="h-4 w-4" /> License
+              </a>
               <a href="https://www.buymeacoffee.com" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-300 hover:text-gold flex items-center gap-1">
                 <Heart className="h-4 w-4" /> Support
               </a>
             </div>
-            <div className="text-sm text-gray-400">
-              © {currentYear} Orthodox Echoes. All rights reserved.
+            <div className="text-sm text-gray-400 flex flex-col md:flex-row items-center gap-2">
+              <span>© {currentYear} Orthodox Echoes. All rights reserved.</span>
+              <span className="hidden md:inline">•</span>
+              <span className="text-gold">Created by JBLinx Studio</span>
             </div>
           </div>
         </div>
