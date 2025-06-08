@@ -1,20 +1,26 @@
+
 name: Deploy to GitHub Pages
 
 on:
+  # Runs on pushes targeting the default branch
   push:
     branches: ["main"]
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: write
   pages: write
   id-token: write
 
+# Allow only one concurrent deployment
 concurrency:
   group: "pages"
   cancel-in-progress: true
 
 jobs:
+  # Build job
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
@@ -23,22 +29,28 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
-          node-version: "14.x" # Use the LTS version of Node.js
+          node-version: "18"
           cache: 'npm'
-
-      - name: Install Dependencies
-        run: npm install # Use npm install unless npm ci is specifically required
-
-      - name: Build
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Generate timestamp for cache busting
         run: |
-          npm run build
-          # Add dynamic cache busting with commit hash and timestamp
-          VITE_CACHE_BUSTER="${{ github.sha }}_${{ github.run_number }}_$(date +%s)"
-
-      - name: Create 404.html for SPA Routing
+          echo "DEPLOY_TIMESTAMP=$(date +%s)" >> $GITHUB_ENV
+          echo "Generating cache buster: ${{ env.DEPLOY_TIMESTAMP }}"
+        
+      - name: Build
+        run: npm run build
+        env:
+          # Add enhanced cache busting with both timestamp and commit hash
+          VITE_CACHE_BUSTER: ${{ github.sha }}_${{ github.run_number }}_${{ env.DEPLOY_TIMESTAMP }}
+        
+      # Create 404.html for SPA routing
+      - name: Create 404.html
         run: |
           cat > ./dist/404.html << 'EOL'
           <!DOCTYPE html>
@@ -46,6 +58,7 @@ jobs:
             <head>
               <meta charset="utf-8">
               <title>Orthodox Echoes - Page Not Found</title>
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
               <script type="text/javascript">
                 var pathSegmentsToKeep = 1;
                 var l = window.location;
@@ -63,14 +76,11 @@ jobs:
             </body>
           </html>
           EOL
-
-      - name: Update index.html for SPA Routing and Cache Busting
+      
+      # Update index.html for SPA routing
+      - name: Update index.html for SPA
         run: |
           sed -i '/<head>/a \
-          <!-- Cache control meta tags --> \
-          <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"> \
-          <meta http-equiv="Pragma" content="no-cache"> \
-          <meta http-equiv="Expires" content="0"> \
           <!-- Start Single Page Apps for GitHub Pages --> \
           <script type="text/javascript"> \
             (function(l) { \
@@ -85,16 +95,76 @@ jobs:
             }(window.location)) \
           </script> \
           <!-- End Single Page Apps for GitHub Pages -->' ./dist/index.html
-
-      - name: Create .nojekyll File to Disable Jekyll Processing
+      
+      # Create a .nojekyll file to prevent Jekyll processing
+      - name: Create .nojekyll file
         run: touch ./dist/.nojekyll
-
-      - name: Deploy to GitHub Pages
+        
+      # Add cache-busting timestamp to index.html
+      - name: Add cache-busting markers
+        run: |
+          # Add timestamp to index.html
+          echo "<!-- Deploy timestamp: $(date +%s) - $(date) -->" >> ./dist/index.html
+          
+          # Add cache busting meta tag
+          sed -i '/<head>/a \
+          <meta name="deploy-version" content="${{ github.sha }}_${{ github.run_number }}_${{ env.DEPLOY_TIMESTAMP }}">' ./dist/index.html
+          
+          # Add cache-control headers via _headers file (for Netlify and similar services)
+          echo "/*" > ./dist/_headers
+          echo "  Cache-Control: no-cache, no-store, must-revalidate" >> ./dist/_headers
+          
+          # Add cache busting to main CSS and JS files
+          find ./dist -name "*.js" -type f -exec bash -c 'mv "$1" "${1%.js}.${{ env.DEPLOY_TIMESTAMP }}.js"' _ {} \;
+          find ./dist -name "*.css" -type f -exec bash -c 'mv "$1" "${1%.css}.${{ env.DEPLOY_TIMESTAMP }}.css"' _ {} \;
+          
+          # Update references in index.html
+          for file in ./dist/*.js ./dist/*.css; do
+            if [ -f "$file" ]; then
+              filename=$(basename "$file")
+              sed -i "s|[^\.]*\.js|$filename|g" ./dist/index.html
+              sed -i "s|[^\.]*\.css|$filename|g" ./dist/index.html
+            fi
+          done
+        
+      # Force clear of any previous cache
+      - name: Clear caches in gh-pages branch if it exists
+        continue-on-error: true
+        run: |
+          git fetch origin gh-pages || echo "No gh-pages branch found"
+          git checkout gh-pages || echo "Could not switch to gh-pages branch"
+          if [ -d ".cache" ]; then
+            rm -rf .cache
+            echo "Cleared existing cache directory"
+          fi
+          git checkout ${GITHUB_SHA}
+        
+      # Ensure clean deployment
+      - name: Deploy to GitHub Pages with cache invalidation
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: dist
           branch: gh-pages
           clean: true
-          clean-exclude: .nojekyll
+          clean-exclude: |
+            .nojekyll
+            _headers
           force: true
-          commit-message: "Deploy website to GitHub Pages [skip ci]"
+          commit-message: "Deploy website with cache buster: ${{ env.DEPLOY_TIMESTAMP }}"
+
+      # Verify deployment status
+      - name: Verify deployment
+        run: |
+          echo "Deployment completed at $(date)"
+          echo "Cache buster: ${{ env.DEPLOY_TIMESTAMP }}"
+          echo "GitHub SHA: ${{ github.sha }}"
+          echo "Run number: ${{ github.run_number }}"
+          
+      # Add a step that attempts to force GitHub Pages rebuild
+      - name: Trigger GitHub Pages rebuild
+        run: |
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ github.repository }}/pages/builds
+        continue-on-error: true

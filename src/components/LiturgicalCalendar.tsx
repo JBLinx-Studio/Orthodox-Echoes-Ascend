@@ -70,7 +70,7 @@ export function LiturgicalCalendar() {
       <CardHeader className="pb-3 pt-6 bg-gradient-to-r from-byzantine/10 via-gold/5 to-byzantine/10">
         <div className="flex items-center space-x-2">
           <Calendar className="h-5 w-5 text-gold" />
-          <CardTitle className="text-xl font-display text-gold/90">Liturgical Calendar</CardTitle>
+          <CardTitle className="text-xl font-display text-gold/90 orthodox-heading">Liturgical Calendar</CardTitle>
         </div>
       </CardHeader>
       <CardContent className="pt-4 pb-6">
@@ -87,7 +87,7 @@ export function LiturgicalCalendar() {
           ))}
         </div>
         <div className="mt-4 text-center">
-          <a href="/calendar" className="text-gold/70 hover:text-gold text-sm inline-flex items-center border-b border-gold/20 hover:border-gold/60 transition-colors duration-300">
+          <a href="/calendar" className="text-gold/70 hover:text-gold text-sm inline-flex items-center border-b border-gold/20 hover:border-gold/60 transition-colors duration-300 footer-links">
             View Full Calendar <Calendar className="w-3 h-3 ml-1" />
           </a>
         </div>
