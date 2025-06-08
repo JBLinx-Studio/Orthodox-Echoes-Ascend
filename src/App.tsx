@@ -19,6 +19,8 @@ import PrayerGuide from "./pages/PrayerGuide";
 import CoreDoctrine from "./pages/CoreDoctrine";
 import DailyReadings from "./pages/DailyReadings";
 import LearningCenter from "./pages/LearningCenter";
+import Saints from "./pages/Saints";
+import SacredIconography from "./pages/SacredIconography";
 import "./styles/audioEffects.css";
 
 // Create more visually appealing placeholder page with cathedral theme
@@ -139,16 +141,16 @@ const App = () => {
                 <Route path="/doctrine" element={<CoreDoctrine />} />
                 <Route path="/readings" element={<DailyReadings />} />
                 <Route path="/learn" element={<LearningCenter />} />
-                <Route path="/saints" element={<PlaceholderPage title="Lives of Saints" />} />
+                <Route path="/saints" element={<Saints />} />
+                <Route path="/icons" element={<SacredIconography />} />
                 <Route path="/calendar" element={<PlaceholderPage title="Liturgical Calendar" />} />
+                <Route path="/chants" element={<PlaceholderPage title="Sacred Music" />} />
                 <Route path="/community" element={<PlaceholderPage title="Orthodox Community" />} />
                 <Route path="/support" element={<PlaceholderPage title="Support Our Mission" />} />
                 <Route path="/articles" element={<PlaceholderPage title="Sacred Articles" />} />
                 <Route path="/books" element={<PlaceholderPage title="Sacred Library" />} />
                 <Route path="/liturgy" element={<PlaceholderPage title="Liturgical Life" />} />
                 <Route path="/article/:id" element={<PlaceholderPage title="Article Details" />} />
-                <Route path="/icons" element={<PlaceholderPage title="Sacred Iconography" />} />
-                <Route path="/chants" element={<PlaceholderPage title="Sacred Chants" />} />
                 <Route path="/faq" element={<PlaceholderPage title="Frequently Asked Questions" />} />
                 <Route path="/parishes" element={<PlaceholderPage title="Find a Parish" />} />
                 <Route path="/settings" element={<PlaceholderPage title="User Settings" />} />
