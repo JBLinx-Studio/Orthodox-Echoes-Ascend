@@ -1,6 +1,6 @@
 
 import { Outlet } from 'react-router-dom';
-import { MainNavigation } from '@/components/MainNavigation';
+import { NavBar } from '@/components/core/NavBar';
 import { Footer } from '@/components/Footer';
 import { useEffect, useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -74,9 +74,9 @@ export function MainLayout() {
         <div className="absolute bottom-80 right-40 w-24 h-24 rounded-full bg-byzantine/10 blur-xl animate-[pulse_9s_ease-in-out_infinite]"></div>
       </div>
       
-      {/* MainNavigation with proper z-index */}
+      {/* NavBar with proper z-index */}
       <div className="relative z-50">
-        <MainNavigation />
+        <NavBar />
       </div>
       
       <AnimatePresence mode="wait">
