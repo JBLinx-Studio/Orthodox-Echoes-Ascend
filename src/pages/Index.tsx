@@ -11,15 +11,15 @@ import { PrayerOfTheDay } from '@/components/PrayerOfTheDay';
 import { LiturgicalCalendar } from '@/components/LiturgicalCalendar';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Calendar, Users, Bookmark, Edit } from 'lucide-react';
+import { ArrowRight, Calendar, Users, Bookmark, Edit, Star, Heart, Crown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const fadeInUp = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 30 },
   visible: { 
     opacity: 1, 
     y: 0,
-    transition: { duration: 0.6 }
+    transition: { duration: 0.8, ease: "easeOut" }
   }
 };
 
@@ -37,15 +37,14 @@ const Index = () => {
   const { expandPlayer, togglePlay, isPlaying } = useAudio();
   
   useEffect(() => {
-    // Welcome toast notification with enhanced options
     const timer = setTimeout(() => {
       toast.success(
         "Welcome to Orthodox Echoes", 
         { 
-          description: "Experience sacred traditions and ancient wisdom with divine Byzantine chants.",
-          duration: 5000,
+          description: "Experience sacred traditions and divine wisdom through centuries of Orthodox heritage.",
+          duration: 6000,
           action: {
-            label: isPlaying ? "Pause Sacred Chants" : "Play Sacred Chants",
+            label: isPlaying ? "Pause Sacred Chants" : "Play Divine Chants",
             onClick: () => {
               expandPlayer();
               togglePlay();
@@ -53,106 +52,119 @@ const Index = () => {
           }
         }
       );
-    }, 2000);
+    }, 2500);
     
     return () => clearTimeout(timer);
   }, [expandPlayer, togglePlay, isPlaying]);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gradient-to-b from-[#0a0d16] via-[#0c111f] to-[#161a26]">
       <HeroSection />
       
-      {/* Featured content section */}
+      {/* Enhanced Featured Content Section */}
       <motion.section 
-        className="py-16 bg-[#0c111f]/70"
+        className="py-20 relative overflow-hidden"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={staggerContainer}
       >
-        <div className="container mx-auto px-4">
-          <motion.div variants={fadeInUp} className="mb-12 text-center">
-            <h2 className="text-3xl md:text-4xl font-display font-bold text-gold mb-4">Faith in Practice</h2>
-            <div className="w-20 h-1 bg-byzantine/70 mx-auto mb-6"></div>
-            <p className="text-white/70 max-w-2xl mx-auto">Discover how Orthodox Christianity continues to transform lives through timeless wisdom and sacred traditions.</p>
+        {/* Background Enhancement */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-[#0c111f]/80 to-black/70"></div>
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23D4AF37" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <motion.div variants={fadeInUp} className="mb-16 text-center">
+            <div className="flex justify-center mb-6">
+              <Crown className="h-12 w-12 text-gold animate-pulse" />
+            </div>
+            <h2 className="text-4xl md:text-6xl font-display font-bold text-gold mb-6">Faith in Practice</h2>
+            <div className="w-32 h-1.5 bg-gradient-to-r from-transparent via-byzantine to-transparent mx-auto mb-8"></div>
+            <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">Discover how Orthodox Christianity continues to transform lives through timeless wisdom, sacred traditions, and divine grace.</p>
           </motion.div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-16">
             <motion.div 
               variants={fadeInUp}
-              className="bg-[#1A1F2C]/60 backdrop-blur-sm rounded-lg border border-gold/10 p-6 shadow-lg hover:border-gold/30 transition-all"
+              className="group bg-gradient-to-br from-[#1A1F2C]/80 via-[#1A1F2C]/70 to-[#0c111f]/80 backdrop-blur-xl rounded-2xl border border-gold/20 p-8 shadow-2xl hover:border-gold/40 hover:shadow-gold/20 transition-all duration-500 hover:-translate-y-2"
             >
-              <div className="w-12 h-12 rounded-full bg-byzantine/20 mb-4 flex items-center justify-center">
-                <Calendar className="h-6 w-6 text-gold" />
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-byzantine/30 to-byzantine/10 mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <Calendar className="h-8 w-8 text-gold" />
               </div>
-              <h3 className="text-xl font-display text-gold mb-3">Liturgical Calendar</h3>
-              <p className="text-white/70 mb-4">Follow the ancient rhythm of prayer, feast, and fast that guides Orthodox life throughout the year.</p>
-              <Link to="/calendar" className="text-gold inline-flex items-center text-sm hover:underline">
+              <h3 className="text-2xl font-display text-gold mb-4 group-hover:text-yellow-300 transition-colors">Liturgical Calendar</h3>
+              <p className="text-white/70 mb-6 leading-relaxed">Follow the ancient rhythm of prayer, feast, and fast that guides Orthodox life throughout the sacred year.</p>
+              <Link to="/calendar" className="text-gold inline-flex items-center font-medium hover:text-yellow-300 transition-colors group">
                 View Calendar
-                <ArrowRight className="ml-1 h-4 w-4" />
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </motion.div>
             
             <motion.div 
               variants={fadeInUp}
-              className="bg-[#1A1F2C]/60 backdrop-blur-sm rounded-lg border border-gold/10 p-6 shadow-lg hover:border-gold/30 transition-all"
+              className="group bg-gradient-to-br from-[#1A1F2C]/80 via-[#1A1F2C]/70 to-[#0c111f]/80 backdrop-blur-xl rounded-2xl border border-gold/20 p-8 shadow-2xl hover:border-gold/40 hover:shadow-gold/20 transition-all duration-500 hover:-translate-y-2"
             >
-              <div className="w-12 h-12 rounded-full bg-byzantine/20 mb-4 flex items-center justify-center">
-                <Users className="h-6 w-6 text-gold" />
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-byzantine/30 to-byzantine/10 mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <Users className="h-8 w-8 text-gold" />
               </div>
-              <h3 className="text-xl font-display text-gold mb-3">Lives of Saints</h3>
-              <p className="text-white/70 mb-4">Explore the inspiring stories of holy men and women who exemplify the Orthodox path to sanctity.</p>
-              <Link to="/saints" className="text-gold inline-flex items-center text-sm hover:underline">
+              <h3 className="text-2xl font-display text-gold mb-4 group-hover:text-yellow-300 transition-colors">Lives of Saints</h3>
+              <p className="text-white/70 mb-6 leading-relaxed">Explore the inspiring stories of holy men and women who exemplify the Orthodox path to sanctity and divine grace.</p>
+              <Link to="/saints" className="text-gold inline-flex items-center font-medium hover:text-yellow-300 transition-colors group">
                 Meet the Saints
-                <ArrowRight className="ml-1 h-4 w-4" />
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </motion.div>
             
             <motion.div 
               variants={fadeInUp}
-              className="bg-[#1A1F2C]/60 backdrop-blur-sm rounded-lg border border-gold/10 p-6 shadow-lg hover:border-gold/30 transition-all"
+              className="group bg-gradient-to-br from-[#1A1F2C]/80 via-[#1A1F2C]/70 to-[#0c111f]/80 backdrop-blur-xl rounded-2xl border border-gold/20 p-8 shadow-2xl hover:border-gold/40 hover:shadow-gold/20 transition-all duration-500 hover:-translate-y-2"
             >
-              <div className="w-12 h-12 rounded-full bg-byzantine/20 mb-4 flex items-center justify-center">
-                <Bookmark className="h-6 w-6 text-gold" />
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-byzantine/30 to-byzantine/10 mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <Bookmark className="h-8 w-8 text-gold" />
               </div>
-              <h3 className="text-xl font-display text-gold mb-3">Prayer Guide</h3>
-              <p className="text-white/70 mb-4">Learn traditional Orthodox prayers and develop a consistent prayer life with our comprehensive guide.</p>
-              <Link to="/prayers" className="text-gold inline-flex items-center text-sm hover:underline">
+              <h3 className="text-2xl font-display text-gold mb-4 group-hover:text-yellow-300 transition-colors">Prayer Guide</h3>
+              <p className="text-white/70 mb-6 leading-relaxed">Learn traditional Orthodox prayers and develop a consistent prayer life with our comprehensive spiritual guide.</p>
+              <Link to="/prayers" className="text-gold inline-flex items-center font-medium hover:text-yellow-300 transition-colors group">
                 Begin Praying
-                <ArrowRight className="ml-1 h-4 w-4" />
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </motion.div>
           </div>
         </div>
       </motion.section>
       
-      {/* Blog and sidebar section */}
+      {/* Enhanced Blog and Sidebar Section */}
       <motion.div 
-        className="container mx-auto px-4 py-16"
+        className="container mx-auto px-4 py-20 relative"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={staggerContainer}
       >
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           <motion.div 
             className="lg:col-span-2"
             variants={fadeInUp}
           >
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-display font-bold text-gold">Latest Articles</h2>
-              <Link to="/blog" className="text-gold hover:underline flex items-center">
+            <div className="flex items-center justify-between mb-12">
+              <div>
+                <h2 className="text-4xl font-display font-bold text-gold mb-2">Latest Articles</h2>
+                <div className="w-24 h-1 bg-gradient-to-r from-byzantine to-gold"></div>
+              </div>
+              <Link to="/blog" className="text-gold hover:text-yellow-300 transition-colors flex items-center font-medium group">
                 View All 
-                <ArrowRight className="ml-1 h-4 w-4" />
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
             <FeaturedArticles />
-            <div className="mt-16">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-3xl font-display font-bold text-gold">Featured Saints</h2>
-                <Link to="/saints" className="text-gold hover:underline flex items-center">
+            <div className="mt-20">
+              <div className="flex items-center justify-between mb-12">
+                <div>
+                  <h2 className="text-4xl font-display font-bold text-gold mb-2">Featured Saints</h2>
+                  <div className="w-24 h-1 bg-gradient-to-r from-byzantine to-gold"></div>
+                </div>
+                <Link to="/saints" className="text-gold hover:text-yellow-300 transition-colors flex items-center font-medium group">
                   View All 
-                  <ArrowRight className="ml-1 h-4 w-4" />
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
               <SaintsFeatured />
@@ -160,48 +172,56 @@ const Index = () => {
           </motion.div>
           
           <motion.div 
-            className="lg:col-span-1 space-y-8"
+            className="lg:col-span-1 space-y-10"
             variants={fadeInUp}
           >
-            <div className="bg-[#1A1F2C]/60 backdrop-blur-sm p-6 rounded-lg border border-gold/20 shadow-lg">
-              <h3 className="text-gold text-xl font-semibold mb-4 flex items-center">
-                <Edit className="mr-2 h-5 w-5" />
+            {/* Enhanced Blog Widget */}
+            <div className="bg-gradient-to-br from-[#1A1F2C]/80 via-[#1A1F2C]/70 to-[#0c111f]/80 backdrop-blur-xl p-8 rounded-2xl border border-gold/25 shadow-2xl">
+              <h3 className="text-gold text-2xl font-display font-semibold mb-6 flex items-center">
+                <Edit className="mr-3 h-6 w-6" />
                 From Our Blog
               </h3>
-              <div className="space-y-4">
-                {[1, 2, 3].map((item) => (
-                  <div key={item} className="p-3 bg-[#0c111f]/40 rounded-md border border-gold/10 hover:border-gold/30 transition-all">
-                    <h4 className="text-white font-medium mb-1">Understanding Orthodox Iconography</h4>
-                    <p className="text-white/60 text-sm mb-2 line-clamp-2">Icons serve as windows to heaven, bridging the gap between the divine and earthly realms...</p>
+              <div className="space-y-6">
+                {[
+                  { title: "Understanding Orthodox Iconography", author: "Fr. Thomas", readTime: "4 min" },
+                  { title: "The Divine Liturgy Explained", author: "Mother Maria", readTime: "6 min" },
+                  { title: "Saints of the Eastern Church", author: "Dr. Constantine", readTime: "5 min" }
+                ].map((item, index) => (
+                  <div key={index} className="p-4 bg-[#0c111f]/50 rounded-xl border border-gold/15 hover:border-gold/30 transition-all group cursor-pointer">
+                    <h4 className="text-white font-medium mb-2 group-hover:text-gold transition-colors">{item.title}</h4>
+                    <p className="text-white/60 text-sm mb-3 line-clamp-2">Icons serve as windows to heaven, bridging the gap between the divine and earthly realms through sacred artistry...</p>
                     <div className="flex justify-between items-center text-xs text-gold/70">
-                      <span>Fr. Thomas</span>
-                      <span>Read 4 min</span>
+                      <span>{item.author}</span>
+                      <span>Read {item.readTime}</span>
                     </div>
                   </div>
                 ))}
               </div>
-              <Button asChild className="w-full mt-4 bg-byzantine hover:bg-byzantine-dark text-white">
+              <Button asChild className="w-full mt-6 bg-gradient-to-r from-byzantine to-byzantine-dark hover:from-byzantine-dark hover:to-byzantine text-white shadow-lg">
                 <Link to="/blog">
                   Visit Blog
                 </Link>
               </Button>
             </div>
             
-            <div className="bg-[#1A1F2C]/60 backdrop-blur-sm p-6 rounded-lg border border-gold/20 shadow-lg">
+            {/* Enhanced Prayer Widget */}
+            <div className="bg-gradient-to-br from-[#1A1F2C]/80 via-[#1A1F2C]/70 to-[#0c111f]/80 backdrop-blur-xl p-8 rounded-2xl border border-gold/25 shadow-2xl">
               <PrayerOfTheDay />
             </div>
             
-            <div className="bg-[#1A1F2C]/60 backdrop-blur-sm p-6 rounded-lg border border-gold/20 shadow-lg">
+            {/* Enhanced Calendar Widget */}
+            <div className="bg-gradient-to-br from-[#1A1F2C]/80 via-[#1A1F2C]/70 to-[#0c111f]/80 backdrop-blur-xl p-8 rounded-2xl border border-gold/25 shadow-2xl">
               <LiturgicalCalendar />
             </div>
             
-            <div className="bg-[#1A1F2C]/60 backdrop-blur-sm p-6 rounded-lg border border-gold/20 shadow-lg">
-              <h3 className="text-gold text-xl font-semibold mb-4 flex items-center">
-                <span className="mr-2 text-2xl">☦️</span>
+            {/* Enhanced Sacred Sounds Widget */}
+            <div className="bg-gradient-to-br from-[#1A1F2C]/80 via-[#1A1F2C]/70 to-[#0c111f]/80 backdrop-blur-xl p-8 rounded-2xl border border-gold/25 shadow-2xl">
+              <h3 className="text-gold text-2xl font-display font-semibold mb-6 flex items-center">
+                <Star className="mr-3 h-6 w-6 animate-pulse" />
                 Sacred Sounds
               </h3>
-              <p className="text-white/80 mb-4">
-                Experience the timeless beauty of Orthodox chants that have echoed through cathedrals for centuries.
+              <p className="text-white/80 mb-6 leading-relaxed">
+                Experience the timeless beauty of Orthodox chants that have echoed through sacred cathedrals for millennia.
               </p>
               <button 
                 onClick={() => {
@@ -210,22 +230,23 @@ const Index = () => {
                     togglePlay();
                   }
                 }}
-                className="w-full py-3 px-4 bg-byzantine/20 hover:bg-byzantine/30 text-gold border border-gold/30 rounded-md transition-all flex items-center justify-center group"
+                className="w-full py-4 px-6 bg-gradient-to-r from-byzantine/30 to-byzantine/20 hover:from-byzantine/40 hover:to-byzantine/30 text-gold border-2 border-gold/40 rounded-xl transition-all flex items-center justify-center group hover:scale-105 transform duration-300"
               >
-                <span className="mr-2">🎵</span>
-                <span>{isPlaying ? "Open Chants Player" : "Listen to Sacred Chants"}</span>
-                <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity">→</span>
+                <span className="mr-3 text-xl">🎵</span>
+                <span className="font-medium">{isPlaying ? "Open Chants Player" : "Listen to Sacred Chants"}</span>
+                <ArrowRight className="ml-3 h-5 w-5 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
               </button>
             </div>
           </motion.div>
         </div>
       </motion.div>
       
+      {/* Enhanced Features and Donation Sections */}
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.8 }}
+        transition={{ duration: 1 }}
       >
         <FeaturesSection />
       </motion.div>
@@ -234,7 +255,7 @@ const Index = () => {
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.8 }}
+        transition={{ duration: 1 }}
       >
         <DonationSection />
       </motion.div>

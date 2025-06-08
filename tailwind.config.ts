@@ -45,6 +45,10 @@ export default {
         display: ['Playfair Display', 'serif'],
         body: ['Source Serif Pro', 'serif'],
       },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+      },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
@@ -85,6 +89,10 @@ export default {
           '0%': { transform: 'rotate(0deg)' },
           '100%': { transform: 'rotate(360deg)' },
         },
+        'float': {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -95,6 +103,7 @@ export default {
         'gentle-pulse': 'gentle-pulse 4s ease-in-out infinite',
         'candle-flicker': 'candle-flicker 4s ease-in-out infinite',
         'spin-slow': 'spin-slow 20s linear infinite',
+        'float': 'float 6s ease-in-out infinite',
       },
     },
   },
