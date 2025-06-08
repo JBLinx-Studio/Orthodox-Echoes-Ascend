@@ -99,29 +99,28 @@ export function MainNavigation() {
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1">
-            {/* Include AudioControls component here */}
             <AudioControls />
             
             <NavigationMenu>
               <NavigationMenuList>
                 <NavigationMenuItem>
                   <NavigationMenuTrigger className="bg-transparent text-gray-200 hover:bg-gold/10 hover:text-gold">
-                    Learn
+                    Faith & Doctrine
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-2">
                       <li className="row-span-3">
                         <NavigationMenuLink asChild>
-                          <a
+                          <Link
                             className="flex flex-col justify-end w-full h-full p-6 no-underline rounded-md outline-none select-none bg-gradient-to-b from-byzantine/20 to-byzantine/5 border border-byzantine/10 focus:shadow-md"
-                            href="/doctrine"
+                            to="/doctrine"
                           >
                             <BookOpen className="h-6 w-6 text-byzantine mb-2" />
                             <div className="text-lg font-medium text-white mb-2">Core Doctrine</div>
                             <p className="text-sm leading-tight text-gray-400">
-                              Explore the foundational beliefs and theology of the Orthodox faith
+                              Explore the foundational beliefs and theology of Orthodox Christianity
                             </p>
-                          </a>
+                          </Link>
                         </NavigationMenuLink>
                       </li>
                       <ListItem href="/learn" title="Learning Center" icon={<BookOpen className="h-4 w-4 mr-2 text-gold" />}>
@@ -153,7 +152,7 @@ export function MainNavigation() {
                         The rhythm of Orthodox life
                       </ListItem>
                       <ListItem href="/chants" title="Sacred Music" icon={<Music className="h-4 w-4 mr-2 text-gold" />}>
-                        Byzantine and Slavic chant traditions
+                        Byzantine and Slavonic chant traditions
                       </ListItem>
                     </ul>
                   </NavigationMenuContent>
@@ -171,7 +170,7 @@ export function MainNavigation() {
                       <ListItem href="/parishes" title="Find a Parish" icon={<BookmarkIcon className="h-4 w-4 mr-2 text-gold" />}>
                         Locate Orthodox communities near you
                       </ListItem>
-                      <ListItem href="/articles" title="Articles & Reflections" icon={<Edit className="h-4 w-4 mr-2 text-gold" />}>
+                      <ListItem href="/blog" title="Articles & Blog" icon={<Edit className="h-4 w-4 mr-2 text-gold" />}>
                         Spiritual writings and reflections
                       </ListItem>
                       <ListItem href="/support" title="Support Our Mission" icon={<Users className="h-4 w-4 mr-2 text-gold" />}>
@@ -182,21 +181,16 @@ export function MainNavigation() {
                 </NavigationMenuItem>
                 
                 <NavigationMenuItem>
-                  <MainNavItem href="/articles" active={location.pathname === '/articles'}>
-                    Blog
+                  <MainNavItem href="/contact" active={location.pathname === '/contact'} className="px-3 py-2">
+                    Contact
                   </MainNavItem>
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
-            
-            <MainNavItem href="/contact" active={location.pathname === '/contact'} className="px-3 py-2">
-              Contact
-            </MainNavItem>
           </div>
           
           {/* Action buttons with audio controls for mobile */}
           <div className="flex items-center gap-2">
-            {/* For mobile devices, show audio controls here */}
             <div className="md:hidden">
               <AudioControls />
             </div>
@@ -209,7 +203,6 @@ export function MainNavigation() {
               <User className="h-5 w-5" />
             </Button>
             
-            {/* Mobile menu button */}
             <Button 
               variant="ghost" 
               size="icon"
@@ -228,18 +221,18 @@ export function MainNavigation() {
           <nav className="container px-4 py-5">
             <div className="space-y-6">
               <div>
-                <h3 className="text-gold font-display text-sm mb-3">LEARN</h3>
+                <h3 className="text-gold font-display text-sm mb-3">FAITH & DOCTRINE</h3>
                 <ul className="space-y-3">
-                  <li>
-                    <Link to="/learn" className="flex items-center text-gray-200 hover:text-gold" onClick={() => setIsMobileMenuOpen(false)}>
-                      <BookOpen className="h-4 w-4 mr-2" />
-                      <span>Learning Center</span>
-                    </Link>
-                  </li>
                   <li>
                     <Link to="/doctrine" className="flex items-center text-gray-200 hover:text-gold" onClick={() => setIsMobileMenuOpen(false)}>
                       <BookOpen className="h-4 w-4 mr-2" />
                       <span>Core Doctrine</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/learn" className="flex items-center text-gray-200 hover:text-gold" onClick={() => setIsMobileMenuOpen(false)}>
+                      <BookOpen className="h-4 w-4 mr-2" />
+                      <span>Learning Center</span>
                     </Link>
                   </li>
                   <li>
@@ -303,7 +296,7 @@ export function MainNavigation() {
                     </Link>
                   </li>
                   <li>
-                    <Link to="/articles" className="flex items-center text-gray-200 hover:text-gold" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Link to="/blog" className="flex items-center text-gray-200 hover:text-gold" onClick={() => setIsMobileMenuOpen(false)}>
                       <Edit className="h-4 w-4 mr-2" />
                       <span>Articles & Blog</span>
                     </Link>
