@@ -15,6 +15,8 @@ import NotFound from "./pages/NotFound";
 import Contact from "./pages/Contact";
 import PrayerGuide from "./pages/PrayerGuide";
 import CoreDoctrine from "./pages/CoreDoctrine";
+import DailyReadings from "./pages/DailyReadings";
+import LearningCenter from "./pages/LearningCenter";
 import { useEffect, useState } from "react";
 import "./styles/audioEffects.css";
 
@@ -136,7 +138,8 @@ const App = () => {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/prayers" element={<PrayerGuide />} />
                 <Route path="/doctrine" element={<CoreDoctrine />} />
-                <Route path="/learn" element={<PlaceholderPage title="Learning Center" />} />
+                <Route path="/readings" element={<DailyReadings />} />
+                <Route path="/learn" element={<LearningCenter />} />
                 <Route path="/saints" element={<PlaceholderPage title="Lives of Saints" />} />
                 <Route path="/calendar" element={<PlaceholderPage title="Liturgical Calendar" />} />
                 <Route path="/community" element={<PlaceholderPage title="Orthodox Community" />} />
@@ -148,7 +151,6 @@ const App = () => {
                 <Route path="/icons" element={<PlaceholderPage title="Sacred Iconography" />} />
                 <Route path="/chants" element={<PlaceholderPage title="Sacred Chants" />} />
                 <Route path="/faq" element={<PlaceholderPage title="Frequently Asked Questions" />} />
-                <Route path="/readings" element={<PlaceholderPage title="Daily Readings" />} />
                 <Route path="/parishes" element={<PlaceholderPage title="Find a Parish" />} />
                 <Route path="/settings" element={<PlaceholderPage title="User Settings" />} />
               </Route>
