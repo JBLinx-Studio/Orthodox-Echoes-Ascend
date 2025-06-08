@@ -16,6 +16,11 @@ export interface BlogPost {
   likes?: number;
   views?: number;
   draft?: boolean;
+  readTime?: number;
+  updatedAt?: string;
+  lastEditedBy?: string;
+  publishedAt?: string;
+  comments?: number;
 }
 
 export interface BlogCategory {
@@ -23,4 +28,31 @@ export interface BlogCategory {
   name: string;
   slug: string;
   description: string;
+  iconName?: string;
+}
+
+export interface Comment {
+  id: string;
+  author: string;
+  content: string;
+  date: string;
+  approved: boolean;
+  flagged?: boolean;
+  articleId: string;
+  article?: string;
+  authorEmail?: string;
+}
+
+export interface UserProfile {
+  id: string;
+  username: string;
+  email: string;
+  role: "user" | "admin" | "moderator" | "contributor";
+  avatar?: string;
+  bio?: string;
+  isActive: boolean;
+  displayName?: string;
+  joinDate?: string;
+  lastActive?: string;
+  avatarUrl?: string;
 }

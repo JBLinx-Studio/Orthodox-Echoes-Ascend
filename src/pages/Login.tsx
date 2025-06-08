@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -6,47 +7,69 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { checkPassword, login, registerUser } from '@/utils/auth-utils';
 import { GoogleAuth } from '@/components/auth/GoogleAuth';
+import { supabase } from '@/integrations/supabase/client';
 
 export default function Login() {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   
   useEffect(() => {
     document.title = "Login | Orthodox Echoes";
-  }, []);
+
+    // Check if user is already logged in
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        navigate('/');
+      }
+    };
+
+    checkUser();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        toast.success(`Welcome!`, {
+          description: "You've successfully signed in."
+        });
+        navigate('/');
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     
-    if (username && password) {
-      if (checkPassword(password)) {
-        login(username, true);
-        toast.success(`Welcome, ${username}!`, {
-          description: "You've successfully signed in as an administrator."
-        });
-        navigate('/admin');
-      } else {
-        const users = JSON.parse(localStorage.getItem('orthodoxEchoesUsers') || '{}');
-        const user = users[username];
-        
-        if (user && user.password === password) {
-          login(username, false);
-          toast.success(`Welcome, ${username}!`, {
-            description: "You've successfully signed in."
-          });
-          navigate('/');
-        } else {
-          toast.error("Invalid credentials. Please check your username and password.");
-        }
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        toast.error(error.message);
+        return;
       }
-    } else {
-      toast.error("Please enter both username and password.");
+
+      if (data.user) {
+        toast.success(`Welcome back!`, {
+          description: "You've successfully signed in."
+        });
+        navigate('/');
+      }
+    } catch (error: any) {
+      toast.error("Sign in failed. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -58,21 +81,37 @@ export default function Login() {
       return;
     }
     
+    setIsLoading(true);
+    
     try {
-      registerUser(username, password);
-      toast.success(`Welcome, ${username}!`, {
-        description: "Your account has been created successfully."
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`
+        }
       });
-      navigate('/');
+
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+
+      if (data.user) {
+        toast.success(`Welcome!`, {
+          description: "Please check your email to confirm your account."
+        });
+      }
     } catch (error: any) {
-      console.error("Registration failed:", error);
-      toast.error(error.message || "Registration failed. Please try again.");
+      toast.error("Sign up failed. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0a0d16] to-[#161a26] flex items-center justify-center p-4">
-      {/* Enhanced Cathedral Background */}
+      {/* Background effects */}
       <div className="fixed inset-0 z-0">
         <div className="absolute inset-0 bg-[url('/images/noise-pattern.png')] opacity-5"></div>
         <div className="absolute inset-0 bg-gradient-to-t from-[#0a0d16] via-transparent to-transparent"></div>
@@ -83,8 +122,6 @@ export default function Login() {
         <div className="absolute bottom-40 right-1/3 w-3 h-3 bg-gold/70 rounded-full animate-[candle-flicker_4s_ease-in-out_infinite]"></div>
         <div className="absolute top-1/3 right-1/4 w-2 h-2 bg-gold/60 rounded-full animate-[candle-flicker_3s_ease-in-out_infinite]" style={{animationDelay: "0.5s"}}></div>
         <div className="absolute bottom-1/3 left-1/3 w-2.5 h-2.5 bg-gold/60 rounded-full animate-[candle-flicker_5s_ease-in-out_infinite]" style={{animationDelay: "1.2s"}}></div>
-        <div className="absolute top-60 left-20 w-20 h-20 rounded-full bg-byzantine/10 blur-xl animate-[pulse_7s_ease-in-out_infinite]"></div>
-        <div className="absolute bottom-80 right-40 w-24 h-24 rounded-full bg-byzantine/10 blur-xl animate-[pulse_9s_ease-in-out_infinite]"></div>
       </div>
 
       <motion.div
@@ -111,14 +148,15 @@ export default function Login() {
             <TabsContent value="signin" className="space-y-4">
               <form onSubmit={handleSignIn} className="space-y-4">
                 <div>
-                  <Label htmlFor="signInUsername">Username</Label>
+                  <Label htmlFor="signInEmail">Email</Label>
                   <Input
-                    type="text"
-                    id="signInUsername"
-                    placeholder="Enter your username"
+                    type="email"
+                    id="signInEmail"
+                    placeholder="Enter your email"
                     className="bg-[#1A1F2C]/70 border-gold/30"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
                   />
                 </div>
                 <div>
@@ -131,6 +169,7 @@ export default function Login() {
                       className="bg-[#1A1F2C]/70 border-gold/30 pr-10"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
+                      required
                     />
                     <Button
                       type="button"
@@ -144,8 +183,11 @@ export default function Login() {
                     </Button>
                   </div>
                 </div>
-                <Button className="w-full bg-byzantine hover:bg-byzantine-dark">
-                  Sign In
+                <Button 
+                  className="w-full bg-byzantine hover:bg-byzantine-dark" 
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Signing In...' : 'Sign In'}
                 </Button>
               </form>
 
@@ -164,14 +206,15 @@ export default function Login() {
             <TabsContent value="signup" className="space-y-4">
               <form onSubmit={handleSignUp} className="space-y-4">
                 <div>
-                  <Label htmlFor="signUpUsername">Username</Label>
+                  <Label htmlFor="signUpEmail">Email</Label>
                   <Input
-                    type="text"
-                    id="signUpUsername"
-                    placeholder="Choose a username"
+                    type="email"
+                    id="signUpEmail"
+                    placeholder="Enter your email"
                     className="bg-[#1A1F2C]/70 border-gold/30"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
                   />
                 </div>
                 <div>
@@ -184,6 +227,7 @@ export default function Login() {
                       className="bg-[#1A1F2C]/70 border-gold/30 pr-10"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
+                      required
                     />
                     <Button
                       type="button"
@@ -207,6 +251,7 @@ export default function Login() {
                       className="bg-[#1A1F2C]/70 border-gold/30 pr-10"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
                     />
                     <Button
                       type="button"
@@ -220,8 +265,11 @@ export default function Login() {
                     </Button>
                   </div>
                 </div>
-                <Button className="w-full bg-byzantine hover:bg-byzantine-dark">
-                  Create Account
+                <Button 
+                  className="w-full bg-byzantine hover:bg-byzantine-dark"
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Creating Account...' : 'Create Account'}
                 </Button>
               </form>
 
