@@ -20,6 +20,7 @@ export interface BlogPost {
   readTime?: number; // Reading time in minutes
   updatedAt?: string; // When the post was last updated
   lastEditedBy?: string; // Who last edited the post
+  comments?: number; // Number of comments
 }
 
 export interface BlogCategory {
@@ -39,6 +40,12 @@ export interface Comment {
   createdAt: string;
   approved: boolean;
   parentId?: string; // For nested comments
+  // Legacy properties for backward compatibility
+  articleId?: string;
+  article?: string;
+  date?: string;
+  flagged?: boolean;
+  authorEmail?: string;
 }
 
 export interface UserProfile {
@@ -48,8 +55,17 @@ export interface UserProfile {
   firstName?: string;
   lastName?: string;
   avatar?: string;
-  role: 'user' | 'admin' | 'moderator';
+  role: 'user' | 'admin' | 'moderator' | 'contributor';
   createdAt: string;
   lastLogin?: string;
   isActive: boolean;
+  // Additional properties for backward compatibility
+  displayName?: string;
+  avatarUrl?: string;
+  bio?: string;
+  joinDate?: string;
+  lastActive?: string;
+  comments?: number;
+  likes?: number;
+  followers?: number;
 }

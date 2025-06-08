@@ -31,12 +31,17 @@ const MOCK_USERS: UserProfile[] = [
     id: '1',
     username: 'donovan',
     email: 'donovan@orthodoxechoes.com',
+    role: 'admin',
+    createdAt: '2023-01-15T12:00:00Z',
+    isActive: true,
+    // Additional properties
     displayName: 'Donovan',
     avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=DO',
+    avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=DO',
     bio: 'Administrator and founder of Orthodox Echoes',
-    role: 'admin',
     joinDate: '2023-01-15T12:00:00Z',
     lastActive: '2023-05-05T14:30:00Z',
+    lastLogin: '2023-05-05T14:30:00Z',
     comments: 42,
     likes: 75,
     followers: 120
@@ -45,12 +50,17 @@ const MOCK_USERS: UserProfile[] = [
     id: '2',
     username: 'john_traditionist',
     email: 'john@orthodox.com',
+    role: 'contributor',
+    createdAt: '2023-02-20T10:15:00Z',
+    isActive: true,
+    // Additional properties
     displayName: 'John the Traditionist',
     avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=JT',
+    avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=JT',
     bio: 'Orthodox theology enthusiast and writer',
-    role: 'contributor',
     joinDate: '2023-02-20T10:15:00Z',
     lastActive: '2023-05-04T16:45:00Z',
+    lastLogin: '2023-05-04T16:45:00Z',
     comments: 86,
     likes: 124,
     followers: 45
@@ -59,12 +69,17 @@ const MOCK_USERS: UserProfile[] = [
     id: '3',
     username: 'maria_faith',
     email: 'maria@example.com',
+    role: 'moderator',
+    createdAt: '2023-02-25T09:30:00Z',
+    isActive: true,
+    // Additional properties
     displayName: 'Maria',
     avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=MF',
+    avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=MF',
     bio: 'Exploring the depths of Orthodox spirituality',
-    role: 'moderator',
     joinDate: '2023-02-25T09:30:00Z',
     lastActive: '2023-05-05T10:20:00Z',
+    lastLogin: '2023-05-05T10:20:00Z',
     comments: 53,
     likes: 89,
     followers: 38
@@ -73,12 +88,17 @@ const MOCK_USERS: UserProfile[] = [
     id: '4',
     username: 'father_nicholas',
     email: 'frnicolas@parish.org',
+    role: 'contributor',
+    createdAt: '2023-03-10T14:20:00Z',
+    isActive: true,
+    // Additional properties
     displayName: 'Fr. Nicholas',
     avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=FN',
+    avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=FN',
     bio: 'Parish priest and theological writer',
-    role: 'contributor',
     joinDate: '2023-03-10T14:20:00Z',
     lastActive: '2023-05-03T13:15:00Z',
+    lastLogin: '2023-05-03T13:15:00Z',
     comments: 29,
     likes: 47,
     followers: 72
@@ -87,12 +107,17 @@ const MOCK_USERS: UserProfile[] = [
     id: '5',
     username: 'pilgrim_anna',
     email: 'anna@pilgrim.com',
+    role: 'user',
+    createdAt: '2023-03-15T08:45:00Z',
+    isActive: true,
+    // Additional properties
     displayName: 'Anna the Pilgrim',
     avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=AP',
+    avatar: 'https://api.dicebear.com/7.x/initials/svg?seed=AP',
     bio: 'Documenting sacred sites around the Orthodox world',
-    role: 'user',
     joinDate: '2023-03-15T08:45:00Z',
     lastActive: '2023-05-02T09:30:00Z',
+    lastLogin: '2023-05-02T09:30:00Z',
     comments: 17,
     likes: 32,
     followers: 26
@@ -223,7 +248,7 @@ export function UserManager() {
                         <TableRow key={user.id}>
                           <TableCell>
                             <Avatar>
-                              <AvatarImage src={user.avatarUrl} alt={user.displayName || user.username} />
+                              <AvatarImage src={user.avatar || user.avatarUrl} alt={user.displayName || user.username} />
                               <AvatarFallback>
                                 {user.displayName?.[0] || user.username[0].toUpperCase()}
                               </AvatarFallback>
@@ -259,14 +284,14 @@ export function UserManager() {
                           <TableCell>
                             <div className="flex items-center text-sm">
                               <Calendar className="h-3 w-3 mr-1 text-muted-foreground" />
-                              {new Date(user.joinDate).toLocaleDateString()}
+                              {new Date(user.joinDate || user.createdAt).toLocaleDateString()}
                             </div>
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center text-sm">
                               <Eye className="h-3 w-3 mr-1 text-muted-foreground" />
-                              {user.lastActive 
-                                ? `Last seen ${new Date(user.lastActive).toLocaleDateString()}`
+                              {user.lastActive || user.lastLogin
+                                ? `Last seen ${new Date(user.lastActive || user.lastLogin!).toLocaleDateString()}`
                                 : 'Never active'}
                             </div>
                           </TableCell>

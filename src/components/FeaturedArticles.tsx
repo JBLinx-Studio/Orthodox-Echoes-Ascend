@@ -22,6 +22,7 @@ const ARTICLES: BlogPost[] = [
     tags: ["Liturgy", "Worship", "Theology"],
     featured: true,
     category: "liturgy",
+    contentType: "article",
     readTime: 8
   },
   {
@@ -35,6 +36,7 @@ const ARTICLES: BlogPost[] = [
     tags: ["Saints", "Church History", "Theology"],
     featured: true,
     category: "saints",
+    contentType: "saint",
     readTime: 12
   },
   {
@@ -48,6 +50,7 @@ const ARTICLES: BlogPost[] = [
     tags: ["Theology", "Doctrine", "Faith"],
     featured: false,
     category: "theology",
+    contentType: "doctrine",
     readTime: 15
   },
   {
@@ -61,6 +64,7 @@ const ARTICLES: BlogPost[] = [
     tags: ["Church History", "East-West Schism"],
     featured: true,
     category: "history",
+    contentType: "article",
     readTime: 10
   },
   {
@@ -74,6 +78,7 @@ const ARTICLES: BlogPost[] = [
     tags: ["Iconography", "Art", "Theology"],
     featured: true,
     category: "art",
+    contentType: "icon",
     readTime: 7
   },
   {
@@ -87,6 +92,7 @@ const ARTICLES: BlogPost[] = [
     tags: ["Spirituality", "Prayer", "Traditions"],
     featured: false,
     category: "spirituality",
+    contentType: "prayer",
     readTime: 9
   },
 ];
