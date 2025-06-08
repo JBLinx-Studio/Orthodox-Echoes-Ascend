@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,6 +12,9 @@ import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Blog from "./pages/Blog";
 import NotFound from "./pages/NotFound";
+import Contact from "./pages/Contact";
+import PrayerGuide from "./pages/PrayerGuide";
+import CoreDoctrine from "./pages/CoreDoctrine";
 import { useEffect, useState } from "react";
 import "./styles/audioEffects.css";
 
@@ -131,8 +133,10 @@ const App = () => {
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/blog/:id" element={<Blog />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/prayers" element={<PrayerGuide />} />
+                <Route path="/doctrine" element={<CoreDoctrine />} />
                 <Route path="/learn" element={<PlaceholderPage title="Learning Center" />} />
-                <Route path="/doctrine" element={<PlaceholderPage title="Orthodox Doctrine" />} />
                 <Route path="/saints" element={<PlaceholderPage title="Lives of Saints" />} />
                 <Route path="/calendar" element={<PlaceholderPage title="Liturgical Calendar" />} />
                 <Route path="/community" element={<PlaceholderPage title="Orthodox Community" />} />
@@ -141,12 +145,10 @@ const App = () => {
                 <Route path="/books" element={<PlaceholderPage title="Sacred Library" />} />
                 <Route path="/liturgy" element={<PlaceholderPage title="Liturgical Life" />} />
                 <Route path="/article/:id" element={<PlaceholderPage title="Article Details" />} />
-                <Route path="/prayers" element={<PlaceholderPage title="Prayer Guide" />} />
                 <Route path="/icons" element={<PlaceholderPage title="Sacred Iconography" />} />
                 <Route path="/chants" element={<PlaceholderPage title="Sacred Chants" />} />
                 <Route path="/faq" element={<PlaceholderPage title="Frequently Asked Questions" />} />
                 <Route path="/readings" element={<PlaceholderPage title="Daily Readings" />} />
-                <Route path="/contact" element={<PlaceholderPage title="Contact Us" />} />
                 <Route path="/parishes" element={<PlaceholderPage title="Find a Parish" />} />
                 <Route path="/settings" element={<PlaceholderPage title="User Settings" />} />
               </Route>
