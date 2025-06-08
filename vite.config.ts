@@ -6,12 +6,12 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: mode === 'production' ? '/Orthodox-Echoes-Ascend/' : './',
+  base: mode === 'production' ? '/Orthodox-Echoes-Ascend/' : './', // Updated repo name for GitHub Pages
   server: {
     host: "::",
     port: 8080,
-    strictPort: true,
-    open: true,
+    strictPort: true, // Fail if port is already in use
+    open: true, // Open browser on server start
   },
   plugins: [
     react(),
@@ -25,42 +25,31 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     outDir: 'dist',
-    sourcemap: false, // Disable for production
+    sourcemap: true,
     minify: 'terser',
-    assetsInlineLimit: 4096,
+    assetsInlineLimit: 4096, // 4kb
     cssCodeSplit: true,
-    // Enhanced cache busting for assets
+    // Add cache busting for assets
     rollupOptions: {
       output: {
-        entryFileNames: `assets/[name].[hash].js`,
-        chunkFileNames: `assets/[name].[hash].js`,
-        assetFileNames: (assetInfo) => {
-          const info = assetInfo.name?.split('.') || [];
-          const ext = info[info.length - 1];
-          if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext || '')) {
-            return `assets/img/[name].[hash][extname]`;
-          }
-          return `assets/[name].[hash][extname]`;
-        },
+        entryFileNames: 'assets/[name].[hash].js',
+        chunkFileNames: 'assets/[name].[hash].js',
+        assetFileNames: 'assets/[name].[hash].[ext]',
         manualChunks: {
           react: ['react', 'react-dom'],
           router: ['react-router-dom'],
           ui: ['@radix-ui/react-toast', '@radix-ui/react-tooltip', '@radix-ui/react-dialog'],
           motion: ['framer-motion'],
           charts: ['recharts'],
-          supabase: ['@supabase/supabase-js'],
         }
       }
     },
     terserOptions: {
+      // Terser specific options
       compress: {
-        drop_console: mode === 'production',
+        drop_console: mode === 'production', // Only drop console in production
         drop_debugger: true,
       }
     },
-  },
-  define: {
-    // Add build timestamp for cache busting
-    __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
   },
 }));
