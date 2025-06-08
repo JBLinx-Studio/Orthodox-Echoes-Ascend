@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -10,7 +9,7 @@ import { BlogPost, BlogCategory } from '@/types/BlogPost';
 import { BlogPostCard } from '@/components/blog/BlogPostCard';
 import { BlogPostDetail } from '@/components/blog/BlogPostDetail';
 import { BlogPostEditor } from '@/components/blog/BlogPostEditor';
-import { Search, Edit, Plus, X } from 'lucide-react';
+import { Search, Edit, Plus, X, BookOpen, Feather, Library } from 'lucide-react';
 
 // Get sample blog posts from localStorage or use defaults
 const getSavedBlogPosts = (): BlogPost[] => {
@@ -21,7 +20,7 @@ const getSavedBlogPosts = (): BlogPost[] => {
     return posts.filter((post: BlogPost) => !post.draft);
   }
   
-  // Sample blog posts
+  // Sample content with proper categorization
   return [
     {
       id: "1",
@@ -41,7 +40,8 @@ const getSavedBlogPosts = (): BlogPost[] => {
       imageUrl: "https://images.unsplash.com/photo-1574039677318-3febf1c5c8e3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
       tags: ["Liturgy", "Worship", "Theology"],
       featured: true,
-      category: "liturgy"
+      category: "articles",
+      contentType: "article"
     },
     {
       id: "2",
@@ -63,73 +63,90 @@ const getSavedBlogPosts = (): BlogPost[] => {
       imageUrl: "https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
       tags: ["Saints", "Church History", "Theology"],
       featured: true,
-      category: "saints"
+      category: "articles",
+      contentType: "article"
     },
     {
       id: "3",
-      title: "Understanding the Holy Trinity",
-      excerpt: "A theological exploration of the Orthodox understanding of the Triune God.",
+      title: "Modern Faith in Ancient Traditions",
+      excerpt: "Navigating contemporary life while staying true to Orthodox principles.",
       content: `
-        <p>The doctrine of the Holy Trinity is central to Orthodox Christianity, yet it remains one of the most profound mysteries of our faith. The Triune God—Father, Son, and Holy Spirit—is one God in three Persons, a reality that transcends human understanding yet is essential for salvation.</p>
+        <p>In our rapidly changing world, Orthodox Christians face unique challenges in maintaining their faith while engaging with modern society. This personal reflection explores how we can live authentically Orthodox lives in the 21st century.</p>
         
-        <p>Orthodox theology approaches the Trinity not as a problem to be solved, but as a mystery to be experienced. The Church Fathers used various analogies to help explain this reality, though all analogies ultimately fall short of capturing the fullness of God's being.</p>
+        <p>The beauty of Orthodoxy lies in its timeless wisdom that speaks to every generation. While the world around us transforms, the fundamental truths of our faith remain constant, offering stability and direction in uncertain times.</p>
         
-        <p>Unlike Western approaches that often begin with God's essence, Orthodox theology emphasizes the three Persons while affirming their complete unity of essence. The Father is unbegotten, the Son is eternally begotten of the Father, and the Holy Spirit eternally proceeds from the Father.</p>
-        
-        <p>This understanding is not merely academic but deeply practical. Through Baptism and Chrismation, Orthodox Christians enter into communion with the Trinity. In prayer and worship, we experience the distinct work of each Person while encountering the one God.</p>
-        
-        <p>The Trinity reveals that God is inherently relational, existing as a communion of love. This has profound implications for human relationships and community, showing that we too are created for communion with God and one another.</p>
+        <p>Through prayer, fasting, and participation in the sacraments, we find ways to sanctify our daily lives, transforming ordinary moments into opportunities for spiritual growth and communion with God.</p>
       `,
-      author: "Metropolitan Nicholas",
-      publishDate: "March 28, 2025",
+      author: "Maria Christodoulou",
+      publishDate: "April 5, 2025",
       imageUrl: "https://images.unsplash.com/photo-1595118216242-53018840a9f3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-      tags: ["Theology", "Doctrine", "Faith"],
+      tags: ["Modern Life", "Spirituality", "Personal Reflection"],
       featured: false,
-      category: "theology"
+      category: "blog",
+      contentType: "blog"
     },
     {
       id: "4",
-      title: "The Great Schism of 1054",
-      excerpt: "Examining the historical and theological factors that led to the divide between East and West.",
+      title: "The Mystical Theology of St. John Chrysostom",
+      excerpt: "Chapter 1: Introduction to the Golden-Mouthed Preacher's Spiritual Teachings",
       content: `
-        <p>The Great Schism of 1054 marked the formal separation between the Eastern Orthodox and Roman Catholic Churches, a division that continues to this day. While often attributed to a single moment when Pope Leo IX's representatives placed a bull of excommunication on the altar of Hagia Sophia, the schism was actually the culmination of centuries of growing theological, cultural, and political differences.</p>
+        <h2>Chapter 1: The Foundation of Mystical Understanding</h2>
         
-        <p>Several key issues contributed to the divide. Theologically, the addition of the "filioque" clause to the Nicene Creed by the Western Church (stating that the Holy Spirit proceeds from both the Father "and the Son") was rejected by the East as an unauthorized alteration to a universal creed and a theological error.</p>
+        <p>St. John Chrysostom, known as the Golden-Mouthed preacher, offers us profound insights into the mystical dimensions of Orthodox theology. His homilies and writings reveal a deep understanding of the relationship between divine revelation and human experience.</p>
         
-        <p>Questions of authority also played a central role. The Pope's claims to universal jurisdiction over the entire Church conflicted with the Eastern understanding of church governance, which emphasized conciliarity and the equality of the ancient Patriarchates.</p>
+        <p>In this comprehensive study, we explore how Chrysostom's theological method bridges the gap between academic theology and lived spiritual experience. His approach to Scripture interpretation demonstrates how divine truth is not merely intellectual but transformative.</p>
         
-        <p>Cultural and linguistic differences amplified these tensions. As Latin became dominant in the West while Greek remained the language of theology in the East, communication became more difficult, and different emphases in theological approach emerged.</p>
+        <p>The Archbishop of Constantinople understood that true theology must lead to theosis—the divine transformation of the human person. This book examines how his teachings can guide modern Orthodox Christians toward deeper spiritual maturity.</p>
         
-        <p>The schism represents one of the most significant fractures in Christian history, leaving a legacy that continues to shape both Eastern Orthodoxy and Roman Catholicism. Modern ecumenical efforts have sought to heal this ancient wound, though substantial differences remain.</p>
+        <h3>The Method of Divine Contemplation</h3>
+        
+        <p>Chrysostom's approach to divine contemplation was both rigorous and accessible. He believed that every Christian, regardless of their educational background, could access the profound mysteries of faith through humble prayer and careful attention to Scripture...</p>
       `,
-      author: "Prof. Alexandra Konstantinidis",
-      publishDate: "April 10, 2025",
-      imageUrl: "https://images.unsplash.com/photo-1548407260-da850faa41e3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-      tags: ["Church History", "East-West Schism"],
-      featured: false,
-      category: "history"
+      author: "Metropolitan Kallistos",
+      publishDate: "March 20, 2025",
+      imageUrl: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+      tags: ["Patristics", "Mystical Theology", "St. John Chrysostom"],
+      featured: true,
+      category: "books",
+      contentType: "book"
     },
     {
       id: "5",
-      title: "The Meaning of Orthodox Iconography",
-      excerpt: "Exploring the theological significance of icons as windows to heaven.",
+      title: "Living the Orthodox Way: A Complete Guide",
+      excerpt: "A comprehensive manual for Orthodox Christian living in the modern world",
       content: `
-        <p>Orthodox icons are not mere religious art or decorations but are central to Orthodox spirituality and theology. Often described as "windows to heaven," icons make present the realities they depict and serve as points of encounter with the divine.</p>
+        <h2>Table of Contents</h2>
         
-        <p>The theological foundation for iconography rests in the Incarnation of Christ. Because God became visible in the person of Jesus Christ, He can and should be depicted in sacred art. When we venerate icons, we are not worshipping the material object but rather honoring the person represented, with the veneration passing to the prototype.</p>
+        <h3>Part I: Foundations of Faith</h3>
+        <ul>
+          <li>Chapter 1: Understanding Orthodox Theology</li>
+          <li>Chapter 2: The Holy Trinity and Divine Economy</li>
+          <li>Chapter 3: Christ and Salvation</li>
+        </ul>
         
-        <p>Icons follow strict canonical traditions that have developed over centuries. Their non-naturalistic style is intentional—they represent spiritual rather than physical reality. The reverse perspective, stylized features, and golden backgrounds all point to the transfigured state of those depicted.</p>
+        <h3>Part II: Sacramental Life</h3>
+        <ul>
+          <li>Chapter 4: Baptism and Chrismation</li>
+          <li>Chapter 5: The Divine Liturgy</li>
+          <li>Chapter 6: Marriage and Monasticism</li>
+        </ul>
         
-        <p>In Orthodox homes and churches, icons create sacred space. The iconostasis (icon screen) in Orthodox churches stands not as a barrier but as a representation of the meeting of heaven and earth, populated by Christ, the Theotokos, and the saints who intercede for us.</p>
+        <h3>Part III: Spiritual Practices</h3>
+        <ul>
+          <li>Chapter 7: Prayer and Contemplation</li>
+          <li>Chapter 8: Fasting and Feasting</li>
+          <li>Chapter 9: Reading the Fathers</li>
+        </ul>
         
-        <p>Through their silent presence, icons teach theology, guide prayer, and remind us that we are never alone in our spiritual journey, but always surrounded by "so great a cloud of witnesses" (Hebrews 12:1).</p>
+        <p>This comprehensive guide provides practical wisdom for living an authentic Orthodox life, drawing from Scripture, the Church Fathers, and centuries of spiritual tradition...</p>
       `,
-      author: "Iconographer Maria",
-      publishDate: "March 22, 2025",
-      imageUrl: "https://images.unsplash.com/photo-1594822566893-f1e6e0444888?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
-      tags: ["Iconography", "Art", "Theology"],
+      author: "Archimandrite Sophrony",
+      publishDate: "February 15, 2025",
+      imageUrl: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80",
+      tags: ["Practical Orthodox", "Spiritual Life", "Guide"],
       featured: false,
-      category: "art"
+      category: "books",
+      contentType: "book"
     }
   ];
 };
@@ -143,12 +160,14 @@ const getCategories = (): BlogCategory[] => {
   
   // Default categories
   return [
+    { id: "articles", name: "Sacred Articles", slug: "articles" },
+    { id: "blog", name: "Spiritual Blog", slug: "blog" },
+    { id: "books", name: "Sacred Library", slug: "books" },
     { id: "theology", name: "Theology", slug: "theology" },
     { id: "liturgy", name: "Liturgy", slug: "liturgy" },
     { id: "spirituality", name: "Spirituality", slug: "spirituality" },
     { id: "history", name: "Church History", slug: "history" },
-    { id: "saints", name: "Saints", slug: "saints" },
-    { id: "art", name: "Orthodox Art", slug: "art" }
+    { id: "saints", name: "Saints", slug: "saints" }
   ];
 };
 
@@ -165,7 +184,7 @@ export default function Blog() {
   const navigate = useNavigate();
   
   useEffect(() => {
-    document.title = "Blog | Orthodox Echoes";
+    document.title = "Sacred Content | Orthodox Echoes";
     
     // Check if user is admin
     const adminData = localStorage.getItem('orthodoxEchoesAdmin');
@@ -182,8 +201,8 @@ export default function Blog() {
         setPosts(updatedPosts);
         savePosts(updatedPosts);
       } else {
-        toast.error("Article not found", {
-          description: "The article you're looking for doesn't exist or has been removed."
+        toast.error("Content not found", {
+          description: "The content you're looking for doesn't exist or has been removed."
         });
         navigate('/blog');
       }
@@ -213,7 +232,10 @@ export default function Blog() {
   const filteredPosts = posts.filter(post => {
     // First apply tab filter
     if (activeTab === 'featured' && !post.featured) return false;
-    if (activeTab !== 'featured' && activeTab !== 'recent') {
+    if (activeTab === 'articles' && post.contentType !== 'article') return false;
+    if (activeTab === 'blog' && post.contentType !== 'blog') return false;
+    if (activeTab === 'books' && post.contentType !== 'book') return false;
+    if (activeTab !== 'featured' && activeTab !== 'articles' && activeTab !== 'blog' && activeTab !== 'books') {
       const categorySlug = categories.find(cat => cat.name.toLowerCase() === activeTab.toLowerCase())?.id;
       if (categorySlug && post.category !== categorySlug) return false;
     }
@@ -234,6 +256,9 @@ export default function Blog() {
   });
   
   const featuredPosts = posts.filter(post => post.featured);
+  const articlePosts = posts.filter(post => post.contentType === 'article');
+  const blogPosts = posts.filter(post => post.contentType === 'blog');
+  const bookPosts = posts.filter(post => post.contentType === 'book');
 
   const handleLikePost = (postId: string) => {
     const updatedPosts = posts.map(post => 
@@ -241,7 +266,7 @@ export default function Blog() {
     );
     setPosts(updatedPosts);
     savePosts(updatedPosts);
-    toast.success("Article liked!");
+    toast.success("Content liked!");
   };
   
   const handleAddPost = () => {
@@ -292,11 +317,11 @@ export default function Blog() {
   };
   
   const handleDeletePost = (postId: string) => {
-    if (confirm("Are you sure you want to delete this article? This action cannot be undone.")) {
+    if (confirm("Are you sure you want to delete this content? This action cannot be undone.")) {
       const updatedPosts = posts.filter(post => post.id !== postId);
       setPosts(updatedPosts);
       savePosts(updatedPosts);
-      toast.success("Article deleted successfully");
+      toast.success("Content deleted successfully");
       navigate('/blog');
     }
   };
@@ -347,9 +372,9 @@ export default function Blog() {
       >
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold orthodox-heading text-gold mb-2">Orthodox Insights</h1>
+            <h1 className="text-3xl md:text-4xl font-bold orthodox-heading text-gold mb-2">Sacred Content Library</h1>
             <p className="text-white/70 max-w-2xl">
-              Explore articles on Orthodox theology, spirituality, history, and contemporary issues to deepen your understanding of the faith.
+              Explore our comprehensive collection of Orthodox articles, spiritual blogs, and sacred books to deepen your understanding of the faith.
             </p>
           </div>
           
@@ -358,11 +383,11 @@ export default function Blog() {
               <div className="flex">
                 <div className="relative flex-grow">
                   <Input
-                    placeholder="Search articles..."
+                    placeholder="Search content..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10 pr-10 bg-[#1A1F2C]/70 border-gold/30 min-w-[200px]"
-                    aria-label="Search articles"
+                    aria-label="Search content"
                   />
                   <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gold/60" />
                   {searchQuery && (
@@ -383,7 +408,7 @@ export default function Blog() {
                 onClick={handleAddPost} 
                 className="bg-byzantine hover:bg-byzantine-dark shadow-gold/10 shadow-lg whitespace-nowrap"
               >
-                <Plus className="h-4 w-4 mr-2" /> New Article
+                <Plus className="h-4 w-4 mr-2" /> New Content
               </Button>
             )}
           </div>
@@ -391,23 +416,31 @@ export default function Blog() {
         
         <Tabs defaultValue={activeTab} value={activeTab} onValueChange={setActiveTab} className="mb-12">
           <TabsList className="bg-[#1A1F2C]/70 border border-gold/20">
-            <TabsTrigger value="featured">Featured</TabsTrigger>
-            <TabsTrigger value="recent">Recent</TabsTrigger>
+            <TabsTrigger value="featured" className="flex items-center gap-2">
+              Featured
+            </TabsTrigger>
+            <TabsTrigger value="articles" className="flex items-center gap-2">
+              <Feather className="h-4 w-4" />
+              Articles
+            </TabsTrigger>
+            <TabsTrigger value="blog" className="flex items-center gap-2">
+              <Edit className="h-4 w-4" />
+              Blog
+            </TabsTrigger>
+            <TabsTrigger value="books" className="flex items-center gap-2">
+              <Library className="h-4 w-4" />
+              Books
+            </TabsTrigger>
             <TabsTrigger value="theology">Theology</TabsTrigger>
             <TabsTrigger value="history">History</TabsTrigger>
             <TabsTrigger value="spirituality">Spirituality</TabsTrigger>
-            {categories.map(category => 
-              category.name.toLowerCase() !== 'theology' && 
-              category.name.toLowerCase() !== 'history' && 
-              category.name.toLowerCase() !== 'spirituality' && (
-                <TabsTrigger key={category.id} value={category.name.toLowerCase()}>
-                  {category.name}
-                </TabsTrigger>
-              )
-            )}
           </TabsList>
           
           <TabsContent value="featured" className="pt-6">
+            <div className="mb-6">
+              <h2 className="text-2xl font-semibold text-gold mb-4">Featured Content</h2>
+              <p className="text-white/60 mb-6">Our most important and inspiring content, carefully selected for spiritual growth.</p>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {featuredPosts.length > 0 ? (
                 featuredPosts.map(post => (
@@ -418,15 +451,24 @@ export default function Blog() {
                   />
                 ))
               ) : (
-                <p className="text-white/70">No featured articles available.</p>
+                <p className="text-white/70">No featured content available.</p>
               )}
             </div>
           </TabsContent>
           
-          <TabsContent value="recent" className="pt-6">
+          <TabsContent value="articles" className="pt-6">
+            <div className="mb-6 flex items-center gap-3">
+              <div className="p-2 bg-gold/10 rounded-lg">
+                <Feather className="h-6 w-6 text-gold" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-semibold text-gold">Sacred Articles</h2>
+                <p className="text-white/60">In-depth theological studies and scholarly discourse on Orthodox Christianity</p>
+              </div>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredPosts.length > 0 ? (
-                filteredPosts.map(post => (
+              {articlePosts.length > 0 ? (
+                articlePosts.map(post => (
                   <BlogPostCard 
                     key={post.id} 
                     post={post} 
@@ -435,13 +477,65 @@ export default function Blog() {
                   />
                 ))
               ) : (
-                <p className="text-white/70">No articles found matching your search.</p>
+                <p className="text-white/70">No articles available.</p>
               )}
             </div>
           </TabsContent>
           
-          {/* Dynamic category tabs based on the selected tab */}
-          {Array.from(new Set([...categories.map(c => c.name.toLowerCase()), 'theology', 'history', 'spirituality'])).map(categoryName => (
+          <TabsContent value="blog" className="pt-6">
+            <div className="mb-6 flex items-center gap-3">
+              <div className="p-2 bg-byzantine/10 rounded-lg">
+                <Edit className="h-6 w-6 text-byzantine" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-semibold text-gold">Spiritual Blog</h2>
+                <p className="text-white/60">Personal reflections and contemporary insights for modern Orthodox living</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {blogPosts.length > 0 ? (
+                blogPosts.map(post => (
+                  <BlogPostCard 
+                    key={post.id} 
+                    post={post} 
+                    onLike={() => handleLikePost(post.id)} 
+                    onEdit={isAdmin ? handleEditPost : undefined}
+                  />
+                ))
+              ) : (
+                <p className="text-white/70">No blog posts available.</p>
+              )}
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="books" className="pt-6">
+            <div className="mb-6 flex items-center gap-3">
+              <div className="p-2 bg-gold/10 rounded-lg">
+                <Library className="h-6 w-6 text-gold" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-semibold text-gold">Sacred Library</h2>
+                <p className="text-white/60">Complete books and comprehensive works on Orthodox theology and tradition</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {bookPosts.length > 0 ? (
+                bookPosts.map(post => (
+                  <BlogPostCard 
+                    key={post.id} 
+                    post={post} 
+                    onLike={() => handleLikePost(post.id)} 
+                    onEdit={isAdmin ? handleEditPost : undefined}
+                  />
+                ))
+              ) : (
+                <p className="text-white/70">No books available.</p>
+              )}
+            </div>
+          </TabsContent>
+          
+          {/* Dynamic category tabs */}
+          {['theology', 'history', 'spirituality'].map(categoryName => (
             <TabsContent key={categoryName} value={categoryName} className="pt-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredPosts.length > 0 ? (
@@ -454,7 +548,7 @@ export default function Blog() {
                     />
                   ))
                 ) : (
-                  <p className="text-white/70">No articles available in this category.</p>
+                  <p className="text-white/70">No content available in this category.</p>
                 )}
               </div>
             </TabsContent>
