@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { 
   Code, Database, Users, Settings, Shield, Crown, 
-  LogOut, Activity, Server, Globe, Lock
+  LogOut, Activity, Server, Globe, Lock, ArrowLeft
 } from 'lucide-react';
 import { UserRoleManager } from './UserRoleManager';
 import { ContentManager } from '@/components/admin/ContentManager';
@@ -73,6 +74,7 @@ const DeveloperAnalyticsPanel = ({ stats }: { stats: DeveloperStats }) => {
 };
 
 export function DeveloperDashboard({ onLogout }: DeveloperDashboardProps) {
+  const navigate = useNavigate();
   const [stats] = useState<DeveloperStats>({
     totalUsers: 1247,
     totalContent: 156,
@@ -86,9 +88,10 @@ export function DeveloperDashboard({ onLogout }: DeveloperDashboardProps) {
     localStorage.removeItem('orthodoxEchoesDeveloperAccess');
     localStorage.removeItem('orthodoxEchoesDeveloperLoginTime');
     toast.info('Developer session ended', {
-      description: 'Logged out of development sanctuary.'
+      description: 'Returning to the main sanctuary.'
     });
     onLogout();
+    navigate('/'); // Navigate to home page
   };
 
   return (
@@ -97,6 +100,13 @@ export function DeveloperDashboard({ onLogout }: DeveloperDashboardProps) {
       <div className="bg-[#1A1F2C]/90 border-b border-gold/20 p-4">
         <div className="container mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate('/')}
+              className="text-gold hover:text-gold/80 hover:bg-gold/10 p-2"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
             <div className="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center">
               <Crown className="w-6 h-6 text-gold" />
             </div>

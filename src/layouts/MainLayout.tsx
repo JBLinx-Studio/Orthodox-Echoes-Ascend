@@ -2,6 +2,7 @@
 import { Outlet } from 'react-router-dom';
 import { NavBar } from '@/components/core/NavBar';
 import { Footer } from '@/components/Footer';
+import { FloatingAudioPlayer } from '@/components/audio/FloatingAudioPlayer';
 import { useEffect, useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -137,6 +138,9 @@ export function MainLayout() {
           </motion.main>
         )}
       </AnimatePresence>
+      
+      {/* Floating Audio Player */}
+      <FloatingAudioPlayer />
       
       {/* Footer with proper z-index */}
       <div className="relative z-20">
