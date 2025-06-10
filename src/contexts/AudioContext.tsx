@@ -1,153 +1,143 @@
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useRef, ReactNode } from 'react';
 
-interface AudioContextType {
+interface AudioState {
   isPlaying: boolean;
   currentTrack: string | null;
   volume: number;
-  isMinimized: boolean;
-  currentTrackIndex: number;
-  playlist: Array<{
-    name: string;
-    icon: string;
-    description: string;
-    length: string;
-    src?: string;
-  }>;
-  reverbEnabled: boolean;
-  reverbAmount: number;
   isMuted: boolean;
-  setIsPlaying: (playing: boolean) => void;
-  setCurrentTrack: (track: string | null) => void;
+  isLoading: boolean;
+}
+
+interface AudioContextType extends AudioState {
+  play: (trackUrl: string) => void;
+  pause: () => void;
+  stop: () => void;
   setVolume: (volume: number) => void;
-  togglePlay: () => void;
-  expandPlayer: () => void;
-  minimizePlayer: () => void;
-  setCurrentTrackIndex: (index: number) => void;
-  toggleReverb: () => void;
-  setReverbAmount: (amount: number) => void;
-  muteAudio: () => void;
-  unmuteAudio: () => void;
-  nextTrack: () => void;
-  prevTrack: () => void;
+  toggleMute: () => void;
+  seek: (time: number) => void;
+  getDuration: () => number;
+  getCurrentTime: () => number;
 }
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
 
-// Default playlist
-const defaultPlaylist = [
-  {
-    name: "Divine Liturgy Cherubic Hymn",
-    icon: "🕯️",
-    description: "Traditional Byzantine chant from the Divine Liturgy",
-    length: "3:56"
-  },
-  {
-    name: "Agni Parthene (O Pure Virgin)",
-    icon: "✝️",
-    description: "Beautiful hymn dedicated to the Theotokos",
-    length: "5:32"
-  },
-  {
-    name: "Kyrie Eleison (Lord Have Mercy)",
-    icon: "🙏",
-    description: "The thrice-sung plea for divine mercy",
-    length: "4:20"
-  },
-  {
-    name: "The Great Doxology",
-    icon: "⭐",
-    description: "Glory to God in the highest, and on earth peace",
-    length: "6:10"
+export const useAudio = () => {
+  const context = useContext(AudioContext);
+  if (!context) {
+    throw new Error('useAudio must be used within an AudioContextProvider');
   }
-];
+  return context;
+};
 
 interface AudioContextProviderProps {
   children: ReactNode;
 }
 
-export function AudioContextProvider({ children }: AudioContextProviderProps) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTrack, setCurrentTrack] = useState<string | null>(null);
-  const [volume, setVolume] = useState(70);
-  const [isMinimized, setIsMinimized] = useState(false);
-  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
-  const [playlist] = useState(defaultPlaylist);
-  const [reverbEnabled, setReverbEnabled] = useState(false);
-  const [reverbAmount, setReverbAmount] = useState(30);
-  const [isMuted, setIsMuted] = useState(false);
+export const AudioContextProvider: React.FC<AudioContextProviderProps> = ({ children }) => {
+  const [audioState, setAudioState] = useState<AudioState>({
+    isPlaying: false,
+    currentTrack: null,
+    volume: 1,
+    isMuted: false,
+    isLoading: false,
+  });
 
-  const togglePlay = () => {
-    setIsPlaying(!isPlaying);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const play = (trackUrl: string) => {
+    if (audioRef.current) {
+      if (audioState.currentTrack !== trackUrl) {
+        audioRef.current.src = trackUrl;
+        setAudioState(prev => ({ ...prev, currentTrack: trackUrl, isLoading: true }));
+      }
+      audioRef.current.play();
+      setAudioState(prev => ({ ...prev, isPlaying: true }));
+    } else {
+      audioRef.current = new Audio(trackUrl);
+      audioRef.current.volume = audioState.volume;
+      audioRef.current.muted = audioState.isMuted;
+      
+      audioRef.current.addEventListener('loadstart', () => {
+        setAudioState(prev => ({ ...prev, isLoading: true }));
+      });
+      
+      audioRef.current.addEventListener('canplay', () => {
+        setAudioState(prev => ({ ...prev, isLoading: false }));
+      });
+      
+      audioRef.current.addEventListener('ended', () => {
+        setAudioState(prev => ({ ...prev, isPlaying: false }));
+      });
+      
+      audioRef.current.play();
+      setAudioState(prev => ({ 
+        ...prev, 
+        currentTrack: trackUrl, 
+        isPlaying: true,
+        isLoading: true 
+      }));
+    }
   };
 
-  const expandPlayer = () => {
-    setIsMinimized(false);
+  const pause = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      setAudioState(prev => ({ ...prev, isPlaying: false }));
+    }
   };
 
-  const minimizePlayer = () => {
-    setIsMinimized(true);
+  const stop = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      setAudioState(prev => ({ ...prev, isPlaying: false }));
+    }
   };
 
-  const toggleReverb = () => {
-    setReverbEnabled(!reverbEnabled);
+  const setVolume = (volume: number) => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
+    }
+    setAudioState(prev => ({ ...prev, volume }));
   };
 
-  const muteAudio = () => {
-    setIsMuted(true);
+  const toggleMute = () => {
+    if (audioRef.current) {
+      audioRef.current.muted = !audioState.isMuted;
+    }
+    setAudioState(prev => ({ ...prev, isMuted: !prev.isMuted }));
   };
 
-  const unmuteAudio = () => {
-    setIsMuted(false);
+  const seek = (time: number) => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = time;
+    }
   };
 
-  const nextTrack = () => {
-    setCurrentTrackIndex((prev) => (prev + 1) % playlist.length);
+  const getDuration = () => {
+    return audioRef.current?.duration || 0;
   };
 
-  const prevTrack = () => {
-    setCurrentTrackIndex((prev) => (prev - 1 + playlist.length) % playlist.length);
+  const getCurrentTime = () => {
+    return audioRef.current?.currentTime || 0;
   };
 
-  const value = {
-    isPlaying,
-    currentTrack,
-    volume,
-    isMinimized,
-    currentTrackIndex,
-    playlist,
-    reverbEnabled,
-    reverbAmount,
-    isMuted,
-    setIsPlaying,
-    setCurrentTrack,
+  const contextValue: AudioContextType = {
+    ...audioState,
+    play,
+    pause,
+    stop,
     setVolume,
-    togglePlay,
-    expandPlayer,
-    minimizePlayer,
-    setCurrentTrackIndex,
-    toggleReverb,
-    setReverbAmount,
-    muteAudio,
-    unmuteAudio,
-    nextTrack,
-    prevTrack,
+    toggleMute,
+    seek,
+    getDuration,
+    getCurrentTime,
   };
 
   return (
-    <AudioContext.Provider value={value}>
+    <AudioContext.Provider value={contextValue}>
       {children}
     </AudioContext.Provider>
   );
-}
-
-export function useAudioContext() {
-  const context = useContext(AudioContext);
-  if (context === undefined) {
-    throw new Error('useAudioContext must be used within an AudioContextProvider');
-  }
-  return context;
-}
-
-// Export alias for compatibility with existing components
-export const useAudio = useAudioContext;
+};
