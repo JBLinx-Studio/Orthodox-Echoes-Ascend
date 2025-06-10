@@ -1,5 +1,6 @@
+
 import { Link } from 'react-router-dom';
-import { Mail, Church, Heart, FileText } from 'lucide-react';
+import { Mail, Church, Heart, FileText, Settings, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -48,6 +49,8 @@ export function Footer() {
               <li><Link to="/saints" className="text-gray-300 hover:text-gold transition-colors">Saints</Link></li>
               <li><Link to="/calendar" className="text-gray-300 hover:text-gold transition-colors">Liturgical Calendar</Link></li>
               <li><Link to="/community" className="text-gray-300 hover:text-gold transition-colors">Community</Link></li>
+              <li><Link to="/settings" className="text-gray-300 hover:text-gold transition-colors">Settings</Link></li>
+              <li><Link to="/developer" className="text-gray-300 hover:text-gold transition-colors">Developer Dashboard</Link></li>
             </ul>
           </div>
           
@@ -82,12 +85,18 @@ export function Footer() {
         
         <div className="mt-12 pt-8 border-t border-orthodox-blue">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <Link to="/contact" className="text-sm text-gray-300 hover:text-gold flex items-center gap-1">
                 <Mail className="h-4 w-4" /> Contact
               </Link>
               <Link to="/parishes" className="text-sm text-gray-300 hover:text-gold flex items-center gap-1">
                 <Church className="h-4 w-4" /> Find a Parish
+              </Link>
+              <Link to="/settings" className="text-sm text-gray-300 hover:text-gold">
+                Settings
+              </Link>
+              <Link to="/developer" className="text-sm text-gray-300 hover:text-gold">
+                Developer Dashboard
               </Link>
               <a href="/LICENSE.md" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-300 hover:text-gold flex items-center gap-1">
                 <FileText className="h-4 w-4" /> License
