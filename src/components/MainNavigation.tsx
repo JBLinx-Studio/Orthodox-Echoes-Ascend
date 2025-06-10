@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
@@ -22,7 +23,9 @@ import {
   BookmarkIcon,
   Music,
   Edit,
-  Image
+  Image,
+  Settings,
+  Shield
 } from 'lucide-react';
 import { AudioControls } from '@/components/AudioControls';
 
@@ -185,6 +188,20 @@ export function MainNavigation() {
                     Contact
                   </MainNavItem>
                 </NavigationMenuItem>
+
+                <NavigationMenuItem>
+                  <MainNavItem href="/settings" active={location.pathname === '/settings'} className="px-3 py-2 flex items-center gap-2">
+                    <Settings className="h-4 w-4" />
+                    Settings
+                  </MainNavItem>
+                </NavigationMenuItem>
+
+                <NavigationMenuItem>
+                  <MainNavItem href="/developer" active={location.pathname === '/developer'} className="px-3 py-2 flex items-center gap-2 text-gold hover:text-gold/80 bg-gold/10 rounded-md border border-gold/20">
+                    <Shield className="h-4 w-4" />
+                    Dev Dashboard
+                  </MainNavItem>
+                </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>
           </div>
@@ -305,6 +322,24 @@ export function MainNavigation() {
                     <Link to="/contact" className="flex items-center text-gray-200 hover:text-gold" onClick={() => setIsMobileMenuOpen(false)}>
                       <Users className="h-4 w-4 mr-2" />
                       <span>Contact Us</span>
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-gold font-display text-sm mb-3">SETTINGS & TOOLS</h3>
+                <ul className="space-y-3">
+                  <li>
+                    <Link to="/settings" className="flex items-center text-gray-200 hover:text-gold" onClick={() => setIsMobileMenuOpen(false)}>
+                      <Settings className="h-4 w-4 mr-2" />
+                      <span>Settings</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/developer" className="flex items-center text-gold hover:text-gold/80 bg-gold/10 px-3 py-1 rounded-md" onClick={() => setIsMobileMenuOpen(false)}>
+                      <Shield className="h-4 w-4 mr-2" />
+                      <span>Developer Dashboard</span>
                     </Link>
                   </li>
                 </ul>
