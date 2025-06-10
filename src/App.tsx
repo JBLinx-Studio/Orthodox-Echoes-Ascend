@@ -11,6 +11,7 @@ import { AuthGuard } from "./components/auth/AuthGuard";
 import Index from "./pages/Index";
 import Admin from "./pages/Admin";
 import Login from "./pages/Login";
+import Callback from "./pages/Callback";
 import Profile from "./pages/Profile";
 import Blog from "./pages/Blog";
 import NotFound from "./pages/NotFound";
@@ -175,6 +176,7 @@ const App = () => {
               </Route>
               
               <Route path="/login" element={<Login />} />
+              <Route path="/callback" element={<Callback />} />
               <Route path="/admin" element={
                 <AuthGuard requireAdmin={true}>
                   <Admin />

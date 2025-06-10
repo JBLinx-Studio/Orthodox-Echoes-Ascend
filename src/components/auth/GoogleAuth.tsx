@@ -16,38 +16,31 @@ export function GoogleAuth({ onSuccess, variant = "signin" }: GoogleAuthProps) {
     setIsLoading(true);
     
     try {
-      // Debug: Log the current URL and what we're about to send
-      const currentOrigin = window.location.origin;
-      const redirectUrl = 'https://jblinx-studio.github.io/Orthodox-Echoes-Ascend/callback';
+      // Use Google's direct OAuth flow instead of Supabase's provider
+      const googleClientId = '472513945629-2qed7qvfb4kn3njilhru2d2djqdm9e6n.apps.googleusercontent.com';
+      const redirectUri = 'https://jblinx-studio.github.io/Orthodox-Echoes-Ascend/callback';
+      const scope = 'openid email profile';
       
-      console.log('Current origin:', currentOrigin);
-      console.log('Redirect URL being sent:', redirectUrl);
-      console.log('Auth variant:', variant);
-
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: redirectUrl,
-          // Add query params to distinguish between signin/signup
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          }
-        }
-      });
-
-      if (error) {
-        console.error('Google Auth Error:', error);
-        toast.error('Authentication failed. Please try again.');
-        return;
-      }
-
-      console.log('OAuth request initiated successfully:', data);
-
-      // The redirect will happen automatically
+      console.log('Initiating Google OAuth with:', { redirectUri, variant });
+      
+      // Construct Google OAuth URL
+      const googleAuthUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
+      googleAuthUrl.searchParams.set('client_id', googleClientId);
+      googleAuthUrl.searchParams.set('redirect_uri', redirectUri);
+      googleAuthUrl.searchParams.set('response_type', 'code');
+      googleAuthUrl.searchParams.set('scope', scope);
+      googleAuthUrl.searchParams.set('access_type', 'offline');
+      googleAuthUrl.searchParams.set('prompt', 'consent');
+      googleAuthUrl.searchParams.set('state', variant); // Pass signin/signup state
+      
+      console.log('Redirecting to Google OAuth URL:', googleAuthUrl.toString());
+      
       toast.success('Redirecting to Google...', {
         description: "You'll be redirected back after authentication."
       });
+      
+      // Redirect to Google OAuth
+      window.location.href = googleAuthUrl.toString();
       
     } catch (error) {
       console.error('Google Auth Error:', error);
