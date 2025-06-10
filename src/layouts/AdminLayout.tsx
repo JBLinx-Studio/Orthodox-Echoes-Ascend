@@ -1,37 +1,16 @@
 
-import { useState, useEffect } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
-import { isAdmin } from '@/utils/auth-utils';
+import { Outlet } from 'react-router-dom';
+import { Header } from '@/components/Header';
 
 export function AdminLayout() {
-  const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  
-  useEffect(() => {
-    const checkAdminStatus = async () => {
-      try {
-        const adminStatus = await isAdmin();
-        setIsAuthorized(adminStatus);
-      } catch (error) {
-        console.error('Admin check error:', error);
-        setIsAuthorized(false);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkAdminStatus();
-  }, []);
-  
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-  
-  if (!isAuthorized) {
-    return <Navigate to="/login" replace />;
-  }
-  
-  return <Outlet />;
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-[#0a0d16] to-[#161a26]">
+      <Header />
+      <main className="pt-20">
+        <Outlet />
+      </main>
+    </div>
+  );
 }
 
 export default AdminLayout;
