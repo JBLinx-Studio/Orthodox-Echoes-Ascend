@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
@@ -123,7 +124,7 @@ export function NavBar() {
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
               <span className="absolute inset-0 rounded-full bg-gradient-to-br from-byzantine to-byzantine-dark shadow-lg"></span>
-              <span className="relative text-white font-display font-bold text-xl">Ω</span>
+              <span className="relative text-white font-display font-bold text-xl">☦</span>
               <span className="absolute inset-0 rounded-full bg-gold/20 animate-pulse opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
             </motion.div>
             <div className="font-display text-xl font-semibold">
@@ -163,13 +164,13 @@ export function NavBar() {
                           </Link>
                         </NavigationMenuLink>
                       </li>
-                      <ListItem href="/articles" title="Sacred Articles" icon={<Feather className="h-4 w-4 mr-2 text-gold" />}>
+                      <ListItem to="/articles" title="Sacred Articles" icon={<Feather className="h-4 w-4 mr-2 text-gold" />}>
                         In-depth theological studies
                       </ListItem>
-                      <ListItem href="/blog" title="Spiritual Blog" icon={<Edit className="h-4 w-4 mr-2 text-gold" />}>
+                      <ListItem to="/blog" title="Spiritual Blog" icon={<Edit className="h-4 w-4 mr-2 text-gold" />}>
                         Personal reflections and insights
                       </ListItem>
-                      <ListItem href="/books" title="Sacred Library" icon={<Library className="h-4 w-4 mr-2 text-gold" />}>
+                      <ListItem to="/books" title="Sacred Library" icon={<Library className="h-4 w-4 mr-2 text-gold" />}>
                         Complete books and works
                       </ListItem>
                     </ul>
@@ -182,16 +183,16 @@ export function NavBar() {
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-2">
-                      <ListItem href="/learn" title="Learning Center" icon={<BookOpen className="h-4 w-4 mr-2 text-gold" />}>
+                      <ListItem to="/learn" title="Learning Center" icon={<BookOpen className="h-4 w-4 mr-2 text-gold" />}>
                         Your journey through Orthodox wisdom
                       </ListItem>
-                      <ListItem href="/doctrine" title="Core Doctrine" icon={<BookOpen className="h-4 w-4 mr-2 text-gold" />}>
+                      <ListItem to="/doctrine" title="Core Doctrine" icon={<BookOpen className="h-4 w-4 mr-2 text-gold" />}>
                         Foundational beliefs and theology
                       </ListItem>
-                      <ListItem href="/readings" title="Daily Readings" icon={<Calendar className="h-4 w-4 mr-2 text-gold" />}>
+                      <ListItem to="/readings" title="Daily Readings" icon={<Calendar className="h-4 w-4 mr-2 text-gold" />}>
                         Scripture and saints of the day
                       </ListItem>
-                      <ListItem href="/prayers" title="Prayer Guide" icon={<BookmarkIcon className="h-4 w-4 mr-2 text-gold" />}>
+                      <ListItem to="/prayers" title="Prayer Guide" icon={<BookmarkIcon className="h-4 w-4 mr-2 text-gold" />}>
                         Ancient prayers for daily life
                       </ListItem>
                     </ul>
@@ -204,16 +205,16 @@ export function NavBar() {
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-2">
-                      <ListItem href="/saints" title="Lives of Saints" icon={<Users className="h-4 w-4 mr-2 text-gold" />}>
+                      <ListItem to="/saints" title="Lives of Saints" icon={<Users className="h-4 w-4 mr-2 text-gold" />}>
                         Stories of holiness through the ages
                       </ListItem>
-                      <ListItem href="/icons" title="Sacred Iconography" icon={<Image className="h-4 w-4 mr-2 text-gold" />}>
+                      <ListItem to="/icons" title="Sacred Iconography" icon={<Image className="h-4 w-4 mr-2 text-gold" />}>
                         Windows into heaven
                       </ListItem>
-                      <ListItem href="/calendar" title="Liturgical Calendar" icon={<Calendar className="h-4 w-4 mr-2 text-gold" />}>
+                      <ListItem to="/calendar" title="Liturgical Calendar" icon={<Calendar className="h-4 w-4 mr-2 text-gold" />}>
                         The rhythm of Orthodox life
                       </ListItem>
-                      <ListItem href="/chants" title="Sacred Music" icon={<Music className="h-4 w-4 mr-2 text-gold" />}>
+                      <ListItem to="/chants" title="Sacred Music" icon={<Music className="h-4 w-4 mr-2 text-gold" />}>
                         Byzantine and Slavic chant traditions
                       </ListItem>
                     </ul>
@@ -343,14 +344,19 @@ export function NavBar() {
 
 // Component for navigation menu items
 const ListItem = React.forwardRef<
-  React.ElementRef<"a">,
-  React.ComponentPropsWithoutRef<"a"> & { icon?: React.ReactNode }
->(({ className, title, children, icon, ...props }, ref) => {
+  React.ElementRef<typeof Link>,
+  React.ComponentPropsWithoutRef<typeof Link> & { 
+    icon?: React.ReactNode;
+    title: string;
+    children: React.ReactNode;
+  }
+>(({ className, title, children, icon, to, ...props }, ref) => {
   return (
     <li>
       <NavigationMenuLink asChild>
-        <a
+        <Link
           ref={ref}
+          to={to}
           className={cn(
             "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-gold/10 hover:text-gold focus:bg-gold/10 focus:text-gold",
             className
@@ -364,7 +370,7 @@ const ListItem = React.forwardRef<
           <p className="line-clamp-2 text-sm leading-snug text-gray-400">
             {children}
           </p>
-        </a>
+        </Link>
       </NavigationMenuLink>
     </li>
   );

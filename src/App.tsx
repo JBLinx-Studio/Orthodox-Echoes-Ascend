@@ -19,6 +19,8 @@ import PrayerGuide from "./pages/PrayerGuide";
 import CoreDoctrine from "./pages/CoreDoctrine";
 import DailyReadings from "./pages/DailyReadings";
 import LearningCenter from "./pages/LearningCenter";
+import Saints from "./pages/Saints";
+import SacredIconography from "./pages/SacredIconography";
 import "./styles/audioEffects.css";
 
 // Create more visually appealing placeholder page with cathedral theme
@@ -90,10 +92,10 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Initial loading animation
+    // Initial loading animation - show Orthodox branding
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 1200);
+    }, 1500);
     
     return () => clearTimeout(timer);
   }, []);
@@ -102,19 +104,37 @@ const App = () => {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-[#1A1F2C] z-50">
         <div className="text-center">
-          <div className="mb-6 relative">
-            <div className="w-24 h-24 relative flex items-center justify-center mx-auto">
-              <span className="absolute w-24 h-24 rounded-full bg-byzantine opacity-20 animate-ping"></span>
-              <span className="absolute w-20 h-20 rounded-full bg-byzantine opacity-60"></span>
-              <span className="relative text-white font-display font-bold text-5xl">Ω</span>
+          <div className="mb-8 relative">
+            <div className="w-32 h-32 relative flex items-center justify-center mx-auto">
+              {/* Orthodox Cross Animation */}
+              <div className="absolute w-32 h-32">
+                <div className="absolute inset-0 rounded-full border-2 border-gold/30 animate-spin"></div>
+                <div className="absolute inset-2 rounded-full border-2 border-byzantine/40 animate-spin" style={{ animationDirection: 'reverse', animationDuration: '3s' }}></div>
+              </div>
+              
+              {/* Orthodox Cross SVG */}
+              <svg className="w-16 h-16 text-gold relative z-10" viewBox="0 0 32 32" fill="currentColor">
+                <g transform="translate(16,16)">
+                  <rect x="-2" y="-12" width="4" height="24" rx="1"/>
+                  <rect x="-8" y="-6" width="16" height="4" rx="1"/>
+                  <rect x="-6" y="4" width="12" height="3" rx="1"/>
+                  <circle cx="0" cy="-10" r="2" fill="#B8860B"/>
+                  <path d="M-1,-8 L1,-8 L1,-6 L-1,-6 Z" fill="#B8860B"/>
+                </g>
+              </svg>
             </div>
             <div className="absolute inset-0 rounded-full bg-gold/10 blur-xl animate-pulse"></div>
           </div>
-          <h1 className="text-gold font-display text-3xl mb-4">Orthodox Echoes</h1>
+          
+          <h1 className="text-gold font-display text-4xl mb-2 animate-fade-in">Orthodox Echoes</h1>
+          <p className="text-white/70 text-lg mb-6 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+            Ancient Wisdom for Modern Hearts
+          </p>
+          
           <div className="flex justify-center space-x-3">
-            <div className="w-2 h-2 bg-gold rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
-            <div className="w-2 h-2 bg-gold rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-            <div className="w-2 h-2 bg-gold rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+            <div className="w-3 h-3 bg-gold rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
+            <div className="w-3 h-3 bg-gold rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+            <div className="w-3 h-3 bg-gold rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
           </div>
         </div>
       </div>
@@ -139,16 +159,16 @@ const App = () => {
                 <Route path="/doctrine" element={<CoreDoctrine />} />
                 <Route path="/readings" element={<DailyReadings />} />
                 <Route path="/learn" element={<LearningCenter />} />
-                <Route path="/saints" element={<PlaceholderPage title="Lives of Saints" />} />
+                <Route path="/saints" element={<Saints />} />
+                <Route path="/icons" element={<SacredIconography />} />
                 <Route path="/calendar" element={<PlaceholderPage title="Liturgical Calendar" />} />
+                <Route path="/chants" element={<PlaceholderPage title="Sacred Music" />} />
                 <Route path="/community" element={<PlaceholderPage title="Orthodox Community" />} />
                 <Route path="/support" element={<PlaceholderPage title="Support Our Mission" />} />
                 <Route path="/articles" element={<PlaceholderPage title="Sacred Articles" />} />
                 <Route path="/books" element={<PlaceholderPage title="Sacred Library" />} />
                 <Route path="/liturgy" element={<PlaceholderPage title="Liturgical Life" />} />
                 <Route path="/article/:id" element={<PlaceholderPage title="Article Details" />} />
-                <Route path="/icons" element={<PlaceholderPage title="Sacred Iconography" />} />
-                <Route path="/chants" element={<PlaceholderPage title="Sacred Chants" />} />
                 <Route path="/faq" element={<PlaceholderPage title="Frequently Asked Questions" />} />
                 <Route path="/parishes" element={<PlaceholderPage title="Find a Parish" />} />
                 <Route path="/settings" element={<PlaceholderPage title="User Settings" />} />

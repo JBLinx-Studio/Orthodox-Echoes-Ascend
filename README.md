@@ -1,102 +1,161 @@
 
-# Orthodox Echoes Ascend
+# Orthodox Echoes - Eastern Orthodox Wisdom & Community
 
-## Project info
+A comprehensive web application dedicated to exploring the ancient traditions and teachings of Eastern Orthodoxy. Built to serve the Orthodox community with spiritual resources, educational content, and tools for deepening faith.
 
-**URL**: https://lovable.dev/projects/709449cf-4a82-4be5-bc8b-2f8dff1338e5
+## About Orthodox Echoes
 
-## Deployment Options
+Orthodox Echoes is a digital sanctuary that brings together the rich heritage of Eastern Orthodox Christianity through:
 
-This project can be deployed to GitHub Pages using either:
+- **Sacred Content**: Articles, blogs, and spiritual writings
+- **Faith & Doctrine**: Core Orthodox teachings and theology
+- **Saints & Tradition**: Lives of saints and Orthodox traditions
+- **Prayer & Worship**: Daily prayers and liturgical resources
+- **Sacred Arts**: Iconography and Orthodox visual culture
+- **Liturgical Life**: Calendar events and feast days
+- **Sacred Music**: Byzantine and Slavic chant traditions
+- **Community**: Connect with fellow Orthodox Christians
 
-1. **GitHub Actions (recommended)**: 
-   - Automatically builds and deploys when you push to the main branch
-   - Configuration is already set up in `.github/workflows/deploy.yml`
+## Features
 
-2. **Manual deployment**:
-   - Run this command to deploy manually:
-     ```sh
-     node src/scripts/deploy-gh-pages.js
-     ```
+- **Responsive Design**: Optimized for all devices
+- **Audio Integration**: Sacred music and chant player
+- **User Authentication**: Secure login and personal profiles
+- **Content Management**: Rich blog and article system
+- **Interactive Calendar**: Liturgical events and saint days
+- **Icon Gallery**: Sacred iconography with detailed descriptions
+- **Prayer Guide**: Daily prayers and spiritual practices
 
-After deployment, your site will be available at: `https://[YOUR_USERNAME].github.io/Orthodox-Echoes-Ascend/`
+## Technology Stack
 
-### GitHub Pages Setup
+This project is built with modern web technologies:
 
-After your first deployment:
-1. Go to Settings > Pages in your GitHub repository
-2. Select "Deploy from a branch" under Build and deployment
-3. Select "gh-pages" branch and "/ (root)" folder
-4. Click Save
+- **Frontend**: React 18 with TypeScript
+- **Styling**: Tailwind CSS with custom Orthodox theming
+- **UI Components**: Shadcn/ui component library
+- **Routing**: React Router for navigation
+- **Build Tool**: Vite for fast development and builds
+- **Icons**: Lucide React icon library
+- **Charts**: Recharts for data visualization
+- **Motion**: Framer Motion for animations
 
-Both deployment methods include proper SPA (Single Page Application) routing support, so all routes will work correctly even after page refresh.
+## Getting Started
 
-## How can I edit this code?
+### Prerequisites
 
-There are several ways of editing your application.
+- Node.js (version 16 or higher)
+- npm or yarn package manager
 
-**Use Lovable**
+### Installation
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/709449cf-4a82-4be5-bc8b-2f8dff1338e5) and start prompting.
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/Orthodox-Echoes-Ascend.git
+cd Orthodox-Echoes-Ascend
+```
 
-Changes made via Lovable will be committed automatically to this repo.
+2. Install dependencies:
+```bash
+npm install
+```
 
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+3. Start the development server:
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+4. Open your browser and navigate to `http://localhost:8080`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Building for Production
 
-**Use GitHub Codespaces**
+To create a production build:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```bash
+npm run build
+```
 
-## What technologies are used for this project?
+The built files will be in the `dist` directory.
 
-This project is built with:
+## Deployment
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+This project can be deployed to any static hosting service:
 
-## How can I deploy this project?
+### GitHub Pages
 
-Simply open [Lovable](https://lovable.dev/projects/709449cf-4a82-4be5-bc8b-2f8dff1338e5) and click on Share -> Publish.
+The project includes automated GitHub Actions for deployment:
 
-Alternatively, run `node src/scripts/deploy-gh-pages.js` to deploy to GitHub Pages manually.
+1. Push your changes to the `main` branch
+2. The GitHub Action will automatically build and deploy to `gh-pages` branch
+3. Your site will be available at: `https://yourusername.github.io/Orthodox-Echoes-Ascend/`
 
-## Can I connect a custom domain to my Lovable project?
+### Manual Deployment
 
-Yes, you can!
+You can also deploy manually using:
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+```bash
+npm run build
+node src/scripts/deploy-gh-pages.js
+```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+### Other Hosting Services
+
+The built files in the `dist` directory can be deployed to:
+- Netlify
+- Vercel
+- AWS S3
+- Any static hosting provider
+
+## Project Structure
+
+```
+src/
+├── components/          # Reusable UI components
+├── pages/              # Main application pages
+├── layouts/            # Page layout components
+├── contexts/           # React context providers
+├── hooks/              # Custom React hooks
+├── utils/              # Utility functions
+├── styles/             # CSS and styling files
+└── types/              # TypeScript type definitions
+```
+
+## Contributing
+
+We welcome contributions from the Orthodox community! Please read our contributing guidelines before submitting pull requests.
+
+### Development Guidelines
+
+1. Follow the existing code style and patterns
+2. Ensure all content is doctrinally accurate to Orthodox teaching
+3. Test your changes thoroughly
+4. Update documentation as needed
+
+## Orthodox Content Guidelines
+
+All content should adhere to traditional Orthodox Christian teachings:
+- Follow the consensus of the Church Fathers
+- Respect liturgical traditions
+- Maintain theological accuracy
+- Honor the saints and their teachings
+
+## License
+
+This project is open source and available under the MIT License.
+
+## Support
+
+For questions, suggestions, or support:
+- Open an issue on GitHub
+- Contact us through the website
+- Join our Orthodox community discussions
+
+## Acknowledgments
+
+- The Holy Orthodox Church and its teachings
+- Church Fathers and Orthodox theologians
+- The Orthodox Christian community worldwide
+- All contributors to this project
+
+---
+
+*"Orthodox Echoes - Where ancient wisdom meets modern technology"*
