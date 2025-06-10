@@ -1,87 +1,64 @@
 
+import { supabase } from '@/integrations/supabase/client';
+
 // Check if the user is authenticated
 export const isAuthenticated = (): boolean => {
-  const adminStatus = localStorage.getItem('orthodoxEchoesAdmin');
-  return adminStatus === 'true';
+  // This will be handled by the component that checks the session
+  return false; // Components should use useEffect to check session
 };
 
 // Check if the user is an admin
 export const isAdmin = (): boolean => {
-  const isAdmin = localStorage.getItem('orthodoxEchoesIsAdmin');
-  return isAdmin === 'true';
+  // This will be determined by user metadata or a separate check
+  return false; // Components should check user metadata
 };
 
 // Get the current authenticated username
 export const getUsername = (): string => {
-  return localStorage.getItem('orthodoxEchoesAdminUser') || 'Guest';
+  return 'Guest'; // Components should get this from session
 };
 
 // Get the last login date
 export const getLastLogin = (): Date | null => {
-  const lastLoginStr = localStorage.getItem('orthodoxEchoesLastLogin');
-  return lastLoginStr ? new Date(lastLoginStr) : null;
+  return null; // This will come from session metadata
 };
 
 // Format the last login time/date for display
 export const formatLastLogin = (date: Date | null): string => {
   if (!date) return 'Never';
   
-  // If login was today, show time
   const today = new Date();
   if (date.toDateString() === today.toDateString()) {
     return `Today at ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
   }
   
-  // Otherwise show date
   return date.toLocaleDateString();
 };
 
 // Logout the user
-export const logout = (): void => {
-  localStorage.removeItem('orthodoxEchoesAdmin');
-  localStorage.removeItem('orthodoxEchoesAdminUser');
-  localStorage.removeItem('orthodoxEchoesLastLogin');
-  localStorage.removeItem('orthodoxEchoesIsAdmin');
+export const logout = async (): Promise<void> => {
+  await supabase.auth.signOut();
 };
 
-// Login the user
+// Login the user (for backwards compatibility)
 export const login = (username: string, isAdmin: boolean = false): void => {
-  localStorage.setItem('orthodoxEchoesAdmin', 'true');
-  localStorage.setItem('orthodoxEchoesAdminUser', username);
-  localStorage.setItem('orthodoxEchoesIsAdmin', isAdmin ? 'true' : 'false');
-  
-  // Record login timestamp
-  const now = new Date();
-  localStorage.setItem('orthodoxEchoesLastLogin', now.toISOString());
+  // This is now handled by Supabase auth
+  console.log('Login should use Supabase auth methods');
 };
 
-// Check if the password is correct for admin
+// Check if the password is correct for admin (deprecated)
 export const checkPassword = (password: string): boolean => {
-  // Admin password check - this would normally be server-side!
-  return password === 'Donovan';
+  // This should be handled by Supabase auth
+  return false;
 };
 
-// Register a new user
+// Register a new user (deprecated - use Supabase auth)
 export const registerUser = (username: string, password: string): void => {
-  // Get existing users from localStorage
-  const users = JSON.parse(localStorage.getItem('orthodoxEchoesUsers') || '{}');
-  
-  // Add the new user
-  users[username] = {
-    username,
-    password,
-    createdAt: new Date().toISOString()
-  };
-  
-  // Save back to localStorage
-  localStorage.setItem('orthodoxEchoesUsers', JSON.stringify(users));
-  
-  // Log in the new user
-  login(username, false);
+  console.log('Registration should use Supabase auth methods');
 };
 
 // Get all registered users (for admin dashboard)
 export const getRegisteredUsers = (): any[] => {
-  const users = JSON.parse(localStorage.getItem('orthodoxEchoesUsers') || '{}');
-  return Object.values(users);
+  // This would need to be implemented with Supabase admin functions
+  return [];
 };
