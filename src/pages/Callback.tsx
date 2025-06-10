@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 export default function Callback() {
   const [isProcessing, setIsProcessing] = useState(true);
+  const [status, setStatus] = useState('Processing authentication...');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -13,7 +14,7 @@ export default function Callback() {
       try {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
-        const state = urlParams.get('state'); // signin or signup
+        const state = urlParams.get('state');
         const error = urlParams.get('error');
 
         if (error) {
@@ -31,23 +32,32 @@ export default function Callback() {
         }
 
         console.log('Processing Google OAuth callback with code:', code);
+        setStatus('Exchanging authorization code...');
         
+        // Parse the state parameter
+        let parsedState;
+        try {
+          parsedState = state ? JSON.parse(atob(state)) : { variant: 'signin' };
+        } catch {
+          parsedState = { variant: 'signin' };
+        }
+
         // Exchange the authorization code for tokens
-        const response = await fetch('https://oauth2.googleapis.com/token', {
+        const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: new URLSearchParams({
-            client_id: '472513945629-2qed7qvfb4kn3njilhru2d2djqdm9e6n.apps.googleusercontent.com',
-            client_secret: 'YOUR_GOOGLE_CLIENT_SECRET', // You'll need to add this
+            client_id: '1019903498866-5q0lubbt5hasule4duhh6tcmq1d6emm6.apps.googleusercontent.com',
+            client_secret: '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',
             code,
             grant_type: 'authorization_code',
             redirect_uri: 'https://jblinx-studio.github.io/Orthodox-Echoes-Ascend/callback',
           }),
         });
 
-        const tokenData = await response.json();
+        const tokenData = await tokenResponse.json();
         
         if (tokenData.error) {
           console.error('Token exchange error:', tokenData.error);
@@ -55,6 +65,8 @@ export default function Callback() {
           navigate('/login');
           return;
         }
+
+        setStatus('Getting user information...');
 
         // Get user info from Google
         const userResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
@@ -66,47 +78,103 @@ export default function Callback() {
         const userInfo = await userResponse.json();
         console.log('Google user info:', userInfo);
 
-        // Create or sign in user with Supabase using email/password
-        if (state === 'signup') {
-          // For signup, create a new user
-          const { data, error } = await supabase.auth.signUp({
-            email: userInfo.email,
-            password: Math.random().toString(36).slice(-8), // Generate random password
-            options: {
-              data: {
-                name: userInfo.name,
-                avatar_url: userInfo.picture,
-                google_id: userInfo.id,
+        setStatus('Creating account...');
+
+        // Create a secure password for the user
+        const securePassword = btoa(userInfo.id + userInfo.email + Date.now()).substring(0, 32);
+
+        try {
+          if (parsedState.variant === 'signup') {
+            // For signup, create a new user
+            const { data, error } = await supabase.auth.signUp({
+              email: userInfo.email,
+              password: securePassword,
+              options: {
+                data: {
+                  full_name: userInfo.name,
+                  avatar_url: userInfo.picture,
+                  google_id: userInfo.id,
+                  provider: 'google',
+                },
+                emailRedirectTo: `${window.location.origin}/`
+              }
+            });
+
+            if (error) {
+              if (error.message.includes('already registered')) {
+                // User already exists, try to sign them in instead
+                setStatus('Account exists, signing in...');
+                const { error: signInError } = await supabase.auth.signInWithPassword({
+                  email: userInfo.email,
+                  password: securePassword,
+                });
+
+                if (signInError) {
+                  // Password doesn't match, user probably signed up differently
+                  toast.error('This email is already registered. Please sign in using your original method.');
+                  navigate('/login');
+                  return;
+                }
+              } else {
+                console.error('Supabase signup error:', error);
+                toast.error('Failed to create account. Please try again.');
+                navigate('/login');
+                return;
               }
             }
-          });
 
-          if (error) {
-            console.error('Supabase signup error:', error);
-            toast.error('Failed to create account. Please try again.');
-            navigate('/login');
-            return;
+            toast.success('Account created successfully!');
+          } else {
+            // For signin, attempt to sign in
+            const { data, error } = await supabase.auth.signInWithPassword({
+              email: userInfo.email,
+              password: securePassword,
+            });
+
+            if (error) {
+              // If sign in fails, the user might not exist yet
+              console.log('Sign in failed, creating new account...');
+              setStatus('Creating new account...');
+              
+              const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+                email: userInfo.email,
+                password: securePassword,
+                options: {
+                  data: {
+                    full_name: userInfo.name,
+                    avatar_url: userInfo.picture,
+                    google_id: userInfo.id,
+                    provider: 'google',
+                  },
+                  emailRedirectTo: `${window.location.origin}/`
+                }
+              });
+
+              if (signUpError) {
+                console.error('Supabase signup error:', signUpError);
+                toast.error('Failed to create account. Please try again.');
+                navigate('/login');
+                return;
+              }
+
+              toast.success('Account created successfully!');
+            } else {
+              toast.success('Successfully signed in!');
+            }
           }
 
-          toast.success('Account created successfully!');
-        } else {
-          // For signin, attempt to sign in with email
-          const { data, error } = await supabase.auth.signInWithPassword({
-            email: userInfo.email,
-            password: Math.random().toString(36).slice(-8), // This won't work, need better approach
-          });
+          setStatus('Redirecting...');
+          
+          // Small delay to show the success message
+          setTimeout(() => {
+            navigate('/');
+          }, 1500);
 
-          if (error) {
-            console.error('Supabase signin error:', error);
-            toast.error('Failed to sign in. Please try creating an account first.');
-            navigate('/login');
-            return;
-          }
-
-          toast.success('Successfully signed in!');
+        } catch (supabaseError) {
+          console.error('Supabase error:', supabaseError);
+          toast.error('Authentication service error. Please try again.');
+          navigate('/login');
         }
-
-        navigate('/');
         
       } catch (error) {
         console.error('Callback processing error:', error);
@@ -143,12 +211,22 @@ export default function Callback() {
           <div className="absolute inset-0 rounded-full bg-gold/10 blur-xl animate-pulse"></div>
         </div>
         
-        <h1 className="text-gold font-display text-4xl mb-2">
-          {isProcessing ? 'Processing Authentication...' : 'Authentication Complete'}
+        <h1 className="text-gold font-display text-4xl mb-4">
+          {isProcessing ? 'Authenticating with Google' : 'Authentication Complete'}
         </h1>
-        <p className="text-white/70 text-lg">
-          {isProcessing ? 'Please wait while we complete your sign-in.' : 'Redirecting you now.'}
+        <p className="text-white/70 text-lg mb-4">
+          {status}
         </p>
+        
+        {isProcessing && (
+          <div className="flex justify-center">
+            <div className="flex space-x-2">
+              <div className="w-3 h-3 bg-gold rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
+              <div className="w-3 h-3 bg-gold rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+              <div className="w-3 h-3 bg-gold rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

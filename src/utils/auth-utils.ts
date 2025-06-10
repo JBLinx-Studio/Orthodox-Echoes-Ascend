@@ -2,25 +2,64 @@
 import { supabase } from '@/integrations/supabase/client';
 
 // Check if the user is authenticated
-export const isAuthenticated = (): boolean => {
-  // This will be handled by the component that checks the session
-  return false; // Components should use useEffect to check session
+export const isAuthenticated = async (): Promise<boolean> => {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    return !!session;
+  } catch {
+    return false;
+  }
 };
 
-// Check if the user is an admin
-export const isAdmin = (): boolean => {
-  // This will be determined by user metadata or a separate check
-  return false; // Components should check user metadata
+// Check if the user is an admin (based on email or user metadata)
+export const isAdmin = async (): Promise<boolean> => {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) return false;
+    
+    // Check if user is admin based on email or metadata
+    const adminEmails = ['admin@orthodoxechoes.com', 'jblinxstudio@gmail.com'];
+    return adminEmails.includes(session.user.email || '') || 
+           session.user.user_metadata?.role === 'admin';
+  } catch {
+    return false;
+  }
+};
+
+// Get the current authenticated user session
+export const getCurrentSession = async () => {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    return session;
+  } catch {
+    return null;
+  }
 };
 
 // Get the current authenticated username
-export const getUsername = (): string => {
-  return 'Guest'; // Components should get this from session
+export const getUsername = async (): Promise<string> => {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) return 'Guest';
+    
+    return session.user.user_metadata?.full_name || 
+           session.user.email?.split('@')[0] || 
+           'User';
+  } catch {
+    return 'Guest';
+  }
 };
 
 // Get the last login date
-export const getLastLogin = (): Date | null => {
-  return null; // This will come from session metadata
+export const getLastLogin = async (): Promise<Date | null> => {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user?.last_sign_in_at) return null;
+    
+    return new Date(session.user.last_sign_in_at);
+  } catch {
+    return null;
+  }
 };
 
 // Format the last login time/date for display
@@ -37,28 +76,27 @@ export const formatLastLogin = (date: Date | null): string => {
 
 // Logout the user
 export const logout = async (): Promise<void> => {
-  await supabase.auth.signOut();
+  try {
+    await supabase.auth.signOut();
+  } catch (error) {
+    console.error('Logout error:', error);
+    throw error;
+  }
 };
 
-// Login the user (for backwards compatibility)
-export const login = (username: string, isAdmin: boolean = false): void => {
-  // This is now handled by Supabase auth
-  console.log('Login should use Supabase auth methods');
+// Get current user data
+export const getCurrentUser = async () => {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    return session?.user || null;
+  } catch {
+    return null;
+  }
 };
 
-// Check if the password is correct for admin (deprecated)
-export const checkPassword = (password: string): boolean => {
-  // This should be handled by Supabase auth
-  return false;
-};
-
-// Register a new user (deprecated - use Supabase auth)
-export const registerUser = (username: string, password: string): void => {
-  console.log('Registration should use Supabase auth methods');
-};
-
-// Get all registered users (for admin dashboard)
-export const getRegisteredUsers = (): any[] => {
-  // This would need to be implemented with Supabase admin functions
-  return [];
+// Check authentication status synchronously (for components that need immediate check)
+export const checkAuthStatus = () => {
+  // This is a synchronous version that components can use
+  // The actual session check should be done with useEffect in components
+  return false; // Components should use useEffect to check session
 };
