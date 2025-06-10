@@ -16,10 +16,23 @@ export function GoogleAuth({ onSuccess, variant = "signin" }: GoogleAuthProps) {
     setIsLoading(true);
     
     try {
+      // Debug: Log the current URL and what we're about to send
+      const currentOrigin = window.location.origin;
+      const redirectUrl = 'https://jblinx-studio.github.io/Orthodox-Echoes-Ascend/callback';
+      
+      console.log('Current origin:', currentOrigin);
+      console.log('Redirect URL being sent:', redirectUrl);
+      console.log('Auth variant:', variant);
+
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: 'https://jblinx-studio.github.io/Orthodox-Echoes-Ascend/callback'
+          redirectTo: redirectUrl,
+          // Add query params to distinguish between signin/signup
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          }
         }
       });
 
@@ -28,6 +41,8 @@ export function GoogleAuth({ onSuccess, variant = "signin" }: GoogleAuthProps) {
         toast.error('Authentication failed. Please try again.');
         return;
       }
+
+      console.log('OAuth request initiated successfully:', data);
 
       // The redirect will happen automatically
       toast.success('Redirecting to Google...', {
