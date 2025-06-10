@@ -14,7 +14,12 @@ import {
   Image, 
   Home, 
   Info, 
-  Heart
+  Heart,
+  Crown,
+  Feather,
+  Library,
+  Church,
+  Scroll
 } from 'lucide-react';
 
 export type NavigationItem = {
@@ -33,7 +38,9 @@ export type NavigationCategory = {
 // Main navigation items
 export const mainNavItems: NavigationItem[] = [
   { name: "Home", path: "/", icon: Home },
-  { name: "Blog", path: "/blog", icon: Edit },
+  { name: "Articles", path: "/articles", icon: Feather },
+  { name: "Blog", path: "/blog", icon: Scroll },
+  { name: "Books", path: "/books", icon: Library },
   { name: "Community", path: "/community", icon: Heart },
   { name: "Contact", path: "/contact", icon: Info },
 ];
@@ -41,19 +48,28 @@ export const mainNavItems: NavigationItem[] = [
 // Categories for dropdown menus and mobile navigation
 export const navigationCategories: NavigationCategory[] = [
   {
-    name: "Faith & Doctrine",
+    name: "Sacred Content",
     items: [
-      { name: "Learning Center", path: "/learn", icon: BookOpen, description: "Your journey through Orthodox wisdom" },
-      { name: "Core Doctrine", path: "/doctrine", icon: BookOpen, description: "Explore the foundational beliefs and theology of the Orthodox faith" },
+      { name: "Sacred Articles", path: "/articles", icon: Feather, description: "In-depth theological studies and scholarly discourse" },
+      { name: "Spiritual Blog", path: "/blog", icon: Scroll, description: "Personal reflections and contemporary insights" },
+      { name: "Sacred Library", path: "/books", icon: Library, description: "Complete books and comprehensive works" },
       { name: "Daily Readings", path: "/readings", icon: Calendar, description: "Scripture and saints of the day" },
-      { name: "Prayer Guide", path: "/prayers", icon: BookmarkIcon, description: "Ancient prayers for daily life" },
     ]
   },
   {
-    name: "Tradition",
+    name: "Faith & Doctrine",
     items: [
-      { name: "Lives of Saints", path: "/saints", icon: Users, description: "Stories of holiness through the ages" },
+      { name: "Learning Center", path: "/learn", icon: BookOpen, description: "Your journey through Orthodox wisdom" },
+      { name: "Core Doctrine", path: "/doctrine", icon: BookOpen, description: "Explore the foundational beliefs and theology" },
+      { name: "Prayer Guide", path: "/prayers", icon: BookmarkIcon, description: "Ancient prayers for daily life" },
       { name: "Sacred Iconography", path: "/icons", icon: Image, description: "Windows into heaven" },
+    ]
+  },
+  {
+    name: "Tradition & Liturgy",
+    items: [
+      { name: "Lives of Saints", path: "/saints", icon: Crown, description: "Stories of holiness through the ages" },
+      { name: "Liturgical Life", path: "/liturgy", icon: Church, description: "Beauty and meaning of Orthodox worship" },
       { name: "Liturgical Calendar", path: "/calendar", icon: Calendar, description: "The rhythm of Orthodox life" },
       { name: "Sacred Music", path: "/chants", icon: Music, description: "Byzantine and Slavic chant traditions" },
     ]
@@ -61,9 +77,8 @@ export const navigationCategories: NavigationCategory[] = [
   {
     name: "Community",
     items: [
-      { name: "Community Forum", path: "/community", icon: Users, description: "Connect with fellow Orthodox believers" },
+      { name: "Orthodox Community", path: "/community", icon: Users, description: "Connect with fellow Orthodox believers" },
       { name: "Find a Parish", path: "/parishes", icon: BookmarkIcon, description: "Locate Orthodox communities near you" },
-      { name: "Articles & Blog", path: "/blog", icon: Edit, description: "Spiritual writings and reflections" },
       { name: "Support Our Mission", path: "/support", icon: Heart, description: "Help spread Orthodox wisdom" },
     ]
   }

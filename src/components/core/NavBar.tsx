@@ -24,7 +24,9 @@ import {
   Home,
   Info,
   Heart,
-  ChevronDown
+  ChevronDown,
+  Feather,
+  Library
 } from 'lucide-react';
 import { AudioPlayer } from '@/components/audio/AudioPlayer';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -85,14 +87,14 @@ export function NavBar() {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
 
-  // Category definitions with icons
+  // Category definitions with icons - updated to reflect unified content
   const categories = [
+    { name: "Sacred Content", path: "/blog", icon: <BookOpen className="h-5 w-5 mr-2" />, description: "Articles, blogs, and books" },
     { name: "Faith & Doctrine", path: "/doctrine", icon: <BookOpen className="h-5 w-5 mr-2" /> },
     { name: "Saints & Tradition", path: "/saints", icon: <Users className="h-5 w-5 mr-2" /> },
     { name: "Prayer & Worship", path: "/prayers", icon: <BookmarkIcon className="h-5 w-5 mr-2" /> },
     { name: "Sacred Arts", path: "/icons", icon: <Image className="h-5 w-5 mr-2" /> },
     { name: "Liturgical Life", path: "/calendar", icon: <Calendar className="h-5 w-5 mr-2" /> },
-    { name: "Blog & Articles", path: "/blog", icon: <Edit className="h-5 w-5 mr-2" /> },
     { name: "Sacred Music", path: "/chants", icon: <Music className="h-5 w-5 mr-2" /> },
     { name: "Community", path: "/community", icon: <Heart className="h-5 w-5 mr-2" /> },
     { name: "About Us", path: "/about", icon: <Info className="h-5 w-5 mr-2" /> },
@@ -143,26 +145,48 @@ export function NavBar() {
                 
                 <NavigationMenuItem>
                   <NavigationMenuTrigger className="bg-transparent text-gray-200 hover:bg-gold/10 hover:text-gold">
-                    Faith & Doctrine
+                    Sacred Content
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-2">
                       <li className="row-span-3">
                         <NavigationMenuLink asChild>
-                          <a
+                          <Link
                             className="flex flex-col justify-end w-full h-full p-6 no-underline rounded-md outline-none select-none bg-gradient-to-b from-byzantine/20 to-byzantine/5 border border-byzantine/10 focus:shadow-md"
-                            href="/doctrine"
+                            to="/blog"
                           >
                             <BookOpen className="h-6 w-6 text-byzantine mb-2" />
-                            <div className="text-lg font-medium text-white mb-2">Core Doctrine</div>
+                            <div className="text-lg font-medium text-white mb-2">Content Library</div>
                             <p className="text-sm leading-tight text-gray-400">
-                              Explore the foundational beliefs and theology of the Orthodox faith
+                              Explore articles, blogs, and books all in one place
                             </p>
-                          </a>
+                          </Link>
                         </NavigationMenuLink>
                       </li>
+                      <ListItem href="/articles" title="Sacred Articles" icon={<Feather className="h-4 w-4 mr-2 text-gold" />}>
+                        In-depth theological studies
+                      </ListItem>
+                      <ListItem href="/blog" title="Spiritual Blog" icon={<Edit className="h-4 w-4 mr-2 text-gold" />}>
+                        Personal reflections and insights
+                      </ListItem>
+                      <ListItem href="/books" title="Sacred Library" icon={<Library className="h-4 w-4 mr-2 text-gold" />}>
+                        Complete books and works
+                      </ListItem>
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+                
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="bg-transparent text-gray-200 hover:bg-gold/10 hover:text-gold">
+                    Faith & Doctrine
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-2">
                       <ListItem href="/learn" title="Learning Center" icon={<BookOpen className="h-4 w-4 mr-2 text-gold" />}>
                         Your journey through Orthodox wisdom
+                      </ListItem>
+                      <ListItem href="/doctrine" title="Core Doctrine" icon={<BookOpen className="h-4 w-4 mr-2 text-gold" />}>
+                        Foundational beliefs and theology
                       </ListItem>
                       <ListItem href="/readings" title="Daily Readings" icon={<Calendar className="h-4 w-4 mr-2 text-gold" />}>
                         Scripture and saints of the day
@@ -194,13 +218,6 @@ export function NavBar() {
                       </ListItem>
                     </ul>
                   </NavigationMenuContent>
-                </NavigationMenuItem>
-                
-                <NavigationMenuItem>
-                  <MainNavItem href="/blog" active={location.pathname.startsWith('/blog')} className="px-3 py-2">
-                    <Edit className="w-4 h-4 mr-1 inline-block" />
-                    Blog
-                  </MainNavItem>
                 </NavigationMenuItem>
                 
                 <NavigationMenuItem>
@@ -300,7 +317,7 @@ export function NavBar() {
                       <Link to="/readings">Daily Reading</Link>
                     </Button>
                     <Button variant="outline" size="sm" className="border-gold/20 hover:bg-gold/5 text-white" asChild>
-                      <Link to="/blog">Latest Blog</Link>
+                      <Link to="/blog">Latest Content</Link>
                     </Button>
                   </div>
                 </div>
