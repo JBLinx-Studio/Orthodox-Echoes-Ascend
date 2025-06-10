@@ -19,7 +19,7 @@ export function GoogleAuth({ onSuccess, variant = "signin" }: GoogleAuthProps) {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/`
+          redirectTo: 'https://jblinx-studio.github.io/Orthodox-Echoes-Ascend/callback'
         }
       });
 
