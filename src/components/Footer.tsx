@@ -1,6 +1,6 @@
 
 import { Link } from 'react-router-dom';
-import { Mail, Church, Heart, FileText } from 'lucide-react';
+import { Mail, Church, Heart, FileText, Settings, Crown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -20,7 +20,7 @@ export function Footer() {
               <span className="font-display text-xl font-bold">Orthodox Echoes</span>
             </Link>
             <p className="text-sm text-gray-300 mb-4">
-              Exploring the ancient traditions and timeless wisdom of Eastern Orthodoxy.
+              Discover the profound depths of Eastern Orthodox tradition through sacred wisdom, timeless teachings, and divine contemplation.
             </p>
             <div className="flex items-center gap-4">
               <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-gold transition-colors">
@@ -42,42 +42,48 @@ export function Footer() {
           </div>
           
           <div className="md:col-span-1">
-            <h3 className="font-display text-lg font-semibold mb-4 text-gold">Quick Links</h3>
+            <h3 className="font-display text-lg font-semibold mb-4 text-gold">Sacred Navigation</h3>
             <ul className="space-y-2">
-              <li><Link to="/learn" className="text-gray-300 hover:text-gold transition-colors">Learn</Link></li>
-              <li><Link to="/doctrine" className="text-gray-300 hover:text-gold transition-colors">Doctrine</Link></li>
-              <li><Link to="/saints" className="text-gray-300 hover:text-gold transition-colors">Saints</Link></li>
+              <li><Link to="/learn" className="text-gray-300 hover:text-gold transition-colors">Orthodox Learning</Link></li>
+              <li><Link to="/doctrine" className="text-gray-300 hover:text-gold transition-colors">Sacred Doctrine</Link></li>
+              <li><Link to="/saints" className="text-gray-300 hover:text-gold transition-colors">Lives of Saints</Link></li>
               <li><Link to="/calendar" className="text-gray-300 hover:text-gold transition-colors">Liturgical Calendar</Link></li>
-              <li><Link to="/community" className="text-gray-300 hover:text-gold transition-colors">Community</Link></li>
-              <li><Link to="/settings" className="text-gray-300 hover:text-gold transition-colors">Settings</Link></li>
-              <li><Link to="/developer" className="text-gold hover:text-gold/80 transition-colors">Dev Dashboard</Link></li>
+              <li><Link to="/community" className="text-gray-300 hover:text-gold transition-colors">Faith Community</Link></li>
+              <li><Link to="/settings" className="text-gray-300 hover:text-gold transition-colors flex items-center gap-1">
+                <Settings className="w-3 h-3" />
+                Personal Settings
+              </Link></li>
+              <li><Link to="/developer" className="text-gold hover:text-gold/80 transition-colors flex items-center gap-1">
+                <Crown className="w-3 h-3" />
+                Developer Sanctuary
+              </Link></li>
             </ul>
           </div>
           
           <div className="md:col-span-1">
-            <h3 className="font-display text-lg font-semibold mb-4 text-gold">Resources</h3>
+            <h3 className="font-display text-lg font-semibold mb-4 text-gold">Spiritual Resources</h3>
             <ul className="space-y-2">
-              <li><Link to="/prayers" className="text-gray-300 hover:text-gold transition-colors">Prayer Guide</Link></li>
-              <li><Link to="/icons" className="text-gray-300 hover:text-gold transition-colors">Iconography</Link></li>
-              <li><Link to="/faq" className="text-gray-300 hover:text-gold transition-colors">FAQs</Link></li>
-              <li><Link to="/readings" className="text-gray-300 hover:text-gold transition-colors">Daily Readings</Link></li>
-              <li><Link to="/support" className="text-gray-300 hover:text-gold transition-colors">Support Our Work</Link></li>
+              <li><Link to="/prayers" className="text-gray-300 hover:text-gold transition-colors">Sacred Prayers</Link></li>
+              <li><Link to="/icons" className="text-gray-300 hover:text-gold transition-colors">Divine Iconography</Link></li>
+              <li><Link to="/faq" className="text-gray-300 hover:text-gold transition-colors">Faith Questions</Link></li>
+              <li><Link to="/readings" className="text-gray-300 hover:text-gold transition-colors">Daily Scripture</Link></li>
+              <li><Link to="/support" className="text-gray-300 hover:text-gold transition-colors">Support Mission</Link></li>
             </ul>
           </div>
           
           <div className="md:col-span-1">
-            <h3 className="font-display text-lg font-semibold mb-4 text-gold">Subscribe</h3>
+            <h3 className="font-display text-lg font-semibold mb-4 text-gold">Sacred Updates</h3>
             <p className="text-sm text-gray-300 mb-4">
-              Receive updates on our latest content and news.
+              Join our community to receive divine insights, liturgical updates, and sacred wisdom.
             </p>
             <div className="space-y-2">
               <Input
                 type="email"
-                placeholder="Your email"
+                placeholder="Your email address"
                 className="bg-transparent border-orthodox-blue focus:border-gold"
               />
               <Button className="w-full bg-byzantine hover:bg-byzantine-dark">
-                Subscribe
+                Join Sacred Community
               </Button>
             </div>
           </div>
@@ -87,22 +93,22 @@ export function Footer() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <Link to="/contact" className="text-sm text-gray-300 hover:text-gold flex items-center gap-1">
-                <Mail className="h-4 w-4" /> Contact
+                <Mail className="h-4 w-4" /> Sacred Contact
               </Link>
               <Link to="/parishes" className="text-sm text-gray-300 hover:text-gold flex items-center gap-1">
-                <Church className="h-4 w-4" /> Find a Parish
+                <Church className="h-4 w-4" /> Find Parish
               </Link>
               <a href="/LICENSE.md" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-300 hover:text-gold flex items-center gap-1">
                 <FileText className="h-4 w-4" /> License
               </a>
               <a href="https://www.buymeacoffee.com" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-300 hover:text-gold flex items-center gap-1">
-                <Heart className="h-4 w-4" /> Support
+                <Heart className="h-4 w-4" /> Support Mission
               </a>
             </div>
             <div className="text-sm text-gray-400 flex flex-col md:flex-row items-center gap-2">
               <span>© {currentYear} Orthodox Echoes. All rights reserved.</span>
               <span className="hidden md:inline">•</span>
-              <span className="text-gold">Created by JBLinx Studio</span>
+              <span className="text-gold">Crafted with Divine Inspiration by JBLinx Studio</span>
             </div>
           </div>
         </div>

@@ -12,30 +12,49 @@ import {
   VolumeX, 
   Maximize2, 
   Minimize2,
-  Music
+  Music,
+  Waves
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Slider } from '@/components/ui/slider';
 
 export function FloatingAudioPlayer() {
   const { 
     isPlaying, 
     togglePlay, 
-    currentTrack, 
-    nextTrack, 
-    prevTrack, 
+    currentTrackIndex,
     volume, 
+    setVolume,
     isMuted, 
     muteAudio, 
-    unmuteAudio 
+    unmuteAudio,
+    playlist,
+    nextTrack,
+    prevTrack,
+    reverbEnabled,
+    toggleReverb,
+    reverbAmount,
+    setReverbAmount
   } = useAudio();
   
   const [isExpanded, setIsExpanded] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
 
-  // Don't show if no track is loaded
+  // Get current track safely
+  const currentTrack = playlist[currentTrackIndex];
+
+  // Don't show if no track is loaded or playing
   if (!currentTrack && !isPlaying) {
     return null;
   }
+
+  const handleVolumeChange = (newValue: number[]) => {
+    setVolume(newValue[0]);
+  };
+
+  const handleReverbAmountChange = (newValue: number[]) => {
+    setReverbAmount(newValue[0]);
+  };
 
   return (
     <AnimatePresence>
@@ -60,7 +79,7 @@ export function FloatingAudioPlayer() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Music className="w-5 h-5 text-gold" />
-                        <span className="text-sm font-medium text-white">Now Playing</span>
+                        <span className="text-sm font-medium text-white">Sacred Audio Player</span>
                       </div>
                       <Button
                         variant="ghost"
@@ -76,15 +95,15 @@ export function FloatingAudioPlayer() {
                     {currentTrack && (
                       <div className="text-center">
                         <h4 className="font-medium text-white text-sm mb-1">
-                          {currentTrack.title}
+                          {currentTrack.name}
                         </h4>
                         <p className="text-xs text-white/60">
-                          {currentTrack.artist || 'Orthodox Chant'}
+                          {currentTrack.description || 'Sacred Orthodox Chant'}
                         </p>
                       </div>
                     )}
 
-                    {/* Controls */}
+                    {/* Main Controls */}
                     <div className="flex items-center justify-center gap-2">
                       <Button
                         variant="ghost"
@@ -132,11 +151,72 @@ export function FloatingAudioPlayer() {
                           <Volume2 className="w-4 h-4" />
                         )}
                       </Button>
-                      <div className="flex-1 h-1 bg-white/20 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-gold transition-all duration-200"
-                          style={{ width: `${isMuted ? 0 : volume}%` }}
+                      <div className="flex-1">
+                        <Slider
+                          value={[volume]}
+                          max={100}
+                          step={1}
+                          onValueChange={handleVolumeChange}
+                          className="cursor-pointer"
                         />
+                      </div>
+                    </div>
+
+                    {/* Cathedral Reverb Controls */}
+                    <div className="border-t border-gold/20 pt-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-medium text-gold/80">Cathedral Reverb</span>
+                        <Button
+                          variant={reverbEnabled ? "default" : "ghost"}
+                          size="sm"
+                          onClick={toggleReverb}
+                          className={reverbEnabled 
+                            ? "bg-gold/30 text-gold hover:bg-gold/40 h-6 text-xs" 
+                            : "text-white/70 hover:text-gold h-6 text-xs"
+                          }
+                        >
+                          <Waves className="w-3 h-3 mr-1" />
+                          {reverbEnabled ? 'ON' : 'OFF'}
+                        </Button>
+                      </div>
+                      
+                      {reverbEnabled && (
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-white/60">Amount:</span>
+                          <Slider
+                            value={[reverbAmount]}
+                            max={100}
+                            step={1}
+                            onValueChange={handleReverbAmountChange}
+                            className="cursor-pointer flex-1"
+                          />
+                          <span className="text-xs text-gold/70 min-w-8">{reverbAmount}%</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Playlist Preview */}
+                    <div className="border-t border-gold/20 pt-3">
+                      <div className="text-xs font-medium text-gold/80 mb-2">Sacred Chants Collection</div>
+                      <div className="space-y-1 max-h-32 overflow-y-auto">
+                        {playlist.slice(0, 3).map((track, index) => (
+                          <div 
+                            key={index}
+                            className={`text-xs p-2 rounded flex items-center gap-2 ${
+                              currentTrackIndex === index 
+                                ? 'bg-gold/10 text-gold' 
+                                : 'text-white/60 hover:text-white/80'
+                            }`}
+                          >
+                            <span>{track.icon}</span>
+                            <span className="truncate">{track.name}</span>
+                          </div>
+                        ))}
+                        {playlist.length > 3 && (
+                          <div className="text-xs text-white/40 text-center">
+                            +{playlist.length - 3} more chants
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -160,10 +240,10 @@ export function FloatingAudioPlayer() {
                   {currentTrack && (
                     <div className="min-w-0 flex-1">
                       <p className="text-xs font-medium text-white truncate">
-                        {currentTrack.title}
+                        {currentTrack.name}
                       </p>
                       <p className="text-xs text-white/60 truncate">
-                        {currentTrack.artist || 'Orthodox Chant'}
+                        {currentTrack.description || 'Sacred Orthodox Chant'}
                       </p>
                     </div>
                   )}
