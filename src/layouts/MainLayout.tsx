@@ -20,16 +20,18 @@ export function MainLayout({ children }: MainLayoutProps) {
         </main>
         <Footer />
         
-        {/* Enhanced Audio Player - Always available when audio context exists */}
-        <div className="fixed bottom-4 left-4 z-40">
+        {/* Enhanced Audio Player - Desktop version with full features */}
+        <div className="fixed bottom-4 left-4 z-40 hidden lg:block">
           <EnhancedAudioPlayer 
             minimized={false}
-            className="hidden sm:block" 
+            className="max-w-sm" 
           />
         </div>
         
-        {/* Floating Audio Player - Mobile and backup */}
-        <FloatingAudioPlayer />
+        {/* Floating Audio Player - Mobile and tablet */}
+        <div className="lg:hidden">
+          <FloatingAudioPlayer />
+        </div>
       </div>
     </AudioProvider>
   );

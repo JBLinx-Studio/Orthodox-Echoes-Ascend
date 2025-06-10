@@ -78,7 +78,7 @@ interface AudioProviderProps {
 export const AudioProvider = ({ children }: AudioProviderProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState<string | null>(null);
-  const [volume, setVolumeState] = useState(0.7);
+  const [volume, setVolumeState] = useState(70); // Keep as percentage for UI
   const [isMuted, setIsMuted] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
@@ -92,7 +92,8 @@ export const AudioProvider = ({ children }: AudioProviderProps) => {
     }
     
     audioRef.current = new Audio(trackUrl);
-    audioRef.current.volume = isMuted ? 0 : volume;
+    // Convert percentage to fraction for HTMLAudioElement
+    audioRef.current.volume = isMuted ? 0 : volume / 100;
     audioRef.current.play();
     
     setCurrentTrack(trackUrl);
@@ -125,7 +126,8 @@ export const AudioProvider = ({ children }: AudioProviderProps) => {
   const setVolume = (newVolume: number) => {
     setVolumeState(newVolume);
     if (audioRef.current) {
-      audioRef.current.volume = isMuted ? 0 : newVolume;
+      // Convert percentage to fraction for HTMLAudioElement
+      audioRef.current.volume = isMuted ? 0 : newVolume / 100;
     }
   };
 
@@ -133,7 +135,7 @@ export const AudioProvider = ({ children }: AudioProviderProps) => {
     const newMutedState = !isMuted;
     setIsMuted(newMutedState);
     if (audioRef.current) {
-      audioRef.current.volume = newMutedState ? 0 : volume;
+      audioRef.current.volume = newMutedState ? 0 : volume / 100;
     }
   };
 
@@ -147,7 +149,7 @@ export const AudioProvider = ({ children }: AudioProviderProps) => {
   const unmuteAudio = () => {
     setIsMuted(false);
     if (audioRef.current) {
-      audioRef.current.volume = volume;
+      audioRef.current.volume = volume / 100;
     }
   };
 
