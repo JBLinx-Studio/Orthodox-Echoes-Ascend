@@ -1,5 +1,5 @@
 
-name: Deploy Orthodox Echoes to GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   # Runs on pushes targeting the default branch
@@ -38,7 +38,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
         
-      - name: Build Orthodox Echoes
+      - name: Build
         run: npm run build
         env:
           # Add cache busting by using the commit hash
@@ -66,10 +66,7 @@ jobs:
               </script>
             </head>
             <body>
-              <div style="text-align: center; padding: 50px; font-family: 'Playfair Display', serif;">
-                <h2 style="color: #D4AF37;">Redirecting to Orthodox Echoes...</h2>
-                <p style="color: #666;">Please wait while we redirect you to the correct page.</p>
-              </div>
+              <h2>Redirecting...</h2>
             </body>
           </html>
           EOL
@@ -97,11 +94,11 @@ jobs:
       - name: Create .nojekyll file
         run: touch ./dist/.nojekyll
         
-      # Deploy to GitHub Pages
-      - name: Deploy Orthodox Echoes to GitHub Pages
+      # Update deployment script to use force push
+      - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: dist # The folder the action should deploy to
+          folder: dist # The folder the action should deploy
           branch: gh-pages # The branch the action should deploy to
           clean: true # Automatically remove deleted files from the deploy branch
           force: true # Force update even if remote history differs

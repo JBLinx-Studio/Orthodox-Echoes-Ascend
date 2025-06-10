@@ -2,17 +2,22 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  base: mode === 'production' ? '/Orthodox-Echoes-Ascend/' : './',
+  base: mode === 'production' ? '/Orthodox-Echoes-Ascend/' : './', // Updated repo name for GitHub Pages
   server: {
     host: "::",
     port: 8080,
-    strictPort: true,
-    open: true,
+    strictPort: true, // Fail if port is already in use
+    open: true, // Open browser on server start
   },
-  plugins: [react()],
+  plugins: [
+    react(),
+    mode === 'development' &&
+    componentTagger(),
+  ].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -24,6 +29,7 @@ export default defineConfig(({ mode }) => ({
     minify: 'terser',
     assetsInlineLimit: 4096, // 4kb
     cssCodeSplit: true,
+    // Add cache busting for assets
     rollupOptions: {
       output: {
         entryFileNames: 'assets/[name].[hash].js',
@@ -39,24 +45,11 @@ export default defineConfig(({ mode }) => ({
       }
     },
     terserOptions: {
+      // Terser specific options
       compress: {
-        drop_console: mode === 'production',
+        drop_console: mode === 'production', // Only drop console in production
         drop_debugger: true,
       }
     },
-  },
-  // Optimize dependencies
-  optimizeDeps: {
-    include: [
-      'react',
-      'react-dom',
-      'react-router-dom',
-      'framer-motion',
-      'lucide-react'
-    ],
-  },
-  // Define environment variables
-  define: {
-    __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
   },
 }));

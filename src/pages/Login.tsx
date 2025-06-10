@@ -1,298 +1,184 @@
 
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { Shield, AlertCircle, User } from 'lucide-react';
+import { LoginForm } from '@/components/admin/LoginForm';
+import { Container } from '@/components/layout/Container';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { GoogleAuth } from '@/components/auth/GoogleAuth';
-import { supabase } from '@/integrations/supabase/client';
+import { isAuthenticated, login, checkPassword, registerUser } from '@/utils/auth-utils';
 
-export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [loginAttempts, setLoginAttempts] = useState(0);
+  const [isSignUp, setIsSignUp] = useState(false);
   const navigate = useNavigate();
   
+  // Redirect if already authenticated
   useEffect(() => {
-    document.title = "Login | Orthodox Echoes";
-
-    // Check if user is already logged in
-    const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        navigate('/');
-      }
-    };
-
-    checkUser();
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session) {
-        toast.success(`Welcome!`, {
-          description: "You've successfully signed in."
-        });
-        navigate('/');
-      }
-    });
-
-    return () => subscription.unsubscribe();
+    if (isAuthenticated()) {
+      navigate('/admin');
+    }
   }, [navigate]);
 
-  const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogin = (username: string, password: string) => {
     setIsLoading(true);
     
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) {
-        toast.error(error.message);
-        return;
-      }
-
-      if (data.user) {
-        toast.success(`Welcome back!`, {
-          description: "You've successfully signed in."
+    // Simulate API call with timeout
+    setTimeout(() => {
+      if (isSignUp) {
+        // Handle sign up
+        registerUser(username, password);
+        toast.success(`Welcome, ${username}!`, {
+          description: "Your account has been created successfully.",
+          icon: <User className="h-5 w-5 text-byzantine" />
         });
         navigate('/');
+      } else {
+        // Handle login - check if admin
+        if (username.toLowerCase() === 'admin' && checkPassword(password)) {
+          login(username, true); // login as admin
+          
+          toast.success(`Welcome, ${username}!`, {
+            description: "You have entered the sanctuary admin area.",
+            icon: <Shield className="h-5 w-5 text-byzantine" />
+          });
+          
+          navigate('/admin');
+        } else if (checkUserCredentials(username, password)) {
+          // Regular user login
+          login(username, false);
+          
+          toast.success(`Welcome back, ${username}!`, {
+            description: "You have successfully logged in.",
+            icon: <User className="h-5 w-5 text-byzantine" />
+          });
+          
+          navigate('/');
+        } else {
+          setLoginAttempts(prev => prev + 1);
+          
+          toast.error("Authentication failed", {
+            description: "Invalid credentials.",
+            icon: <AlertCircle className="h-5 w-5 text-red-500" />
+          });
+          
+          // After 3 failed attempts, add a delay
+          if (loginAttempts >= 2) {
+            toast.warning("Too many failed attempts", {
+              description: "Please wait a moment before trying again.",
+              duration: 5000
+            });
+          }
+        }
       }
-    } catch (error: any) {
-      toast.error("Sign in failed. Please try again.");
-    } finally {
       setIsLoading(false);
-    }
+    }, 1200);
   };
 
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (password !== confirmPassword) {
-      toast.error("Passwords do not match.");
-      return;
-    }
-    
-    setIsLoading(true);
-    
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/`
-        }
-      });
-
-      if (error) {
-        toast.error(error.message);
-        return;
-      }
-
-      if (data.user) {
-        toast.success(`Welcome!`, {
-          description: "Please check your email to confirm your account."
-        });
-      }
-    } catch (error: any) {
-      toast.error("Sign up failed. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
+  // Check if user exists and password matches
+  const checkUserCredentials = (username: string, password: string) => {
+    const users = JSON.parse(localStorage.getItem('orthodoxEchoesUsers') || '{}');
+    return users[username] && users[username].password === password;
+  };
+  
+  const toggleSignUpMode = () => {
+    setIsSignUp(!isSignUp);
+    setLoginAttempts(0);
+  };
+  
+  const handleContinueAsGuest = () => {
+    toast.info("Continuing as guest", {
+      description: "You can sign up or login anytime.",
+      icon: <User className="h-5 w-5 text-gold" />
+    });
+    navigate('/');
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0a0d16] to-[#161a26] flex items-center justify-center p-4">
-      {/* Background effects */}
-      <div className="fixed inset-0 z-0">
-        <div className="absolute inset-0 bg-[url('/images/noise-pattern.png')] opacity-5"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0d16] via-transparent to-transparent"></div>
-        <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.8)]"></div>
-        <div className="absolute bottom-20 left-1/4 w-40 h-40 rounded-full bg-gold/5 blur-3xl animate-[pulse_4s_ease-in-out_infinite]"></div>
-        <div className="absolute top-40 right-1/3 w-48 h-48 rounded-full bg-byzantine/5 blur-3xl animate-[pulse_5s_ease-in-out_infinite]" style={{animationDelay: "1.5s"}}></div>
-        <div className="absolute top-1/3 left-1/2 w-36 h-36 rounded-full bg-gold/8 blur-3xl animate-[pulse_6s_ease-in-out_infinite]" style={{animationDelay: "0.7s"}}></div>
-        <div className="absolute bottom-40 right-1/3 w-3 h-3 bg-gold/70 rounded-full animate-[candle-flicker_4s_ease-in-out_infinite]"></div>
-        <div className="absolute top-1/3 right-1/4 w-2 h-2 bg-gold/60 rounded-full animate-[candle-flicker_3s_ease-in-out_infinite]" style={{animationDelay: "0.5s"}}></div>
-        <div className="absolute bottom-1/3 left-1/3 w-2.5 h-2.5 bg-gold/60 rounded-full animate-[candle-flicker_5s_ease-in-out_infinite]" style={{animationDelay: "1.2s"}}></div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-[#0c111f] to-[#1A1F2C]">
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        {/* Background pattern */}
+        <div className="absolute top-0 left-0 w-full h-full opacity-10">
+          <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+            <defs>
+              <pattern id="pattern" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M0 20h40M20 0v40" stroke="#D4AF37" strokeWidth="0.5" fill="none" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#pattern)" />
+          </svg>
+        </div>
+        
+        {/* Enhanced candle glow effects */}
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-byzantine/20 rounded-full filter blur-[80px] opacity-40"></div>
+        <div className="absolute bottom-1/4 right-1/3 w-64 h-64 bg-gold/10 rounded-full filter blur-[60px] opacity-30"></div>
+        
+        {/* Cathedral light rays */}
+        <div className="absolute top-0 left-1/3 w-20 h-screen bg-gold/3 -rotate-6 animate-pulse" style={{animationDuration: "12s"}}></div>
+        <div className="absolute top-0 right-1/4 w-32 h-screen bg-gold/2 rotate-12 animate-pulse" style={{animationDuration: "15s"}}></div>
       </div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="relative z-10 w-full max-w-md"
-      >
-        <div className="bg-[#1A1F2C]/90 backdrop-blur-md border border-gold/20 rounded-lg p-8 shadow-2xl">
-          <div className="mb-8">
-            <h2 className="orthodox-heading text-3xl font-bold text-gold text-center mb-2">
-              Welcome to Orthodox Echoes
-            </h2>
-            <p className="text-white/70 text-center">
-              Sign in or create an account to continue your spiritual journey.
+      
+      <Container>
+        <div className="w-full max-w-md mx-auto">
+          <div className="text-center mb-8">
+            <div className="flex justify-center mb-4">
+              <div className="relative flex items-center justify-center w-16 h-16">
+                <span className="absolute inset-0 rounded-full bg-gradient-to-br from-byzantine to-byzantine-dark opacity-80"></span>
+                <span className="relative text-white font-display font-bold text-3xl">Ω</span>
+                <span className="absolute inset-0 rounded-full bg-gold/20 animate-pulse"></span>
+              </div>
+            </div>
+            <h1 className="text-2xl font-display text-gold">
+              {isSignUp ? "Create Your Account" : "Welcome Back"}
+            </h1>
+            <p className="text-white/70 mt-2">
+              {isSignUp 
+                ? "Join our community and explore the Orthodox faith"
+                : "Enter your credentials to access the sanctuary"
+              }
             </p>
           </div>
-
-          <Tabs defaultValue="signin" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-2 bg-[#0a0d16]/50">
-              <TabsTrigger value="signin">Sign In</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="signin" className="space-y-4">
-              <form onSubmit={handleSignIn} className="space-y-4">
-                <div>
-                  <Label htmlFor="signInEmail">Email</Label>
-                  <Input
-                    type="email"
-                    id="signInEmail"
-                    placeholder="Enter your email"
-                    className="bg-[#1A1F2C]/70 border-gold/30"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
+          
+          <div className="backdrop-blur-lg bg-[#1A1F2C]/80 border border-gold/20 shadow-xl rounded-lg">
+            <div className="p-6">
+              <LoginForm 
+                onLogin={handleLogin} 
+                isLoading={isLoading} 
+                attempts={loginAttempts}
+                isSignUp={isSignUp}
+                onToggleMode={toggleSignUpMode}
+              />
+              
+              <div className="mt-6 pt-4 border-t border-gold/10">
+                <div className="flex justify-center mb-4">
+                  <Button
+                    variant="ghost"
+                    className="text-white/60 hover:text-gold"
+                    onClick={handleContinueAsGuest}
+                  >
+                    Continue as Guest
+                  </Button>
                 </div>
-                <div>
-                  <Label htmlFor="signInPassword">Password</Label>
-                  <div className="relative">
-                    <Input
-                      type={showPassword ? 'text' : 'password'}
-                      id="signInPassword"
-                      placeholder="Enter your password"
-                      className="bg-[#1A1F2C]/70 border-gold/30 pr-10"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0"
-                      onClick={() => setShowPassword(!showPassword)}
-                      aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    >
-                      {showPassword ? 'Hide' : 'Show'}
-                    </Button>
-                  </div>
-                </div>
-                <Button 
-                  className="w-full bg-byzantine hover:bg-byzantine-dark" 
-                  disabled={isLoading}
-                >
-                  {isLoading ? 'Signing In...' : 'Sign In'}
-                </Button>
-              </form>
-
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-gold/20" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-[#1A1F2C] px-2 text-white/60">Or continue with</span>
-                </div>
+                <p className="text-white/50 text-xs text-center">
+                  Protected area of Orthodox Echoes. Unauthorized access is prohibited.
+                </p>
               </div>
-
-              <GoogleAuth variant="signin" onSuccess={() => navigate('/')} />
-            </TabsContent>
-
-            <TabsContent value="signup" className="space-y-4">
-              <form onSubmit={handleSignUp} className="space-y-4">
-                <div>
-                  <Label htmlFor="signUpEmail">Email</Label>
-                  <Input
-                    type="email"
-                    id="signUpEmail"
-                    placeholder="Enter your email"
-                    className="bg-[#1A1F2C]/70 border-gold/30"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="signUpPassword">Password</Label>
-                  <div className="relative">
-                    <Input
-                      type={showPassword ? 'text' : 'password'}
-                      id="signUpPassword"
-                      placeholder="Enter your password"
-                      className="bg-[#1A1F2C]/70 border-gold/30 pr-10"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0"
-                      onClick={() => setShowPassword(!showPassword)}
-                      aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    >
-                      {showPassword ? 'Hide' : 'Show'}
-                    </Button>
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="confirmPassword">Confirm Password</Label>
-                  <div className="relative">
-                    <Input
-                      type={showConfirmPassword ? 'text' : 'password'}
-                      id="confirmPassword"
-                      placeholder="Confirm your password"
-                      className="bg-[#1A1F2C]/70 border-gold/30 pr-10"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      required
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
-                    >
-                      {showConfirmPassword ? 'Hide' : 'Show'}
-                    </Button>
-                  </div>
-                </div>
-                <Button 
-                  className="w-full bg-byzantine hover:bg-byzantine-dark"
-                  disabled={isLoading}
-                >
-                  {isLoading ? 'Creating Account...' : 'Create Account'}
-                </Button>
-              </form>
-
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-gold/20" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-[#1A1F2C] px-2 text-white/60">Or continue with</span>
-                </div>
-              </div>
-
-              <GoogleAuth variant="signup" onSuccess={() => navigate('/')} />
-            </TabsContent>
-          </Tabs>
-
+            </div>
+          </div>
+          
           <div className="mt-4 text-center">
-            <Link to="/" className="text-sm text-gold hover:underline">
-              Back to Home
-            </Link>
+            <button 
+              onClick={() => navigate('/')}
+              className="text-white/60 text-sm hover:text-gold transition-colors"
+            >
+              Return to Sanctuary
+            </button>
           </div>
         </div>
-      </motion.div>
+      </Container>
     </div>
   );
-}
+};
+
+export default Login;
