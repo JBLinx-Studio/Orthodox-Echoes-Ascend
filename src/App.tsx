@@ -1,10 +1,9 @@
-
 import React, { useEffect, useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { HashRouter, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { MainLayout } from "./layouts/MainLayout";
 import { AudioProvider } from "./contexts/AudioContext";
 import { AuthGuard } from "./components/auth/AuthGuard";
@@ -23,6 +22,7 @@ import LearningCenter from "./pages/LearningCenter";
 import Saints from "./pages/Saints";
 import SacredIconography from "./pages/SacredIconography";
 import DeveloperPortal from "./pages/DeveloperPortal";
+import Settings from './pages/Settings';
 import "./styles/audioEffects.css";
 
 // Create more visually appealing placeholder page with cathedral theme
@@ -90,7 +90,7 @@ const PlaceholderPage = ({ title }: { title: string }) => {
 
 const queryClient = new QueryClient();
 
-const App = () => {
+function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -149,7 +149,7 @@ const App = () => {
         <AudioProvider>
           <Toaster />
           <Sonner />
-          <HashRouter>
+          <Router>
             <Routes>
               <Route element={<MainLayout />}>
                 <Route path="/" element={<Index />} />
@@ -173,7 +173,7 @@ const App = () => {
                 <Route path="/article/:id" element={<PlaceholderPage title="Article Details" />} />
                 <Route path="/faq" element={<PlaceholderPage title="Frequently Asked Questions" />} />
                 <Route path="/parishes" element={<PlaceholderPage title="Find a Parish" />} />
-                <Route path="/settings" element={<PlaceholderPage title="User Settings" />} />
+                <Route path="/settings" element={<Settings />} />
               </Route>
               
               <Route path="/login" element={<Login />} />
@@ -186,11 +186,11 @@ const App = () => {
               } />
               <Route path="*" element={<NotFound />} />
             </Routes>
-          </HashRouter>
+          </Router>
         </AudioProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );
-};
+}
 
 export default App;

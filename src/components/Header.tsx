@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -6,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { 
   Menu, X, User, LogOut, Settings, BookOpen, 
   Heart, MessageSquare, Calendar, Music, Users,
-  Crown, Search, Image, Edit, Feather, Library
+  Crown, Search, Image, Edit, Feather, Library, Shield
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getCurrentUser, logout } from '@/utils/auth-utils';
@@ -164,18 +163,40 @@ export function Header() {
               </span>
               <span>Community</span>
             </Link>
+
+            <Link
+              to="/contact"
+              className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors group"
+            >
+              <span className="group-hover:scale-110 transition-transform">
+                <MessageSquare className="w-4 h-4" />
+              </span>
+              <span>Contact</span>
+            </Link>
+
+            <Link
+              to="/settings"
+              className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors group"
+            >
+              <span className="group-hover:scale-110 transition-transform">
+                <Settings className="w-4 h-4" />
+              </span>
+              <span>Settings</span>
+            </Link>
+
+            <Link
+              to="/developer"
+              className="flex items-center space-x-2 text-gold hover:text-gold/80 transition-colors group bg-gold/10 px-3 py-1 rounded-md border border-gold/20"
+            >
+              <span className="group-hover:scale-110 transition-transform">
+                <Shield className="w-4 h-4" />
+              </span>
+              <span>Developer Dashboard</span>
+            </Link>
           </nav>
 
           {/* User Actions */}
           <div className="flex items-center space-x-4">
-            {/* Developer Portal Link */}
-            <Link to="/developer">
-              <Button variant="ghost" size="sm" className="text-gold hover:text-gold/80 hover:bg-gold/10">
-                <Crown className="w-4 h-4 mr-1" />
-                Dev Portal
-              </Button>
-            </Link>
-
             {/* Search Button */}
             <Button variant="ghost" size="sm" className="text-white/70 hover:text-gold hover:bg-gold/10">
               <Search className="w-4 h-4" />
@@ -264,15 +285,24 @@ export function Header() {
                   </div>
                 ))}
                 
-                {/* Mobile Developer Portal Link */}
-                <div className="border-t border-gold/20 pt-4">
+                {/* Mobile Settings and Developer Links */}
+                <div className="border-t border-gold/20 pt-4 space-y-2">
                   <Link
-                    to="/developer"
-                    className="flex items-center space-x-3 text-gold hover:text-gold/80 transition-colors py-2"
+                    to="/profile"
+                    className="flex items-center space-x-3 text-white/80 hover:text-gold transition-colors py-2"
                     onClick={() => setIsMenuOpen(false)}
                   >
-                    <Crown className="w-4 h-4" />
-                    <span>Developer Portal</span>
+                    <Settings className="w-4 h-4" />
+                    <span>Settings</span>
+                  </Link>
+                  
+                  <Link
+                    to="/developer"
+                    className="flex items-center space-x-3 text-gold hover:text-gold/80 transition-colors py-2 bg-gold/10 px-3 rounded-md"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Shield className="w-4 h-4" />
+                    <span>Developer Dashboard</span>
                   </Link>
                 </div>
 
