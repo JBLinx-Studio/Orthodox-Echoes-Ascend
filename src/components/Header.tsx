@@ -6,7 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { 
   Menu, X, User, LogOut, Settings, BookOpen, 
   Heart, MessageSquare, Calendar, Music, Users,
-  Crown, Search, Image, Edit, Feather, Library
+  Crown, Search, Image, Edit, Feather, Library,
+  ChevronDown, Info
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getCurrentUser, logout } from '@/utils/auth-utils';
@@ -16,6 +17,7 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -49,34 +51,34 @@ export function Header() {
     {
       name: "Sacred Content",
       items: [
-        { label: 'Sacred Articles', href: '/articles', icon: <Feather className="w-4 h-4" /> },
-        { label: 'Spiritual Blog', href: '/blog', icon: <Edit className="w-4 h-4" /> },
-        { label: 'Sacred Library', href: '/books', icon: <Library className="w-4 h-4" /> },
-        { label: 'Daily Readings', href: '/readings', icon: <Calendar className="w-4 h-4" /> },
+        { label: 'Sacred Articles', href: '/articles', icon: <Feather className="w-4 h-4" />, description: 'In-depth theological studies and scholarly discourse' },
+        { label: 'Spiritual Blog', href: '/blog', icon: <Edit className="w-4 h-4" />, description: 'Personal reflections and contemporary insights' },
+        { label: 'Sacred Library', href: '/books', icon: <Library className="w-4 h-4" />, description: 'Complete books and comprehensive works' },
+        { label: 'Daily Readings', href: '/readings', icon: <Calendar className="w-4 h-4" />, description: 'Scripture and saints of the day' },
       ]
     },
     {
       name: "Faith & Doctrine",
       items: [
-        { label: 'Learning Center', href: '/learn', icon: <BookOpen className="w-4 h-4" /> },
-        { label: 'Core Doctrine', href: '/doctrine', icon: <BookOpen className="w-4 h-4" /> },
-        { label: 'Prayer Guide', href: '/prayers', icon: <Heart className="w-4 h-4" /> },
+        { label: 'Learning Center', href: '/learn', icon: <BookOpen className="w-4 h-4" />, description: 'Your journey through Orthodox wisdom' },
+        { label: 'Core Doctrine', href: '/doctrine', icon: <BookOpen className="w-4 h-4" />, description: 'Explore the foundational beliefs and theology' },
+        { label: 'Prayer Guide', href: '/prayers', icon: <Heart className="w-4 h-4" />, description: 'Ancient prayers for daily life' },
       ]
     },
     {
       name: "Tradition",
       items: [
-        { label: 'Lives of Saints', href: '/saints', icon: <Crown className="w-4 h-4" /> },
-        { label: 'Sacred Iconography', href: '/icons', icon: <Image className="w-4 h-4" /> },
-        { label: 'Liturgical Calendar', href: '/calendar', icon: <Calendar className="w-4 h-4" /> },
-        { label: 'Sacred Music', href: '/chants', icon: <Music className="w-4 h-4" /> },
+        { label: 'Lives of Saints', href: '/saints', icon: <Crown className="w-4 h-4" />, description: 'Stories of holiness through the ages' },
+        { label: 'Sacred Iconography', href: '/icons', icon: <Image className="w-4 h-4" />, description: 'Windows into heaven' },
+        { label: 'Liturgical Calendar', href: '/calendar', icon: <Calendar className="w-4 h-4" />, description: 'The rhythm of Orthodox life' },
+        { label: 'Sacred Music', href: '/chants', icon: <Music className="w-4 h-4" />, description: 'Byzantine and Slavic chant traditions' },
       ]
     },
     {
       name: "Community",
       items: [
-        { label: 'Orthodox Community', href: '/community', icon: <Users className="w-4 h-4" /> },
-        { label: 'Contact Us', href: '/contact', icon: <MessageSquare className="w-4 h-4" /> },
+        { label: 'Orthodox Community', href: '/community', icon: <Users className="w-4 h-4" />, description: 'Connect with fellow Orthodox believers' },
+        { label: 'Contact Us', href: '/contact', icon: <MessageSquare className="w-4 h-4" />, description: 'Get in touch with us' },
       ]
     }
   ];
@@ -104,75 +106,158 @@ export function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-6">
+          <nav className="hidden lg:flex items-center space-x-1">
             <Link
               to="/"
-              className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors group"
+              className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors group px-3 py-2 rounded-md"
             >
-              <span className="group-hover:scale-110 transition-transform">
-                <BookOpen className="w-4 h-4" />
-              </span>
+              <BookOpen className="w-4 h-4" />
               <span>Home</span>
             </Link>
-            
-            <Link
-              to="/blog"
-              className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors group"
+
+            {/* Sacred Content Dropdown */}
+            <div 
+              className="relative group"
+              onMouseEnter={() => setActiveDropdown('content')}
+              onMouseLeave={() => setActiveDropdown(null)}
             >
-              <span className="group-hover:scale-110 transition-transform">
-                <MessageSquare className="w-4 h-4" />
-              </span>
-              <span>Blog</span>
-            </Link>
-            
-            <Link
-              to="/saints"
-              className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors group"
+              <button className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors px-3 py-2 rounded-md">
+                <span>Sacred Content</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+              {activeDropdown === 'content' && (
+                <div className="absolute top-full left-0 mt-2 w-80 bg-[#1A1F2C]/95 backdrop-blur-md border border-gold/20 rounded-lg shadow-xl p-4 z-50">
+                  <div className="space-y-3">
+                    {navigationCategories[0].items.map((item) => (
+                      <Link
+                        key={item.href}
+                        to={item.href}
+                        className="flex items-start space-x-3 p-2 rounded-md hover:bg-gold/10 transition-colors"
+                      >
+                        <div className="text-gold mt-0.5">{item.icon}</div>
+                        <div>
+                          <div className="text-white font-medium">{item.label}</div>
+                          <div className="text-white/60 text-sm">{item.description}</div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Faith & Doctrine Dropdown */}
+            <div 
+              className="relative group"
+              onMouseEnter={() => setActiveDropdown('faith')}
+              onMouseLeave={() => setActiveDropdown(null)}
             >
-              <span className="group-hover:scale-110 transition-transform">
-                <Crown className="w-4 h-4" />
-              </span>
-              <span>Saints</span>
-            </Link>
-            
-            <Link
-              to="/prayers"
-              className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors group"
+              <button className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors px-3 py-2 rounded-md">
+                <span>Faith & Doctrine</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+              {activeDropdown === 'faith' && (
+                <div className="absolute top-full left-0 mt-2 w-80 bg-[#1A1F2C]/95 backdrop-blur-md border border-gold/20 rounded-lg shadow-xl p-4 z-50">
+                  <div className="space-y-3">
+                    {navigationCategories[1].items.map((item) => (
+                      <Link
+                        key={item.href}
+                        to={item.href}
+                        className="flex items-start space-x-3 p-2 rounded-md hover:bg-gold/10 transition-colors"
+                      >
+                        <div className="text-gold mt-0.5">{item.icon}</div>
+                        <div>
+                          <div className="text-white font-medium">{item.label}</div>
+                          <div className="text-white/60 text-sm">{item.description}</div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Tradition Dropdown */}
+            <div 
+              className="relative group"
+              onMouseEnter={() => setActiveDropdown('tradition')}
+              onMouseLeave={() => setActiveDropdown(null)}
             >
-              <span className="group-hover:scale-110 transition-transform">
-                <Heart className="w-4 h-4" />
-              </span>
-              <span>Prayers</span>
-            </Link>
-            
-            <Link
-              to="/calendar"
-              className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors group"
+              <button className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors px-3 py-2 rounded-md">
+                <span>Tradition</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+              {activeDropdown === 'tradition' && (
+                <div className="absolute top-full left-0 mt-2 w-80 bg-[#1A1F2C]/95 backdrop-blur-md border border-gold/20 rounded-lg shadow-xl p-4 z-50">
+                  <div className="space-y-3">
+                    {navigationCategories[2].items.map((item) => (
+                      <Link
+                        key={item.href}
+                        to={item.href}
+                        className="flex items-start space-x-3 p-2 rounded-md hover:bg-gold/10 transition-colors"
+                      >
+                        <div className="text-gold mt-0.5">{item.icon}</div>
+                        <div>
+                          <div className="text-white font-medium">{item.label}</div>
+                          <div className="text-white/60 text-sm">{item.description}</div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Community Dropdown */}
+            <div 
+              className="relative group"
+              onMouseEnter={() => setActiveDropdown('community')}
+              onMouseLeave={() => setActiveDropdown(null)}
             >
-              <span className="group-hover:scale-110 transition-transform">
-                <Calendar className="w-4 h-4" />
-              </span>
-              <span>Calendar</span>
-            </Link>
-            
+              <button className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors px-3 py-2 rounded-md">
+                <span>Community</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+              {activeDropdown === 'community' && (
+                <div className="absolute top-full left-0 mt-2 w-80 bg-[#1A1F2C]/95 backdrop-blur-md border border-gold/20 rounded-lg shadow-xl p-4 z-50">
+                  <div className="space-y-3">
+                    {navigationCategories[3].items.map((item) => (
+                      <Link
+                        key={item.href}
+                        to={item.href}
+                        className="flex items-start space-x-3 p-2 rounded-md hover:bg-gold/10 transition-colors"
+                      >
+                        <div className="text-gold mt-0.5">{item.icon}</div>
+                        <div>
+                          <div className="text-white font-medium">{item.label}</div>
+                          <div className="text-white/60 text-sm">{item.description}</div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
             <Link
-              to="/community"
-              className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors group"
+              to="/contact"
+              className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors px-3 py-2 rounded-md"
             >
-              <span className="group-hover:scale-110 transition-transform">
-                <Users className="w-4 h-4" />
-              </span>
-              <span>Community</span>
+              <span>Contact</span>
             </Link>
           </nav>
 
           {/* User Actions */}
-          <div className="flex items-center space-x-4">
-            {/* Developer Portal Link */}
+          <div className="flex items-center space-x-3">
+            {/* Developer Portal Button - Prominent Position */}
             <Link to="/developer">
-              <Button variant="ghost" size="sm" className="text-gold hover:text-gold/80 hover:bg-gold/10">
-                <Crown className="w-4 h-4 mr-1" />
-                Dev Portal
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="border-gold/40 text-gold hover:bg-gold/10 hover:border-gold font-medium bg-gold/5"
+              >
+                <Crown className="w-4 h-4 mr-2" />
+                Dev Dashboard
               </Button>
             </Link>
 
@@ -268,11 +353,11 @@ export function Header() {
                 <div className="border-t border-gold/20 pt-4">
                   <Link
                     to="/developer"
-                    className="flex items-center space-x-3 text-gold hover:text-gold/80 transition-colors py-2"
+                    className="flex items-center space-x-3 text-gold hover:text-gold/80 transition-colors py-2 font-medium"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <Crown className="w-4 h-4" />
-                    <span>Developer Portal</span>
+                    <span>Developer Dashboard</span>
                   </Link>
                 </div>
 
