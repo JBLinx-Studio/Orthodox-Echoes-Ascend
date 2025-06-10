@@ -22,6 +22,7 @@ import DailyReadings from "./pages/DailyReadings";
 import LearningCenter from "./pages/LearningCenter";
 import Saints from "./pages/Saints";
 import SacredIconography from "./pages/SacredIconography";
+import DeveloperPortal from "./pages/DeveloperPortal";
 import "./styles/audioEffects.css";
 
 // Create more visually appealing placeholder page with cathedral theme
@@ -177,6 +178,7 @@ const App = () => {
               
               <Route path="/login" element={<Login />} />
               <Route path="/callback" element={<Callback />} />
+              <Route path="/developer" element={<DeveloperPortal />} />
               <Route path="/admin" element={
                 <AuthGuard requireAdmin={true}>
                   <Admin />
