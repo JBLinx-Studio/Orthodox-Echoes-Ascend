@@ -4,7 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Shield, Lock, Eye, EyeOff, Terminal } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Shield, Lock, Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface DeveloperLoginProps {
@@ -15,102 +16,126 @@ export function DeveloperLogin({ onSuccess }: DeveloperLoginProps) {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [attempts, setAttempts] = useState(0);
 
-  const DEVELOPER_PASSWORD = 'Elevated'; // Updated password
+  // Developer password - updated to "Elevated"
+  const DEVELOPER_PASSWORD = 'Elevated';
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     // Simulate authentication delay
-    setTimeout(() => {
-      if (password === DEVELOPER_PASSWORD) {
-        localStorage.setItem('orthodoxEchoesDeveloperAccess', 'true');
-        localStorage.setItem('orthodoxEchoesDeveloperLoginTime', Date.now().toString());
-        toast.success('Access granted to Developer Sanctuary');
-        onSuccess();
-      } else {
-        toast.error('Invalid credentials. Access denied.');
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    if (password === DEVELOPER_PASSWORD) {
+      localStorage.setItem('orthodoxEchoesDeveloperAccess', 'true');
+      localStorage.setItem('orthodoxEchoesDeveloperLoginTime', Date.now().toString());
+      toast.success('Developer access granted', {
+        description: 'Welcome to the sacred development sanctuary.'
+      });
+      onSuccess();
+    } else {
+      setAttempts(prev => prev + 1);
+      toast.error('Access denied', {
+        description: 'Invalid developer credentials.'
+      });
+      setPassword('');
+      
+      if (attempts >= 2) {
+        toast.error('Multiple failed attempts detected', {
+          description: 'Access temporarily restricted.'
+        });
       }
-      setIsLoading(false);
-    }, 1000);
+    }
+    
+    setIsLoading(false);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0a0d16] to-[#161a26] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        <Card className="bg-[#1A1F2C]/90 border-gold/20 backdrop-blur-md">
-          <CardHeader className="text-center space-y-4">
-            <div className="mx-auto w-16 h-16 rounded-full bg-gold/20 flex items-center justify-center">
-              <Shield className="w-8 h-8 text-gold" />
+        <Card className="bg-[#1A1F2C]/90 border-gold/20 backdrop-blur-sm">
+          <CardHeader className="text-center pb-4">
+            <div className="w-16 h-16 mx-auto mb-4 relative">
+              <div className="absolute inset-0 rounded-full bg-gold/20 animate-pulse"></div>
+              <div className="absolute inset-2 rounded-full bg-byzantine/30 flex items-center justify-center">
+                <Shield className="w-8 h-8 text-gold" />
+              </div>
             </div>
-            <CardTitle className="text-2xl font-display text-gold">Developer Sanctuary</CardTitle>
-            <p className="text-white/70">
-              Enter the sacred password to access elevated controls
+            <CardTitle className="text-2xl font-display text-gold">
+              Developer Sanctuary
+            </CardTitle>
+            <p className="text-white/70 text-sm">
+              Sacred development portal - authorized access only
             </p>
-            <div className="flex items-center justify-center space-x-2 text-gold/60 text-sm">
-              <Terminal className="w-4 h-4" />
-              <span>Password: "Elevated"</span>
-            </div>
           </CardHeader>
+          
           <CardContent>
-            <form onSubmit={handleLogin} className="space-y-6">
+            {attempts >= 3 && (
+              <Alert className="mb-4 border-red-500/20 bg-red-500/10">
+                <Lock className="h-4 w-4 text-red-400" />
+                <AlertDescription className="text-red-400">
+                  Access temporarily restricted due to multiple failed attempts.
+                </AlertDescription>
+              </Alert>
+            )}
+            
+            <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-white/90">
-                  Access Password
+                  Developer Password
                 </Label>
                 <div className="relative">
                   <Input
                     id="password"
-                    type={showPassword ? "text" : "password"}
+                    type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="bg-[#0C1118] border-gold/30 text-white pr-10"
                     placeholder="Enter developer password"
+                    className="bg-[#0C1118] border-gold/30 text-white placeholder:text-white/50 pr-10"
+                    disabled={attempts >= 3 || isLoading}
                     required
                   />
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-white/50 hover:text-gold"
+                    className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
                     onClick={() => setShowPassword(!showPassword)}
                   >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4 text-white/50" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-white/50" />
+                    )}
                   </Button>
                 </div>
               </div>
-
+              
               <Button 
                 type="submit" 
-                className="w-full bg-gold hover:bg-gold/90 text-black font-semibold"
-                disabled={isLoading}
+                className="w-full bg-byzantine hover:bg-byzantine-dark"
+                disabled={attempts >= 3 || isLoading || !password}
               >
                 {isLoading ? (
-                  <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin"></div>
-                    <span>Authenticating...</span>
+                  <div className="flex items-center">
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></div>
+                    Authenticating...
                   </div>
                 ) : (
-                  <div className="flex items-center space-x-2">
-                    <Lock className="w-4 h-4" />
-                    <span>Enter Sanctuary</span>
-                  </div>
+                  'Access Developer Portal'
                 )}
               </Button>
             </form>
-
-            <div className="mt-6 p-4 bg-gold/10 border border-gold/20 rounded-md">
-              <div className="flex items-start space-x-2">
-                <Shield className="w-5 h-5 text-gold mt-0.5" />
-                <div className="text-sm">
-                  <p className="text-gold font-medium">Security Notice</p>
-                  <p className="text-white/70 mt-1">
-                    This area contains sensitive development tools and system controls. 
-                    Session expires after 24 hours.
-                  </p>
-                </div>
-              </div>
+            
+            <div className="mt-6 text-center">
+              <p className="text-xs text-white/50">
+                Attempt {attempts}/3 • Secure development environment
+              </p>
+              <p className="text-xs text-gold/60 mt-2">
+                Password: "Elevated"
+              </p>
             </div>
           </CardContent>
         </Card>
