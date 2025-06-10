@@ -13,67 +13,15 @@ import { UserRoleManager } from './UserRoleManager';
 import { ContentManager } from '@/components/admin/ContentManager';
 import { BlogAdmin } from '@/components/admin/BlogAdmin';
 import { SaintManager } from '@/components/admin/SaintManager';
+import { AnalyticsPanel } from '@/components/admin/AnalyticsPanel';
 import { SettingsPanel } from '@/components/admin/SettingsPanel';
 
 interface DeveloperDashboardProps {
   onLogout: () => void;
 }
 
-interface DeveloperStats {
-  totalUsers: number;
-  totalContent: number;
-  totalSaints: number;
-  totalVisitors: number;
-  activeAdmins: number;
-  systemHealth: number;
-}
-
-// Simple Analytics Panel for Developer Dashboard
-const DeveloperAnalyticsPanel = ({ stats }: { stats: DeveloperStats }) => {
-  return (
-    <div className="space-y-6">
-      <Card className="bg-[#1A1F2C]/70 border-gold/20">
-        <CardHeader>
-          <CardTitle className="text-gold flex items-center gap-2">
-            <Activity className="w-5 h-5" />
-            System Analytics
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-white">{stats.totalUsers}</div>
-              <div className="text-sm text-white/60">Total Users</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-white">{stats.totalContent}</div>
-              <div className="text-sm text-white/60">Content Items</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-white">{stats.totalSaints}</div>
-              <div className="text-sm text-white/60">Saints</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-white">{stats.totalVisitors}</div>
-              <div className="text-sm text-white/60">Total Visitors</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-white">{stats.activeAdmins}</div>
-              <div className="text-sm text-white/60">Active Admins</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-white">{stats.systemHealth}%</div>
-              <div className="text-sm text-white/60">System Health</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-};
-
 export function DeveloperDashboard({ onLogout }: DeveloperDashboardProps) {
-  const [stats] = useState<DeveloperStats>({
+  const [stats] = useState({
     totalUsers: 1247,
     totalContent: 156,
     totalSaints: 84,
@@ -241,7 +189,7 @@ export function DeveloperDashboard({ onLogout }: DeveloperDashboardProps) {
           </TabsContent>
 
           <TabsContent value="analytics" className="space-y-6">
-            <DeveloperAnalyticsPanel stats={stats} />
+            <AnalyticsPanel stats={stats} />
           </TabsContent>
 
           <TabsContent value="settings" className="space-y-6">

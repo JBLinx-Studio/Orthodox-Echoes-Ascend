@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { 
   Menu, X, User, LogOut, Settings, BookOpen, 
   Heart, MessageSquare, Calendar, Music, Users,
-  Crown, Search, Image, Edit, Feather, Library
+  Crown
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getCurrentUser, logout } from '@/utils/auth-utils';
@@ -45,40 +45,13 @@ export function Header() {
     }
   };
 
-  const navigationCategories = [
-    {
-      name: "Sacred Content",
-      items: [
-        { label: 'Sacred Articles', href: '/articles', icon: <Feather className="w-4 h-4" /> },
-        { label: 'Spiritual Blog', href: '/blog', icon: <Edit className="w-4 h-4" /> },
-        { label: 'Sacred Library', href: '/books', icon: <Library className="w-4 h-4" /> },
-        { label: 'Daily Readings', href: '/readings', icon: <Calendar className="w-4 h-4" /> },
-      ]
-    },
-    {
-      name: "Faith & Doctrine",
-      items: [
-        { label: 'Learning Center', href: '/learn', icon: <BookOpen className="w-4 h-4" /> },
-        { label: 'Core Doctrine', href: '/doctrine', icon: <BookOpen className="w-4 h-4" /> },
-        { label: 'Prayer Guide', href: '/prayers', icon: <Heart className="w-4 h-4" /> },
-      ]
-    },
-    {
-      name: "Tradition",
-      items: [
-        { label: 'Lives of Saints', href: '/saints', icon: <Crown className="w-4 h-4" /> },
-        { label: 'Sacred Iconography', href: '/icons', icon: <Image className="w-4 h-4" /> },
-        { label: 'Liturgical Calendar', href: '/calendar', icon: <Calendar className="w-4 h-4" /> },
-        { label: 'Sacred Music', href: '/chants', icon: <Music className="w-4 h-4" /> },
-      ]
-    },
-    {
-      name: "Community",
-      items: [
-        { label: 'Orthodox Community', href: '/community', icon: <Users className="w-4 h-4" /> },
-        { label: 'Contact Us', href: '/contact', icon: <MessageSquare className="w-4 h-4" /> },
-      ]
-    }
+  const navigationItems = [
+    { label: 'Home', href: '/', icon: <BookOpen className="w-4 h-4" /> },
+    { label: 'Blog', href: '/blog', icon: <MessageSquare className="w-4 h-4" /> },
+    { label: 'Saints', href: '/saints', icon: <Heart className="w-4 h-4" /> },
+    { label: 'Prayers', href: '/prayers', icon: <BookOpen className="w-4 h-4" /> },
+    { label: 'Calendar', href: '/calendar', icon: <Calendar className="w-4 h-4" /> },
+    { label: 'Community', href: '/community', icon: <Users className="w-4 h-4" /> },
   ];
 
   return (
@@ -105,81 +78,29 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-6">
-            <Link
-              to="/"
-              className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors group"
-            >
-              <span className="group-hover:scale-110 transition-transform">
-                <BookOpen className="w-4 h-4" />
-              </span>
-              <span>Home</span>
-            </Link>
-            
-            <Link
-              to="/blog"
-              className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors group"
-            >
-              <span className="group-hover:scale-110 transition-transform">
-                <MessageSquare className="w-4 h-4" />
-              </span>
-              <span>Blog</span>
-            </Link>
-            
-            <Link
-              to="/saints"
-              className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors group"
-            >
-              <span className="group-hover:scale-110 transition-transform">
-                <Crown className="w-4 h-4" />
-              </span>
-              <span>Saints</span>
-            </Link>
-            
-            <Link
-              to="/prayers"
-              className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors group"
-            >
-              <span className="group-hover:scale-110 transition-transform">
-                <Heart className="w-4 h-4" />
-              </span>
-              <span>Prayers</span>
-            </Link>
-            
-            <Link
-              to="/calendar"
-              className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors group"
-            >
-              <span className="group-hover:scale-110 transition-transform">
-                <Calendar className="w-4 h-4" />
-              </span>
-              <span>Calendar</span>
-            </Link>
-            
-            <Link
-              to="/community"
-              className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors group"
-            >
-              <span className="group-hover:scale-110 transition-transform">
-                <Users className="w-4 h-4" />
-              </span>
-              <span>Community</span>
-            </Link>
+            {navigationItems.map((item) => (
+              <Link
+                key={item.href}
+                to={item.href}
+                className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors group"
+              >
+                <span className="group-hover:scale-110 transition-transform">
+                  {item.icon}
+                </span>
+                <span>{item.label}</span>
+              </Link>
+            ))}
           </nav>
 
           {/* User Actions */}
           <div className="flex items-center space-x-4">
-            {/* Developer Portal Link */}
+            {/* Developer Portal Link (Always visible) */}
             <Link to="/developer">
-              <Button variant="ghost" size="sm" className="text-gold hover:text-gold/80 hover:bg-gold/10">
+              <Button variant="ghost" size="sm" className="text-gold hover:text-gold/80">
                 <Crown className="w-4 h-4 mr-1" />
                 Dev Portal
               </Button>
             </Link>
-
-            {/* Search Button */}
-            <Button variant="ghost" size="sm" className="text-white/70 hover:text-gold hover:bg-gold/10">
-              <Search className="w-4 h-4" />
-            </Button>
 
             {!isLoading && (
               <>
@@ -193,12 +114,7 @@ export function Header() {
                         {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}
                       </span>
                     </div>
-                    <Link to="/profile">
-                      <Button variant="ghost" size="sm" className="text-white/70 hover:text-gold">
-                        <Settings className="w-4 h-4" />
-                      </Button>
-                    </Link>
-                    <Button variant="ghost" size="sm" onClick={handleLogout} className="text-white/70 hover:text-gold">
+                    <Button variant="ghost" size="sm" onClick={handleLogout}>
                       <LogOut className="w-4 h-4" />
                     </Button>
                   </div>
@@ -216,7 +132,7 @@ export function Header() {
             <Button
               variant="ghost"
               size="sm"
-              className="lg:hidden text-white/70 hover:text-gold"
+              className="lg:hidden"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -233,48 +149,28 @@ export function Header() {
               exit={{ opacity: 0, height: 0 }}
               className="lg:hidden mt-4 pb-4 border-t border-gold/20"
             >
-              <div className="flex flex-col space-y-4 mt-4">
-                {/* Main Navigation Items */}
-                <Link
-                  to="/"
-                  className="flex items-center space-x-3 text-white/80 hover:text-gold transition-colors py-2"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <BookOpen className="w-4 h-4" />
-                  <span>Home</span>
-                </Link>
-
-                {/* Categories */}
-                {navigationCategories.map((category) => (
-                  <div key={category.name} className="space-y-2">
-                    <h3 className="text-gold text-xs uppercase tracking-wider font-semibold">
-                      {category.name}
-                    </h3>
-                    {category.items.map((item) => (
-                      <Link
-                        key={item.href}
-                        to={item.href}
-                        className="flex items-center space-x-3 text-white/80 hover:text-gold transition-colors py-2 pl-4"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        {item.icon}
-                        <span>{item.label}</span>
-                      </Link>
-                    ))}
-                  </div>
+              <div className="flex flex-col space-y-3 mt-4">
+                {navigationItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    to={item.href}
+                    className="flex items-center space-x-3 text-white/80 hover:text-gold transition-colors py-2"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.icon}
+                    <span>{item.label}</span>
+                  </Link>
                 ))}
                 
                 {/* Mobile Developer Portal Link */}
-                <div className="border-t border-gold/20 pt-4">
-                  <Link
-                    to="/developer"
-                    className="flex items-center space-x-3 text-gold hover:text-gold/80 transition-colors py-2"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    <Crown className="w-4 h-4" />
-                    <span>Developer Portal</span>
-                  </Link>
-                </div>
+                <Link
+                  to="/developer"
+                  className="flex items-center space-x-3 text-gold hover:text-gold/80 transition-colors py-2 border-t border-gold/20 pt-4"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Crown className="w-4 h-4" />
+                  <span>Developer Portal</span>
+                </Link>
 
                 {user && (
                   <div className="border-t border-gold/20 pt-4">
