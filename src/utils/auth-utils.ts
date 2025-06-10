@@ -85,21 +85,6 @@ export const getUserProfile = async () => {
   };
 };
 
-// Helper functions to get values safely for React state
-export const getUsernameSync = (user: User | null): string => {
-  if (!user) return 'Guest';
-  
-  return user.user_metadata?.full_name || 
-         user.user_metadata?.name || 
-         user.email?.split('@')[0] || 
-         'User';
-};
-
-export const getLastLoginSync = (user: User | null): Date | null => {
-  if (!user || !user.last_sign_in_at) return null;
-  return new Date(user.last_sign_in_at);
-};
-
 // Deprecated functions for backwards compatibility
 export const login = (username: string, isAdmin: boolean = false): void => {
   console.warn('login() is deprecated. Use Supabase auth methods instead.');

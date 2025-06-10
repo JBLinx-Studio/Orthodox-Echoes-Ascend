@@ -93,13 +93,9 @@ export default function Callback() {
         setStatusMessage('Creating your account...');
 
         // Check if user already exists
-        const { data: existingUsers } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('email', userInfo.email)
-          .limit(1);
+        const { data: existingUser } = await supabase.auth.admin.getUserById(userInfo.id);
         
-        if (variant === 'signup' || !existingUsers || existingUsers.length === 0) {
+        if (variant === 'signup' || !existingUser) {
           // For signup or new users, create account
           const { data, error } = await supabase.auth.signUp({
             email: userInfo.email,
@@ -154,6 +150,7 @@ export default function Callback() {
         // Redirect to home after a brief delay
         setTimeout(() => {
           navigate('/');
+          if (onSuccess) onSuccess();
         }, 1500);
         
       } catch (error) {
