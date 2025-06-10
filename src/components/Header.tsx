@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -191,7 +192,7 @@ export function Header() {
               <span className="group-hover:scale-110 transition-transform">
                 <Shield className="w-4 h-4" />
               </span>
-              <span>Developer Dashboard</span>
+              <span>Dev Dashboard</span>
             </Link>
           </nav>
 
@@ -288,7 +289,7 @@ export function Header() {
                 {/* Mobile Settings and Developer Links */}
                 <div className="border-t border-gold/20 pt-4 space-y-2">
                   <Link
-                    to="/profile"
+                    to="/settings"
                     className="flex items-center space-x-3 text-white/80 hover:text-gold transition-colors py-2"
                     onClick={() => setIsMenuOpen(false)}
                   >
