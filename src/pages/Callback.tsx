@@ -6,6 +6,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 export default function Callback() {
   const [isProcessing, setIsProcessing] = useState(true);
+  const [statusMessage, setStatusMessage] = useState('Processing authentication...');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -13,48 +14,71 @@ export default function Callback() {
       try {
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
-        const state = urlParams.get('state'); // signin or signup
+        const state = urlParams.get('state');
         const error = urlParams.get('error');
 
         if (error) {
           console.error('Google OAuth error:', error);
-          toast.error('Authentication failed. Please try again.');
-          navigate('/login');
+          setStatusMessage('Authentication was cancelled or failed');
+          toast.error('Authentication failed', {
+            description: 'Please try again.'
+          });
+          setTimeout(() => navigate('/login'), 2000);
           return;
         }
 
         if (!code) {
           console.error('No authorization code received');
-          toast.error('Authentication failed. No authorization code received.');
-          navigate('/login');
+          setStatusMessage('No authorization code received');
+          toast.error('Authentication failed', {
+            description: 'No authorization code received.'
+          });
+          setTimeout(() => navigate('/login'), 2000);
           return;
         }
 
+        setStatusMessage('Exchanging authorization code...');
         console.log('Processing Google OAuth callback with code:', code);
         
+        // Parse state to determine signin/signup
+        let variant = 'signin';
+        try {
+          if (state) {
+            const parsedState = JSON.parse(atob(state));
+            variant = parsedState.variant || 'signin';
+          }
+        } catch (e) {
+          console.warn('Could not parse state parameter, defaulting to signin');
+        }
+
         // Exchange the authorization code for tokens
-        const response = await fetch('https://oauth2.googleapis.com/token', {
+        const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
           body: new URLSearchParams({
             client_id: '472513945629-2qed7qvfb4kn3njilhru2d2djqdm9e6n.apps.googleusercontent.com',
-            client_secret: 'YOUR_GOOGLE_CLIENT_SECRET', // You'll need to add this
+            client_secret: 'GOCSPX-your-client-secret-here', // You'll need to add your actual client secret
             code,
             grant_type: 'authorization_code',
             redirect_uri: 'https://jblinx-studio.github.io/Orthodox-Echoes-Ascend/callback',
           }),
         });
 
-        const tokenData = await response.json();
+        const tokenData = await tokenResponse.json();
         
         if (tokenData.error) {
           console.error('Token exchange error:', tokenData.error);
-          toast.error('Authentication failed during token exchange.');
-          navigate('/login');
+          setStatusMessage('Token exchange failed');
+          toast.error('Authentication failed', {
+            description: 'Could not exchange authorization code for tokens.'
+          });
+          setTimeout(() => navigate('/login'), 2000);
           return;
         }
+
+        setStatusMessage('Getting user information...');
 
         // Get user info from Google
         const userResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
@@ -66,52 +90,76 @@ export default function Callback() {
         const userInfo = await userResponse.json();
         console.log('Google user info:', userInfo);
 
-        // Create or sign in user with Supabase using email/password
-        if (state === 'signup') {
-          // For signup, create a new user
+        setStatusMessage('Creating your account...');
+
+        // Check if user already exists
+        const { data: existingUser } = await supabase.auth.admin.getUserById(userInfo.id);
+        
+        if (variant === 'signup' || !existingUser) {
+          // For signup or new users, create account
           const { data, error } = await supabase.auth.signUp({
             email: userInfo.email,
-            password: Math.random().toString(36).slice(-8), // Generate random password
+            password: userInfo.id + '_google_auth', // Use Google ID as password base
             options: {
               data: {
-                name: userInfo.name,
+                full_name: userInfo.name,
                 avatar_url: userInfo.picture,
                 google_id: userInfo.id,
+                provider: 'google'
               }
             }
           });
 
           if (error) {
             console.error('Supabase signup error:', error);
-            toast.error('Failed to create account. Please try again.');
-            navigate('/login');
+            setStatusMessage('Account creation failed');
+            toast.error('Failed to create account', {
+              description: error.message
+            });
+            setTimeout(() => navigate('/login'), 2000);
             return;
           }
 
-          toast.success('Account created successfully!');
+          setStatusMessage('Account created successfully!');
+          toast.success('Welcome to Orthodox Echoes!', {
+            description: 'Your account has been created successfully.'
+          });
         } else {
-          // For signin, attempt to sign in with email
+          // For existing users, sign them in
           const { data, error } = await supabase.auth.signInWithPassword({
             email: userInfo.email,
-            password: Math.random().toString(36).slice(-8), // This won't work, need better approach
+            password: userInfo.id + '_google_auth',
           });
 
           if (error) {
             console.error('Supabase signin error:', error);
-            toast.error('Failed to sign in. Please try creating an account first.');
-            navigate('/login');
+            setStatusMessage('Sign in failed');
+            toast.error('Failed to sign in', {
+              description: 'Please try creating an account first.'
+            });
+            setTimeout(() => navigate('/login'), 2000);
             return;
           }
 
-          toast.success('Successfully signed in!');
+          setStatusMessage('Successfully signed in!');
+          toast.success('Welcome back!', {
+            description: 'You have been successfully signed in.'
+          });
         }
 
-        navigate('/');
+        // Redirect to home after a brief delay
+        setTimeout(() => {
+          navigate('/');
+          if (onSuccess) onSuccess();
+        }, 1500);
         
       } catch (error) {
         console.error('Callback processing error:', error);
-        toast.error('Authentication failed. Please try again.');
-        navigate('/login');
+        setStatusMessage('Authentication failed');
+        toast.error('Authentication failed', {
+          description: 'An unexpected error occurred. Please try again.'
+        });
+        setTimeout(() => navigate('/login'), 2000);
       } finally {
         setIsProcessing(false);
       }
@@ -122,7 +170,19 @@ export default function Callback() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0a0d16] to-[#161a26] flex items-center justify-center p-4">
-      <div className="text-center">
+      {/* Enhanced background effects */}
+      <div className="fixed inset-0 z-0">
+        <div className="absolute inset-0 bg-[url('/images/noise-pattern.png')] opacity-5"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0d16] via-transparent to-transparent"></div>
+        <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.8)]"></div>
+        
+        {/* Animated background orbs */}
+        <div className="absolute bottom-20 left-1/4 w-40 h-40 rounded-full bg-gold/5 blur-3xl animate-[pulse_4s_ease-in-out_infinite]"></div>
+        <div className="absolute top-40 right-1/3 w-48 h-48 rounded-full bg-byzantine/5 blur-3xl animate-[pulse_5s_ease-in-out_infinite]" style={{ animationDelay: "1.5s" }}></div>
+        <div className="absolute top-1/3 left-1/2 w-36 h-36 rounded-full bg-gold/8 blur-3xl animate-[pulse_6s_ease-in-out_infinite]" style={{ animationDelay: "0.7s" }}></div>
+      </div>
+
+      <div className="relative z-10 text-center max-w-md mx-auto">
         <div className="mb-8 relative">
           <div className="w-32 h-32 relative flex items-center justify-center mx-auto">
             <div className="absolute w-32 h-32">
@@ -143,11 +203,26 @@ export default function Callback() {
           <div className="absolute inset-0 rounded-full bg-gold/10 blur-xl animate-pulse"></div>
         </div>
         
-        <h1 className="text-gold font-display text-4xl mb-2">
-          {isProcessing ? 'Processing Authentication...' : 'Authentication Complete'}
+        <h1 className="text-gold font-display text-4xl mb-4 animate-fade-in">
+          {isProcessing ? 'Authenticating...' : 'Authentication Complete'}
         </h1>
-        <p className="text-white/70 text-lg">
-          {isProcessing ? 'Please wait while we complete your sign-in.' : 'Redirecting you now.'}
+        
+        <div className="bg-[#1A1F2C]/80 backdrop-blur-sm border border-gold/20 rounded-lg p-6 mb-6">
+          <p className="text-white/80 text-lg mb-2">{statusMessage}</p>
+          
+          {isProcessing && (
+            <div className="flex justify-center mt-4">
+              <div className="flex space-x-2">
+                <div className="w-3 h-3 bg-gold rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
+                <div className="w-3 h-3 bg-gold rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                <div className="w-3 h-3 bg-gold rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+              </div>
+            </div>
+          )}
+        </div>
+        
+        <p className="text-white/60 text-sm">
+          {isProcessing ? 'Please wait while we complete your authentication.' : 'Redirecting you now...'}
         </p>
       </div>
     </div>
