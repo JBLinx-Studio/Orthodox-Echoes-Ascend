@@ -1,136 +1,383 @@
 
-import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Menu, X, Search, User } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
-import { AudioPlayer } from './AudioPlayer';
-import { useIsMobile } from '@/hooks/use-mobile';
-
-const MENU_ITEMS = [
-  { name: 'Home', path: '/' },
-  { name: 'Learn', path: '/learn' },
-  { name: 'Doctrine', path: '/doctrine' },
-  { name: 'Saints', path: '/saints' },
-  { name: 'Calendar', path: '/calendar' },
-  { name: 'Community', path: '/community' },
-  { name: 'Support', path: '/support' },
-];
+import { Badge } from '@/components/ui/badge';
+import { 
+  Menu, X, User, LogOut, Settings, BookOpen, 
+  Heart, MessageSquare, Calendar, Music, Users,
+  Crown, Search, Image, Edit, Feather, Library,
+  ChevronDown, Info
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { getCurrentUser, logout } from '@/utils/auth-utils';
+import { toast } from 'sonner';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [activePath, setActivePath] = useState('/');
-  const isMobile = useIsMobile();
+  const [user, setUser] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    setActivePath(window.location.pathname);
-
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+    const checkUser = async () => {
+      try {
+        const currentUser = await getCurrentUser();
+        setUser(currentUser);
+      } catch (error) {
+        console.error('Error checking user:', error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    checkUser();
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setUser(null);
+      toast.success('Logged out successfully');
+      navigate('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+      toast.error('Error logging out');
+    }
+  };
+
+  const navigationCategories = [
+    {
+      name: "Sacred Content",
+      items: [
+        { label: 'Sacred Articles', href: '/articles', icon: <Feather className="w-4 h-4" />, description: 'In-depth theological studies and scholarly discourse' },
+        { label: 'Spiritual Blog', href: '/blog', icon: <Edit className="w-4 h-4" />, description: 'Personal reflections and contemporary insights' },
+        { label: 'Sacred Library', href: '/books', icon: <Library className="w-4 h-4" />, description: 'Complete books and comprehensive works' },
+        { label: 'Daily Readings', href: '/readings', icon: <Calendar className="w-4 h-4" />, description: 'Scripture and saints of the day' },
+      ]
+    },
+    {
+      name: "Faith & Doctrine",
+      items: [
+        { label: 'Learning Center', href: '/learn', icon: <BookOpen className="w-4 h-4" />, description: 'Your journey through Orthodox wisdom' },
+        { label: 'Core Doctrine', href: '/doctrine', icon: <BookOpen className="w-4 h-4" />, description: 'Explore the foundational beliefs and theology' },
+        { label: 'Prayer Guide', href: '/prayers', icon: <Heart className="w-4 h-4" />, description: 'Ancient prayers for daily life' },
+      ]
+    },
+    {
+      name: "Tradition",
+      items: [
+        { label: 'Lives of Saints', href: '/saints', icon: <Crown className="w-4 h-4" />, description: 'Stories of holiness through the ages' },
+        { label: 'Sacred Iconography', href: '/icons', icon: <Image className="w-4 h-4" />, description: 'Windows into heaven' },
+        { label: 'Liturgical Calendar', href: '/calendar', icon: <Calendar className="w-4 h-4" />, description: 'The rhythm of Orthodox life' },
+        { label: 'Sacred Music', href: '/chants', icon: <Music className="w-4 h-4" />, description: 'Byzantine and Slavic chant traditions' },
+      ]
+    },
+    {
+      name: "Community",
+      items: [
+        { label: 'Orthodox Community', href: '/community', icon: <Users className="w-4 h-4" />, description: 'Connect with fellow Orthodox believers' },
+        { label: 'Contact Us', href: '/contact', icon: <MessageSquare className="w-4 h-4" />, description: 'Get in touch with us' },
+      ]
+    }
+  ];
+
   return (
-    <header 
-      className={cn(
-        "sticky top-0 z-50 w-full transition-all duration-300",
-        scrolled ? "bg-background/95 backdrop-blur-sm shadow-md" : "bg-background"
-      )}
-    >
-      <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center">
-            <Link to="/" className="flex items-center gap-2">
-              <div className="relative w-8 h-8 flex items-center justify-center">
-                <span className="absolute w-8 h-8 rounded-full bg-byzantine"></span>
-                <span className="relative text-white font-display font-bold text-lg">Ω</span>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-[#1A1F2C]/95 backdrop-blur-md border-b border-gold/20">
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <Link to="/" className="flex items-center space-x-3 group">
+            <div className="relative">
+              <div className="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center group-hover:bg-gold/30 transition-colors">
+                <svg className="w-6 h-6 text-gold" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2L14.85 8.3L22 9.3L17 14.3L18.18 21.5L12 18.1L5.82 21.5L7 14.3L2 9.3L9.15 8.3L12 2Z"/>
+                </svg>
               </div>
-              <span className="font-display text-xl font-bold hidden sm:block">Orthodox Echoes</span>
-            </Link>
-          </div>
+              <div className="absolute inset-0 rounded-full bg-gold/10 blur-md opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            </div>
+            <div>
+              <h1 className="text-xl font-display text-gold group-hover:text-gold/90 transition-colors">
+                Orthodox Echoes
+              </h1>
+              <p className="text-xs text-white/60">Ancient Wisdom</p>
+            </div>
+          </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
-            {MENU_ITEMS.map((item) => (
-              <Link
-                key={item.name}
-                to={item.path}
-                className={cn(
-                  "nav-link",
-                  activePath === item.path && "active-nav-link"
-                )}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </nav>
+          <nav className="hidden lg:flex items-center space-x-1">
+            <Link
+              to="/"
+              className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors group px-3 py-2 rounded-md"
+            >
+              <BookOpen className="w-4 h-4" />
+              <span>Home</span>
+            </Link>
 
-          <div className="flex items-center gap-2">
-            {!isMobile && <AudioPlayer />}
-            
-            <div className="flex items-center">
-              <Button variant="ghost" size="icon" className="mr-1" aria-label="Search">
-                <Search className="h-5 w-5" />
-              </Button>
-              <Button variant="ghost" size="icon" aria-label="Account">
-                <User className="h-5 w-5" />
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="icon"
-                className="md:hidden"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                aria-label="Toggle menu"
-              >
-                {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Navigation */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-background border-t border-border animate-fade-in">
-          <div className="container mx-auto px-4 py-4">
-            <nav className="flex flex-col space-y-4">
-              {MENU_ITEMS.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.path}
-                  className={cn(
-                    "text-lg font-medium py-2 border-b border-border",
-                    activePath === item.path ? "text-byzantine" : "text-foreground"
-                  )}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              ))}
-              {isMobile && (
-                <div className="py-3 flex justify-center">
-                  <AudioPlayer />
+            {/* Sacred Content Dropdown */}
+            <div 
+              className="relative group"
+              onMouseEnter={() => setActiveDropdown('content')}
+              onMouseLeave={() => setActiveDropdown(null)}
+            >
+              <button className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors px-3 py-2 rounded-md">
+                <span>Sacred Content</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+              {activeDropdown === 'content' && (
+                <div className="absolute top-full left-0 mt-2 w-80 bg-[#1A1F2C]/95 backdrop-blur-md border border-gold/20 rounded-lg shadow-xl p-4 z-50">
+                  <div className="space-y-3">
+                    {navigationCategories[0].items.map((item) => (
+                      <Link
+                        key={item.href}
+                        to={item.href}
+                        className="flex items-start space-x-3 p-2 rounded-md hover:bg-gold/10 transition-colors"
+                      >
+                        <div className="text-gold mt-0.5">{item.icon}</div>
+                        <div>
+                          <div className="text-white font-medium">{item.label}</div>
+                          <div className="text-white/60 text-sm">{item.description}</div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
               )}
-            </nav>
-            <div className="mt-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="Search..."
-                  className="pl-10"
-                />
-              </div>
             </div>
+
+            {/* Faith & Doctrine Dropdown */}
+            <div 
+              className="relative group"
+              onMouseEnter={() => setActiveDropdown('faith')}
+              onMouseLeave={() => setActiveDropdown(null)}
+            >
+              <button className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors px-3 py-2 rounded-md">
+                <span>Faith & Doctrine</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+              {activeDropdown === 'faith' && (
+                <div className="absolute top-full left-0 mt-2 w-80 bg-[#1A1F2C]/95 backdrop-blur-md border border-gold/20 rounded-lg shadow-xl p-4 z-50">
+                  <div className="space-y-3">
+                    {navigationCategories[1].items.map((item) => (
+                      <Link
+                        key={item.href}
+                        to={item.href}
+                        className="flex items-start space-x-3 p-2 rounded-md hover:bg-gold/10 transition-colors"
+                      >
+                        <div className="text-gold mt-0.5">{item.icon}</div>
+                        <div>
+                          <div className="text-white font-medium">{item.label}</div>
+                          <div className="text-white/60 text-sm">{item.description}</div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Tradition Dropdown */}
+            <div 
+              className="relative group"
+              onMouseEnter={() => setActiveDropdown('tradition')}
+              onMouseLeave={() => setActiveDropdown(null)}
+            >
+              <button className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors px-3 py-2 rounded-md">
+                <span>Tradition</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+              {activeDropdown === 'tradition' && (
+                <div className="absolute top-full left-0 mt-2 w-80 bg-[#1A1F2C]/95 backdrop-blur-md border border-gold/20 rounded-lg shadow-xl p-4 z-50">
+                  <div className="space-y-3">
+                    {navigationCategories[2].items.map((item) => (
+                      <Link
+                        key={item.href}
+                        to={item.href}
+                        className="flex items-start space-x-3 p-2 rounded-md hover:bg-gold/10 transition-colors"
+                      >
+                        <div className="text-gold mt-0.5">{item.icon}</div>
+                        <div>
+                          <div className="text-white font-medium">{item.label}</div>
+                          <div className="text-white/60 text-sm">{item.description}</div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Community Dropdown */}
+            <div 
+              className="relative group"
+              onMouseEnter={() => setActiveDropdown('community')}
+              onMouseLeave={() => setActiveDropdown(null)}
+            >
+              <button className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors px-3 py-2 rounded-md">
+                <span>Community</span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+              {activeDropdown === 'community' && (
+                <div className="absolute top-full left-0 mt-2 w-80 bg-[#1A1F2C]/95 backdrop-blur-md border border-gold/20 rounded-lg shadow-xl p-4 z-50">
+                  <div className="space-y-3">
+                    {navigationCategories[3].items.map((item) => (
+                      <Link
+                        key={item.href}
+                        to={item.href}
+                        className="flex items-start space-x-3 p-2 rounded-md hover:bg-gold/10 transition-colors"
+                      >
+                        <div className="text-gold mt-0.5">{item.icon}</div>
+                        <div>
+                          <div className="text-white font-medium">{item.label}</div>
+                          <div className="text-white/60 text-sm">{item.description}</div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <Link
+              to="/contact"
+              className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors px-3 py-2 rounded-md"
+            >
+              <span>Contact</span>
+            </Link>
+          </nav>
+
+          {/* User Actions */}
+          <div className="flex items-center space-x-3">
+            {/* Developer Portal Button - Prominent Position */}
+            <Link to="/developer">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="border-gold/40 text-gold hover:bg-gold/10 hover:border-gold font-medium bg-gold/5"
+              >
+                <Crown className="w-4 h-4 mr-2" />
+                Dev Dashboard
+              </Button>
+            </Link>
+
+            {/* Search Button */}
+            <Button variant="ghost" size="sm" className="text-white/70 hover:text-gold hover:bg-gold/10">
+              <Search className="w-4 h-4" />
+            </Button>
+
+            {!isLoading && (
+              <>
+                {user ? (
+                  <div className="flex items-center space-x-3">
+                    <div className="hidden md:flex items-center space-x-2">
+                      <div className="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center">
+                        <User className="w-4 h-4 text-gold" />
+                      </div>
+                      <span className="text-white/80 text-sm">
+                        {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}
+                      </span>
+                    </div>
+                    <Link to="/profile">
+                      <Button variant="ghost" size="sm" className="text-white/70 hover:text-gold">
+                        <Settings className="w-4 h-4" />
+                      </Button>
+                    </Link>
+                    <Button variant="ghost" size="sm" onClick={handleLogout} className="text-white/70 hover:text-gold">
+                      <LogOut className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ) : (
+                  <Link to="/login">
+                    <Button variant="outline" size="sm" className="border-gold/30 text-gold hover:bg-gold/10">
+                      Sign In
+                    </Button>
+                  </Link>
+                )}
+              </>
+            )}
+
+            {/* Mobile Menu Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="lg:hidden text-white/70 hover:text-gold"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </Button>
           </div>
         </div>
-      )}
+
+        {/* Mobile Navigation */}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.nav
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="lg:hidden mt-4 pb-4 border-t border-gold/20"
+            >
+              <div className="flex flex-col space-y-4 mt-4">
+                {/* Main Navigation Items */}
+                <Link
+                  to="/"
+                  className="flex items-center space-x-3 text-white/80 hover:text-gold transition-colors py-2"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <BookOpen className="w-4 h-4" />
+                  <span>Home</span>
+                </Link>
+
+                {/* Categories */}
+                {navigationCategories.map((category) => (
+                  <div key={category.name} className="space-y-2">
+                    <h3 className="text-gold text-xs uppercase tracking-wider font-semibold">
+                      {category.name}
+                    </h3>
+                    {category.items.map((item) => (
+                      <Link
+                        key={item.href}
+                        to={item.href}
+                        className="flex items-center space-x-3 text-white/80 hover:text-gold transition-colors py-2 pl-4"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {item.icon}
+                        <span>{item.label}</span>
+                      </Link>
+                    ))}
+                  </div>
+                ))}
+                
+                {/* Mobile Developer Portal Link */}
+                <div className="border-t border-gold/20 pt-4">
+                  <Link
+                    to="/developer"
+                    className="flex items-center space-x-3 text-gold hover:text-gold/80 transition-colors py-2 font-medium"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Crown className="w-4 h-4" />
+                    <span>Developer Dashboard</span>
+                  </Link>
+                </div>
+
+                {user && (
+                  <div className="border-t border-gold/20 pt-4">
+                    <Link
+                      to="/profile"
+                      className="flex items-center space-x-3 text-white/80 hover:text-gold transition-colors py-2"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <User className="w-4 h-4" />
+                      <span>Profile</span>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </motion.nav>
+          )}
+        </AnimatePresence>
+      </div>
     </header>
   );
 }
