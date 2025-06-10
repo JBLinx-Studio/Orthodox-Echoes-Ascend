@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { User, Settings, Clock, Shield, Edit3, Save, X, BookOpen, Heart, MessageSquare } from 'lucide-react';
+import { User, Settings, Clock, Shield, Edit3, Save, X, LogOut } from 'lucide-react';
 import { getUsername, getLastLogin, formatLastLogin, logout } from '@/utils/auth-utils';
 
 export default function Profile() {
