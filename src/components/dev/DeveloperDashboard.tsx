@@ -1,5 +1,5 @@
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -73,6 +73,7 @@ const DeveloperAnalyticsPanel = ({ stats }: { stats: DeveloperStats }) => {
 };
 
 export function DeveloperDashboard({ onLogout }: DeveloperDashboardProps) {
+  const navigate = useNavigate();
   const [stats] = useState<DeveloperStats>({
     totalUsers: 1247,
     totalContent: 156,
@@ -89,6 +90,7 @@ export function DeveloperDashboard({ onLogout }: DeveloperDashboardProps) {
       description: 'Logged out of development sanctuary.'
     });
     onLogout();
+    navigate('/');
   };
 
   return (
