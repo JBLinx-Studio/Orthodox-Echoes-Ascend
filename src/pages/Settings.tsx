@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -26,7 +25,7 @@ export default function Settings() {
   const [emailUpdates, setEmailUpdates] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [volume, setVolume] = useState([70]);
-  const [fontSize, setFontSize] = useState([16]);
+  const [fontSize, setFontSize] = useState(['16']);
   const [autoSave, setAutoSave] = useState(true);
   const [readingMode, setReadingMode] = useState(false);
   const [compactMode, setCompactMode] = useState(false);
@@ -471,8 +470,7 @@ export default function Settings() {
                     <div>
                       <Label className="text-white">Data Export</Label>
                       <p className="text-sm text-white/60 mb-2">Download your personal data and preferences</p>
-                      <Button onClick={handleExportData} variant="outline" className="border-gold/30 text-gold hover:bg-gold/10">
-                        <Download className="w-4 h-4 mr-2" />
+                      <Button variant="outline" className="border-gold/30 text-gold hover:bg-gold/10">
                         Export Data
                       </Button>
                     </div>
