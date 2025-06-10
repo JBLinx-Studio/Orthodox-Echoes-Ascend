@@ -1,45 +1,26 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import type { User } from '@supabase/supabase-js';
-
-// Get current user from Supabase session
-export const getCurrentUser = async (): Promise<User | null> => {
-  const { data: { session } } = await supabase.auth.getSession();
-  return session?.user || null;
-};
 
 // Check if the user is authenticated
-export const isAuthenticated = async (): Promise<boolean> => {
-  const user = await getCurrentUser();
-  return !!user;
+export const isAuthenticated = (): boolean => {
+  // This will be handled by the component that checks the session
+  return false; // Components should use useEffect to check session
 };
 
 // Check if the user is an admin
-export const isAdmin = async (): Promise<boolean> => {
-  const user = await getCurrentUser();
-  if (!user) return false;
-  
-  return user.email === 'admin@orthodoxechoes.com' || 
-         user.user_metadata?.role === 'admin';
+export const isAdmin = (): boolean => {
+  // This will be determined by user metadata or a separate check
+  return false; // Components should check user metadata
 };
 
-// Get the current authenticated user's display name
-export const getUsername = async (): Promise<string> => {
-  const user = await getCurrentUser();
-  if (!user) return 'Guest';
-  
-  return user.user_metadata?.full_name || 
-         user.user_metadata?.name || 
-         user.email?.split('@')[0] || 
-         'User';
+// Get the current authenticated username
+export const getUsername = (): string => {
+  return 'Guest'; // Components should get this from session
 };
 
 // Get the last login date
-export const getLastLogin = async (): Promise<Date | null> => {
-  const user = await getCurrentUser();
-  if (!user || !user.last_sign_in_at) return null;
-  
-  return new Date(user.last_sign_in_at);
+export const getLastLogin = (): Date | null => {
+  return null; // This will come from session metadata
 };
 
 // Format the last login time/date for display
@@ -47,59 +28,37 @@ export const formatLastLogin = (date: Date | null): string => {
   if (!date) return 'Never';
   
   const today = new Date();
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-  
   if (date.toDateString() === today.toDateString()) {
     return `Today at ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-  } else if (date.toDateString() === yesterday.toDateString()) {
-    return `Yesterday at ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
   }
   
-  return date.toLocaleDateString([], { 
-    month: 'short', 
-    day: 'numeric', 
-    year: date.getFullYear() !== today.getFullYear() ? 'numeric' : undefined 
-  });
+  return date.toLocaleDateString();
 };
 
 // Logout the user
-export const logout = async (): Promise<{ error: any }> => {
-  const { error } = await supabase.auth.signOut();
-  return { error };
+export const logout = async (): Promise<void> => {
+  await supabase.auth.signOut();
 };
 
-// Get user profile data
-export const getUserProfile = async () => {
-  const user = await getCurrentUser();
-  if (!user) return null;
-  
-  return {
-    id: user.id,
-    email: user.email,
-    name: user.user_metadata?.full_name || user.user_metadata?.name,
-    avatar: user.user_metadata?.avatar_url,
-    provider: user.user_metadata?.provider,
-    created_at: user.created_at,
-    last_sign_in: user.last_sign_in_at
-  };
-};
-
-// Deprecated functions for backwards compatibility
+// Login the user (for backwards compatibility)
 export const login = (username: string, isAdmin: boolean = false): void => {
-  console.warn('login() is deprecated. Use Supabase auth methods instead.');
+  // This is now handled by Supabase auth
+  console.log('Login should use Supabase auth methods');
 };
 
+// Check if the password is correct for admin (deprecated)
 export const checkPassword = (password: string): boolean => {
-  console.warn('checkPassword() is deprecated. Use Supabase auth methods instead.');
+  // This should be handled by Supabase auth
   return false;
 };
 
+// Register a new user (deprecated - use Supabase auth)
 export const registerUser = (username: string, password: string): void => {
-  console.warn('registerUser() is deprecated. Use Supabase auth methods instead.');
+  console.log('Registration should use Supabase auth methods');
 };
 
+// Get all registered users (for admin dashboard)
 export const getRegisteredUsers = (): any[] => {
-  console.warn('getRegisteredUsers() is deprecated. Use Supabase admin functions instead.');
+  // This would need to be implemented with Supabase admin functions
   return [];
 };
