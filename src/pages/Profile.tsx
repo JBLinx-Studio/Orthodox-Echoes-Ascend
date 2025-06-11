@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { User, Settings, Clock, Shield, Edit3, Save, X, BookOpen, Heart, MessageSquare } from 'lucide-react';
+import { User, Settings, Clock, Shield, Edit3, Save, X, LogOut, Home } from 'lucide-react';
 import { getUsername, getLastLogin, formatLastLogin, logout } from '@/utils/auth-utils';
 
 export default function Profile() {
@@ -61,6 +62,10 @@ export default function Profile() {
       console.error('Logout error:', error);
       toast.error('Error logging out');
     }
+  };
+
+  const handleReturnHome = () => {
+    window.location.hash = '/';
   };
 
   if (isLoading) {
@@ -152,14 +157,24 @@ export default function Profile() {
               </Button>
             </div>
 
-            <Button
-              variant="destructive"
-              className="w-full justify-center"
-              onClick={handleLogout}
-            >
-              <LogOut className="w-4 h-4 mr-2" />
-              Log Out
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                variant="ghost"
+                className="flex-1 justify-center"
+                onClick={handleReturnHome}
+              >
+                <Home className="w-4 h-4 mr-2" />
+                Return Home
+              </Button>
+              <Button
+                variant="destructive"
+                className="flex-1 justify-center"
+                onClick={handleLogout}
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Log Out
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>

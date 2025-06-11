@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Shield, Lock, Eye, EyeOff } from 'lucide-react';
+import { Shield, Lock, Eye, EyeOff, Home } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface DeveloperLoginProps {
@@ -18,8 +18,8 @@ export function DeveloperLogin({ onSuccess }: DeveloperLoginProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [attempts, setAttempts] = useState(0);
 
-  // Developer password - in production, this should be stored securely
-  const DEVELOPER_PASSWORD = 'OrthodoxEchoes2025Dev!';
+  // Developer password - "Elevated" for elevated access
+  const DEVELOPER_PASSWORD = 'Elevated';
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,14 +31,14 @@ export function DeveloperLogin({ onSuccess }: DeveloperLoginProps) {
     if (password === DEVELOPER_PASSWORD) {
       localStorage.setItem('orthodoxEchoesDeveloperAccess', 'true');
       localStorage.setItem('orthodoxEchoesDeveloperLoginTime', Date.now().toString());
-      toast.success('Developer access granted', {
+      toast.success('Elevated access granted', {
         description: 'Welcome to the sacred development sanctuary.'
       });
       onSuccess();
     } else {
       setAttempts(prev => prev + 1);
       toast.error('Access denied', {
-        description: 'Invalid developer credentials.'
+        description: 'Invalid elevated credentials.'
       });
       setPassword('');
       
@@ -50,6 +50,10 @@ export function DeveloperLogin({ onSuccess }: DeveloperLoginProps) {
     }
     
     setIsLoading(false);
+  };
+
+  const handleReturnHome = () => {
+    window.location.hash = '/';
   };
 
   return (
@@ -67,7 +71,7 @@ export function DeveloperLogin({ onSuccess }: DeveloperLoginProps) {
               Developer Sanctuary
             </CardTitle>
             <p className="text-white/70 text-sm">
-              Sacred development portal - authorized access only
+              Elevated development portal - authorized access only
             </p>
           </CardHeader>
           
@@ -84,7 +88,7 @@ export function DeveloperLogin({ onSuccess }: DeveloperLoginProps) {
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="password" className="text-white/90">
-                  Developer Password
+                  Elevated Access Password
                 </Label>
                 <div className="relative">
                   <Input
@@ -92,7 +96,7 @@ export function DeveloperLogin({ onSuccess }: DeveloperLoginProps) {
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter developer password"
+                    placeholder="Enter elevated password"
                     className="bg-[#0C1118] border-gold/30 text-white placeholder:text-white/50 pr-10"
                     disabled={attempts >= 3 || isLoading}
                     required
@@ -126,6 +130,16 @@ export function DeveloperLogin({ onSuccess }: DeveloperLoginProps) {
                 ) : (
                   'Access Developer Portal'
                 )}
+              </Button>
+              
+              <Button 
+                type="button"
+                variant="ghost"
+                className="w-full text-white/70 hover:text-white"
+                onClick={handleReturnHome}
+              >
+                <Home className="w-4 h-4 mr-2" />
+                Return to Home
               </Button>
             </form>
             

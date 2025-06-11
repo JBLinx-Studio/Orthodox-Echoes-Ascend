@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { 
   Code, Database, Users, Settings, Shield, Crown, 
-  LogOut, Activity, Server, Globe, Lock
+  LogOut, Activity, Server, Globe, Lock, Home
 } from 'lucide-react';
 import { UserRoleManager } from './UserRoleManager';
 import { ContentManager } from '@/components/admin/ContentManager';
@@ -22,10 +22,16 @@ interface DeveloperDashboardProps {
 
 export function DeveloperDashboard({ onLogout }: DeveloperDashboardProps) {
   const [stats] = useState({
+    totalVisitors: 3890,
+    todayVisitors: 247,
+    totalViews: 15640,
+    totalLikes: 892,
+    totalComments: 456,
+    totalArticles: 156,
+    totalPrayers: 89,
+    totalSaints: 84,
     totalUsers: 1247,
     totalContent: 156,
-    totalSaints: 84,
-    totalVisitors: 3890,
     activeAdmins: 3,
     systemHealth: 98
   });
@@ -37,6 +43,10 @@ export function DeveloperDashboard({ onLogout }: DeveloperDashboardProps) {
       description: 'Logged out of development sanctuary.'
     });
     onLogout();
+  };
+
+  const handleReturnHome = () => {
+    window.location.hash = '/';
   };
 
   return (
@@ -59,6 +69,10 @@ export function DeveloperDashboard({ onLogout }: DeveloperDashboardProps) {
               <Activity className="w-3 h-3 mr-1" />
               System Health: {stats.systemHealth}%
             </Badge>
+            <Button variant="ghost" onClick={handleReturnHome} className="text-white/70 hover:text-white">
+              <Home className="w-4 h-4 mr-2" />
+              Return Home
+            </Button>
             <Button variant="ghost" onClick={handleLogout} className="text-white/70 hover:text-white">
               <LogOut className="w-4 h-4 mr-2" />
               Exit Sanctuary

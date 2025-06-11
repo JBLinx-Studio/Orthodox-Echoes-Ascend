@@ -17,8 +17,12 @@ export const isAdmin = async (): Promise<boolean> => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session?.user) return false;
     
-    // Check if user is admin based on email or metadata
-    const adminEmails = ['admin@orthodoxechoes.com', 'jblinxstudio@gmail.com'];
+    // Admin emails - highest rank
+    const adminEmails = [
+      'admin@orthodoxechoes.com', 
+      'jblinxstudio@gmail.com',
+      'EthosofOrthodoxy@Gmail.com'
+    ];
     return adminEmails.includes(session.user.email || '') || 
            session.user.user_metadata?.role === 'admin';
   } catch {
@@ -47,6 +51,30 @@ export const getUsername = async (): Promise<string> => {
            'User';
   } catch {
     return 'Guest';
+  }
+};
+
+// Get user role based on email
+export const getUserRole = async (): Promise<'admin' | 'user'> => {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) return 'user';
+    
+    // Admin emails - highest rank
+    const adminEmails = [
+      'admin@orthodoxechoes.com', 
+      'jblinxstudio@gmail.com',
+      'EthosofOrthodoxy@Gmail.com'
+    ];
+    
+    if (adminEmails.includes(session.user.email || '') || 
+        session.user.user_metadata?.role === 'admin') {
+      return 'admin';
+    }
+    
+    return 'user';
+  } catch {
+    return 'user';
   }
 };
 
