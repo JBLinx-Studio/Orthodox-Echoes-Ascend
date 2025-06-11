@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -14,6 +13,7 @@ import Login from "./pages/Login";
 import Callback from "./pages/Callback";
 import Profile from "./pages/Profile";
 import Blog from "./pages/Blog";
+import Shop from "./pages/Shop";
 import NotFound from "./pages/NotFound";
 import Contact from "./pages/Contact";
 import PrayerGuide from "./pages/PrayerGuide";
@@ -155,6 +155,7 @@ const App = () => {
                 <Route path="/" element={<Index />} />
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/blog/:id" element={<Blog />} />
+                <Route path="/shop" element={<Shop />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/prayers" element={<PrayerGuide />} />

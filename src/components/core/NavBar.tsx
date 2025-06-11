@@ -27,7 +27,8 @@ import {
   Heart,
   ChevronDown,
   Feather,
-  Library
+  Library,
+  ShoppingBag
 } from 'lucide-react';
 import { AudioPlayer } from '@/components/audio/AudioPlayer';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -97,6 +98,7 @@ export function NavBar() {
     { name: "Sacred Arts", path: "/icons", icon: <Image className="h-5 w-5 mr-2" /> },
     { name: "Liturgical Life", path: "/calendar", icon: <Calendar className="h-5 w-5 mr-2" /> },
     { name: "Sacred Music", path: "/chants", icon: <Music className="h-5 w-5 mr-2" /> },
+    { name: "Sacred Shop", path: "/shop", icon: <ShoppingBag className="h-5 w-5 mr-2" /> },
     { name: "Community", path: "/community", icon: <Heart className="h-5 w-5 mr-2" /> },
     { name: "About Us", path: "/about", icon: <Info className="h-5 w-5 mr-2" /> },
   ];
@@ -222,6 +224,13 @@ export function NavBar() {
                 </NavigationMenuItem>
                 
                 <NavigationMenuItem>
+                  <MainNavItem href="/shop" active={location.pathname === '/shop'} className="px-3 py-2">
+                    <ShoppingBag className="w-4 h-4 mr-1 inline-block" />
+                    Shop
+                  </MainNavItem>
+                </NavigationMenuItem>
+                
+                <NavigationMenuItem>
                   <MainNavItem href="/community" active={location.pathname === '/community'} className="px-3 py-2">
                     Community
                   </MainNavItem>
@@ -318,7 +327,7 @@ export function NavBar() {
                       <Link to="/readings">Daily Reading</Link>
                     </Button>
                     <Button variant="outline" size="sm" className="border-gold/20 hover:bg-gold/5 text-white" asChild>
-                      <Link to="/blog">Latest Content</Link>
+                      <Link to="/shop">Sacred Shop</Link>
                     </Button>
                   </div>
                 </div>
