@@ -17,7 +17,9 @@ import {
   Download,
   BookOpen,
   Music,
-  Calendar
+  Calendar,
+  MapPin,
+  Hash
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -37,35 +39,21 @@ export default function Shop() {
 
   const products = [
     {
-      id: 'beeside-honey',
-      name: 'BeeSide Premium Wild Honey',
-      description: 'Premium raw wild honey sourced from pristine Orthodox monastery lands',
-      priceUSD: '$24.99',
-      priceZAR: 'R459.99',
-      originalPriceUSD: '$34.99',
-      originalPriceZAR: 'R644.99',
+      id: 'beeside-collection',
+      name: 'BeeSide Premium Collection',
+      description: 'Pure 100% delicious wild honey and handcrafted beeswax candles',
+      priceUSD: '$42.99',
+      priceZAR: 'R799.99',
+      originalPriceUSD: '$59.99',
+      originalPriceZAR: 'R1,109.99',
       image: '/lovable-uploads/777f39ed-a494-4566-bc24-29941d4489ed.png',
       rating: 4.9,
       reviews: 127,
       inStock: true,
+      quantity: 45,
+      location: 'Cape Town, South Africa',
       type: 'physical',
-      features: ['100% Raw & Unfiltered', 'Monastery Sourced', 'Premium Quality', 'Traditional Methods'],
-      category: 'BeeSide Collection'
-    },
-    {
-      id: 'beehive-wax',
-      name: 'Pure Monastery Beeswax Candles',
-      description: 'Natural beeswax candles handcrafted for prayer and meditation',
-      priceUSD: '$18.99',
-      priceZAR: 'R349.99',
-      originalPriceUSD: '$24.99',
-      originalPriceZAR: 'R459.99',
-      image: '/lovable-uploads/777f39ed-a494-4566-bc24-29941d4489ed.png',
-      rating: 4.8,
-      reviews: 89,
-      inStock: true,
-      type: 'physical',
-      features: ['100% Natural Wax', 'Long Burning', 'Sacred Tradition', 'Handcrafted'],
+      features: ['100% Pure Wild Honey', 'Natural Beeswax Candles', 'Premium Quality', 'Handcrafted'],
       category: 'BeeSide Collection'
     },
     {
@@ -80,40 +68,10 @@ export default function Shop() {
       rating: 4.7,
       reviews: 203,
       inStock: true,
+      quantity: null,
+      location: null,
       type: 'digital',
       features: ['Instant Download', 'PDF Format', '500+ Prayers', 'Mobile Friendly'],
-      category: 'Digital Resources'
-    },
-    {
-      id: 'chant-collection',
-      name: 'Byzantine Chant Audio Collection',
-      description: 'High-quality recordings of traditional Byzantine chants and liturgical music',
-      priceUSD: '$29.99',
-      priceZAR: 'R549.99',
-      originalPriceUSD: '$39.99',
-      originalPriceZAR: 'R739.99',
-      image: '/placeholder.svg',
-      rating: 4.9,
-      reviews: 156,
-      inStock: true,
-      type: 'digital',
-      features: ['High Quality Audio', '3+ Hours', 'MP3 Format', 'Instant Access'],
-      category: 'Digital Resources'
-    },
-    {
-      id: 'orthodox-calendar',
-      name: 'Interactive Orthodox Calendar App',
-      description: 'Digital calendar with feast days, fasting periods, and daily readings',
-      priceUSD: '$9.99',
-      priceZAR: 'R184.99',
-      originalPriceUSD: '$14.99',
-      originalPriceZAR: 'R279.99',
-      image: '/placeholder.svg',
-      rating: 4.6,
-      reviews: 87,
-      inStock: true,
-      type: 'digital',
-      features: ['Mobile App', 'Push Notifications', 'Offline Access', 'Annual Updates'],
       category: 'Digital Resources'
     },
     {
@@ -128,6 +86,8 @@ export default function Shop() {
       rating: 4.8,
       reviews: 45,
       inStock: true,
+      quantity: null,
+      location: null,
       type: 'course',
       features: ['12 Weeks', 'Video Lectures', 'Certificate', 'Expert Instructors'],
       category: 'Educational'
@@ -185,7 +145,7 @@ export default function Shop() {
                 <div className="mb-4">
                   <img
                     src="/lovable-uploads/777f39ed-a494-4566-bc24-29941d4489ed.png"
-                    alt="BeeSide Premium Honey"
+                    alt="BeeSide Premium Collection"
                     className="w-24 h-24 mx-auto object-contain"
                   />
                 </div>
@@ -193,13 +153,13 @@ export default function Shop() {
                   🍯 BeeSide Premium Collection
                 </h3>
                 <p className="text-white/80 mb-4">
-                  Discover our monastery-sourced wild honey and handcrafted beeswax products. Pure, raw, and blessed by tradition.
+                  Discover our pure 100% delicious wild honey and handcrafted beeswax products. Natural, raw, and blessed by tradition.
                 </p>
                 <div className="flex gap-2 justify-center">
                   <Button
                     onClick={() => {
                       setShowPopup(false);
-                      setSelectedProduct('beeside-honey');
+                      setSelectedProduct('beeside-collection');
                     }}
                     className="bg-gold hover:bg-gold/90 text-black"
                   >
@@ -245,7 +205,7 @@ export default function Shop() {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold text-gold mb-2">🍯 BeeSide Collection</h2>
-              <p className="text-white/80">Premium honey and beeswax from sacred monastery lands</p>
+              <p className="text-white/80">Pure 100% delicious wild honey and handcrafted beeswax</p>
             </div>
             <Badge className="bg-gold text-black font-bold">Featured</Badge>
           </div>
@@ -301,6 +261,24 @@ export default function Shop() {
                   <CardDescription className="text-white/60 mb-3">
                     {product.description}
                   </CardDescription>
+                  
+                  {/* Physical product info */}
+                  {product.type === 'physical' && (
+                    <div className="flex items-center gap-4 mb-3 text-sm text-white/70">
+                      {product.quantity && (
+                        <div className="flex items-center gap-1">
+                          <Hash className="h-3 w-3" />
+                          <span>{product.quantity} available</span>
+                        </div>
+                      )}
+                      {product.location && (
+                        <div className="flex items-center gap-1">
+                          <MapPin className="h-3 w-3" />
+                          <span>{product.location}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
                   
                   <div className="flex flex-wrap gap-1 mb-3">
                     {product.features.map((feature) => (

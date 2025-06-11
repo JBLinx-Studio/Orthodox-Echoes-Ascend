@@ -20,7 +20,9 @@ import {
   BookOpen,
   ShoppingCart,
   DollarSign,
-  Home
+  Home,
+  MapPin,
+  Hash
 } from 'lucide-react';
 
 interface Product {
@@ -35,6 +37,8 @@ interface Product {
   rating: number;
   reviews: number;
   inStock: boolean;
+  quantity: number | null;
+  location: string | null;
   type: 'physical' | 'digital' | 'course';
   features: string[];
   category: string;
@@ -43,36 +47,58 @@ interface Product {
 export function ShopManager() {
   const [products, setProducts] = useState<Product[]>([
     {
-      id: 'beeside-honey',
-      name: 'BeeSide Premium Wild Honey',
-      description: 'Premium raw wild honey sourced from pristine Orthodox monastery lands',
-      priceUSD: '$24.99',
-      priceZAR: 'R459.99',
-      originalPriceUSD: '$34.99',
-      originalPriceZAR: 'R644.99',
+      id: 'beeside-collection',
+      name: 'BeeSide Premium Collection',
+      description: 'Pure 100% delicious wild honey and handcrafted beeswax candles',
+      priceUSD: '$42.99',
+      priceZAR: 'R799.99',
+      originalPriceUSD: '$59.99',
+      originalPriceZAR: 'R1,109.99',
       image: '/lovable-uploads/777f39ed-a494-4566-bc24-29941d4489ed.png',
       rating: 4.9,
       reviews: 127,
       inStock: true,
+      quantity: 45,
+      location: 'Cape Town, South Africa',
       type: 'physical',
-      features: ['100% Raw & Unfiltered', 'Monastery Sourced', 'Premium Quality', 'Traditional Methods'],
+      features: ['100% Pure Wild Honey', 'Natural Beeswax Candles', 'Premium Quality', 'Handcrafted'],
       category: 'BeeSide Collection'
     },
     {
-      id: 'beehive-wax',
-      name: 'Pure Monastery Beeswax Candles',
-      description: 'Natural beeswax candles handcrafted for prayer and meditation',
-      priceUSD: '$18.99',
-      priceZAR: 'R349.99',
-      originalPriceUSD: '$24.99',
-      originalPriceZAR: 'R459.99',
-      image: '/lovable-uploads/777f39ed-a494-4566-bc24-29941d4489ed.png',
-      rating: 4.8,
-      reviews: 89,
+      id: 'prayer-ebook',
+      name: 'Digital Prayer Compendium',
+      description: 'Complete collection of Orthodox prayers and daily devotions in digital format',
+      priceUSD: '$12.99',
+      priceZAR: 'R239.99',
+      originalPriceUSD: '$19.99',
+      originalPriceZAR: 'R369.99',
+      image: '/placeholder.svg',
+      rating: 4.7,
+      reviews: 203,
       inStock: true,
-      type: 'physical',
-      features: ['100% Natural Wax', 'Long Burning', 'Sacred Tradition', 'Handcrafted'],
-      category: 'BeeSide Collection'
+      quantity: null,
+      location: null,
+      type: 'digital',
+      features: ['Instant Download', 'PDF Format', '500+ Prayers', 'Mobile Friendly'],
+      category: 'Digital Resources'
+    },
+    {
+      id: 'theology-course',
+      name: 'Orthodox Theology Online Course',
+      description: 'Comprehensive 12-week course on Orthodox Christian theology and doctrine',
+      priceUSD: '$149.99',
+      priceZAR: 'R2,759.99',
+      originalPriceUSD: '$199.99',
+      originalPriceZAR: 'R3,689.99',
+      image: '/placeholder.svg',
+      rating: 4.8,
+      reviews: 45,
+      inStock: true,
+      quantity: null,
+      location: null,
+      type: 'course',
+      features: ['12 Weeks', 'Video Lectures', 'Certificate', 'Expert Instructors'],
+      category: 'Educational'
     }
   ]);
 
@@ -95,6 +121,8 @@ export function ShopManager() {
     rating: 4.5,
     reviews: 0,
     inStock: true,
+    quantity: null,
+    location: null,
     type: 'digital',
     features: [],
     category: 'Digital Resources'
@@ -126,6 +154,10 @@ export function ShopManager() {
   };
 
   const handleDelete = (productId: string) => {
+    if (products.length <= 1) {
+      toast.error('Cannot delete the last product. At least one product must remain.');
+      return;
+    }
     setProducts(products.filter(p => p.id !== productId));
     toast.success('Product deleted successfully!');
   };
@@ -220,10 +252,22 @@ export function ShopManager() {
                       </Badge>
                     </div>
                     <p className="text-sm text-white/60 mb-2">{product.description}</p>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 flex-wrap">
                       <span className="text-gold font-bold">{product.priceUSD} / {product.priceZAR}</span>
                       <span className="text-sm text-white/50">Category: {product.category}</span>
                       <span className="text-sm text-white/50">Reviews: {product.reviews}</span>
+                      {product.quantity && (
+                        <div className="flex items-center gap-1 text-sm text-white/50">
+                          <Hash className="h-3 w-3" />
+                          <span>Qty: {product.quantity}</span>
+                        </div>
+                      )}
+                      {product.location && (
+                        <div className="flex items-center gap-1 text-sm text-white/50">
+                          <MapPin className="h-3 w-3" />
+                          <span>{product.location}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="flex gap-2">
@@ -332,7 +376,7 @@ export function ShopManager() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
                 <Label htmlFor="type" className="text-white">Product Type</Label>
                 <Select value={editingProduct.type} onValueChange={(value) => updateEditingProduct('type', value)}>
@@ -355,13 +399,66 @@ export function ShopManager() {
                   className="bg-[#2A2F3C] border-gold/20 text-white"
                 />
               </div>
-              <div className="flex items-center space-x-2">
-                <Switch
-                  checked={editingProduct.inStock}
-                  onCheckedChange={(checked) => updateEditingProduct('inStock', checked)}
+              <div>
+                <Label htmlFor="rating" className="text-white">Rating (1-5)</Label>
+                <Input
+                  id="rating"
+                  type="number"
+                  min="1"
+                  max="5"
+                  step="0.1"
+                  value={editingProduct.rating}
+                  onChange={(e) => updateEditingProduct('rating', parseFloat(e.target.value))}
+                  className="bg-[#2A2F3C] border-gold/20 text-white"
                 />
-                <Label className="text-white">In Stock</Label>
               </div>
+              <div>
+                <Label htmlFor="reviews" className="text-white">Reviews Count</Label>
+                <Input
+                  id="reviews"
+                  type="number"
+                  min="0"
+                  value={editingProduct.reviews}
+                  onChange={(e) => updateEditingProduct('reviews', parseInt(e.target.value))}
+                  className="bg-[#2A2F3C] border-gold/20 text-white"
+                />
+              </div>
+            </div>
+
+            {/* Physical Product Fields */}
+            {editingProduct.type === 'physical' && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="quantity" className="text-white">Quantity Available</Label>
+                  <Input
+                    id="quantity"
+                    type="number"
+                    min="0"
+                    value={editingProduct.quantity || ''}
+                    onChange={(e) => updateEditingProduct('quantity', e.target.value ? parseInt(e.target.value) : null)}
+                    className="bg-[#2A2F3C] border-gold/20 text-white"
+                    placeholder="Enter quantity"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="location" className="text-white">Location</Label>
+                  <Input
+                    id="location"
+                    value={editingProduct.location || ''}
+                    onChange={(e) => updateEditingProduct('location', e.target.value || null)}
+                    className="bg-[#2A2F3C] border-gold/20 text-white"
+                    placeholder="Enter location"
+                  />
+                </div>
+              </div>
+            )}
+
+            <div className="flex items-center space-x-2">
+              <Switch
+                checked={editingProduct.inStock}
+                onCheckedChange={(checked) => updateEditingProduct('inStock', checked)}
+              />
+              <Label className="text-white">In Stock</Label>
             </div>
 
             <div>
