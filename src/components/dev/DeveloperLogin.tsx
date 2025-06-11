@@ -4,8 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Shield, Eye, EyeOff } from 'lucide-react';
+import { Shield, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
+import { Link } from 'react-router-dom';
 
 interface DeveloperLoginProps {
   onSuccess: () => void;
@@ -24,7 +25,7 @@ export function DeveloperLogin({ onSuccess }: DeveloperLoginProps) {
     if (password === 'Elevated') {
       localStorage.setItem('orthodoxEchoesDeveloperAccess', 'true');
       localStorage.setItem('orthodoxEchoesDeveloperLoginTime', Date.now().toString());
-      toast.success('Access granted to the Developer Sanctuary');
+      toast.success('Welcome to the Developer Sanctuary');
       onSuccess();
     } else {
       toast.error('Access denied. Invalid sanctuary key.');
@@ -37,8 +38,15 @@ export function DeveloperLogin({ onSuccess }: DeveloperLoginProps) {
     <div className="min-h-screen bg-gradient-to-b from-[#0a0d16] to-[#161a26] flex items-center justify-center p-4">
       <Card className="w-full max-w-md bg-[#1A1F2C]/90 border-gold/20">
         <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
+          <div className="flex items-center justify-between mb-4">
+            <Link to="/">
+              <Button variant="ghost" size="sm" className="text-gold hover:text-gold/80">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Home
+              </Button>
+            </Link>
             <Shield className="w-12 h-12 text-gold" />
+            <div className="w-20"></div> {/* Spacer for centering */}
           </div>
           <CardTitle className="text-2xl font-display text-gold">Developer Sanctuary</CardTitle>
           <p className="text-white/70">Enter the sacred key to access the inner sanctum</p>

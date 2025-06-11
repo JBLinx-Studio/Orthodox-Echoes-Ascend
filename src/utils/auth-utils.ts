@@ -9,3 +9,24 @@ export const getCurrentUser = async () => {
     }
   };
 };
+
+export const logout = async () => {
+  // Mock logout for development
+  console.log('User logged out');
+  return Promise.resolve();
+};
+
+export const getUsername = async () => {
+  // Mock username for development
+  return 'Orthodox Believer';
+};
+
+export const getLastLogin = async () => {
+  // Mock last login for development
+  return new Date();
+};
+
+export const formatLastLogin = (date: Date | null) => {
+  if (!date) return 'Never';
+  return date.toLocaleDateString();
+};

@@ -15,7 +15,7 @@ export function Footer() {
             <Link to="/" className="flex items-center gap-2 mb-4">
               <div className="relative w-8 h-8 flex items-center justify-center">
                 <span className="absolute w-8 h-8 rounded-full bg-byzantine"></span>
-                <span className="relative text-white font-display font-bold text-lg">Ω</span>
+                <span className="relative text-white font-display font-bold text-lg">☦</span>
               </div>
               <span className="font-display text-xl font-bold">Orthodox Echoes</span>
             </Link>
@@ -44,29 +44,34 @@ export function Footer() {
           <div className="md:col-span-1">
             <h3 className="font-display text-lg font-semibold mb-4 text-gold">Quick Links</h3>
             <ul className="space-y-2">
-              <li><Link to="/learn" className="text-gray-300 hover:text-gold transition-colors">Learn</Link></li>
-              <li><Link to="/doctrine" className="text-gray-300 hover:text-gold transition-colors">Doctrine</Link></li>
+              <li><Link to="/learn" className="text-gray-300 hover:text-gold transition-colors">Learning Center</Link></li>
+              <li><Link to="/doctrine" className="text-gray-300 hover:text-gold transition-colors">Core Doctrine</Link></li>
               <li><Link to="/saints" className="text-gray-300 hover:text-gold transition-colors">Saints</Link></li>
               <li><Link to="/calendar" className="text-gray-300 hover:text-gold transition-colors">Liturgical Calendar</Link></li>
-              <li><Link to="/community" className="text-gray-300 hover:text-gold transition-colors">Community</Link></li>
+              <li><Link to="/settings" className="text-gray-300 hover:text-gold transition-colors flex items-center gap-1">
+                <Settings className="h-4 w-4" /> Settings
+              </Link></li>
+              <li><Link to="/developer" className="text-gold hover:text-gold/80 transition-colors flex items-center gap-1">
+                <Shield className="h-4 w-4" /> Developer Portal
+              </Link></li>
             </ul>
           </div>
           
           <div className="md:col-span-1">
-            <h3 className="font-display text-lg font-semibold mb-4 text-gold">Resources</h3>
+            <h3 className="font-display text-lg font-semibold mb-4 text-gold">Sacred Resources</h3>
             <ul className="space-y-2">
               <li><Link to="/prayers" className="text-gray-300 hover:text-gold transition-colors">Prayer Guide</Link></li>
-              <li><Link to="/icons" className="text-gray-300 hover:text-gold transition-colors">Iconography</Link></li>
-              <li><Link to="/faq" className="text-gray-300 hover:text-gold transition-colors">FAQs</Link></li>
+              <li><Link to="/icons" className="text-gray-300 hover:text-gold transition-colors">Sacred Iconography</Link></li>
               <li><Link to="/readings" className="text-gray-300 hover:text-gold transition-colors">Daily Readings</Link></li>
-              <li><Link to="/support" className="text-gray-300 hover:text-gold transition-colors">Support Our Work</Link></li>
+              <li><Link to="/community" className="text-gray-300 hover:text-gold transition-colors">Community</Link></li>
+              <li><Link to="/support" className="text-gray-300 hover:text-gold transition-colors">Support Our Mission</Link></li>
             </ul>
           </div>
           
           <div className="md:col-span-1">
-            <h3 className="font-display text-lg font-semibold mb-4 text-gold">Subscribe</h3>
+            <h3 className="font-display text-lg font-semibold mb-4 text-gold">Stay Connected</h3>
             <p className="text-sm text-gray-300 mb-4">
-              Receive updates on our latest content and news.
+              Receive updates on our latest spiritual content and community news.
             </p>
             <div className="space-y-2">
               <Input
@@ -90,12 +95,6 @@ export function Footer() {
               <Link to="/parishes" className="text-sm text-gray-300 hover:text-gold flex items-center gap-1">
                 <Church className="h-4 w-4" /> Find a Parish
               </Link>
-              <Link to="/settings" className="text-sm text-gray-300 hover:text-gold flex items-center gap-1">
-                <Settings className="h-4 w-4" /> Settings
-              </Link>
-              <Link to="/developer" className="text-sm text-gold hover:text-gold/80 flex items-center gap-1 bg-gold/10 px-2 py-1 rounded">
-                <Shield className="h-4 w-4" /> Dev Dashboard
-              </Link>
               <a href="/LICENSE.md" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-300 hover:text-gold flex items-center gap-1">
                 <FileText className="h-4 w-4" /> License
               </a>
@@ -106,7 +105,7 @@ export function Footer() {
             <div className="text-sm text-gray-400 flex flex-col md:flex-row items-center gap-2">
               <span>© {currentYear} Orthodox Echoes. All rights reserved.</span>
               <span className="hidden md:inline">•</span>
-              <span className="text-gold">Created by JBLinx Studio</span>
+              <span className="text-gold">Created with Sacred Devotion</span>
             </div>
           </div>
         </div>
