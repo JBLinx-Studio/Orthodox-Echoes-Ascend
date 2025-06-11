@@ -23,8 +23,8 @@ import Admin from '@/pages/Admin';
 import Callback from '@/pages/Callback';
 
 // Layouts
-import MainLayout from '@/layouts/MainLayout';
-import AdminLayout from '@/layouts/AdminLayout';
+import { MainLayout } from '@/layouts/MainLayout';
+import { AdminLayout } from '@/layouts/AdminLayout';
 
 import './App.css';
 
