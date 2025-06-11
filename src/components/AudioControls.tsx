@@ -5,7 +5,6 @@ import { useAudio } from '@/contexts/AudioContext';
 import { Play, Pause, Volume2, VolumeX, Music, SkipForward, SkipBack } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Slider } from '@/components/ui/slider';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export function AudioControls() {
   const { 
@@ -23,8 +22,17 @@ export function AudioControls() {
     prevTrack
   } = useAudio();
 
-  // Handle case where playlist item might be undefined during initial load
   const currentTrack = playlist && playlist[currentTrackIndex] ? playlist[currentTrackIndex] : { icon: "🎵", name: "Loading..." };
+
+  const handleVolumeChange = (value: number[]) => {
+    console.log('AudioControls: Volume change to:', value[0]);
+    setVolume(value[0]);
+  };
+
+  const handleExpandPlayer = () => {
+    console.log('AudioControls: Expanding player');
+    expandPlayer();
+  };
 
   return (
     <div className="flex items-center gap-2 px-3 py-1.5 bg-[#1A1F2C]/80 backdrop-blur-md rounded-full border border-gold/30 holy-glow-sm">
@@ -95,7 +103,7 @@ export function AudioControls() {
           max={100}
           step={1}
           className="cursor-pointer"
-          onValueChange={(value) => setVolume(value[0])}
+          onValueChange={handleVolumeChange}
         />
       </div>
 
@@ -128,7 +136,7 @@ export function AudioControls() {
               variant="ghost"
               size="icon"
               className="h-7 w-7 rounded-full text-gold hover:bg-gold/10"
-              onClick={expandPlayer}
+              onClick={handleExpandPlayer}
             >
               <Music className="h-3.5 w-3.5" />
             </Button>

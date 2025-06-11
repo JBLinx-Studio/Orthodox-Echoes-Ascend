@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
+
+import { useState, useEffect } from 'react';
 import { 
   Play, 
   Pause, 
@@ -22,7 +23,6 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useAudio } from '@/contexts/AudioContext';
-import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
 interface EnhancedAudioPlayerProps {
@@ -58,56 +58,18 @@ export function EnhancedAudioPlayer({
     unmuteAudio,
     playlist,
     nextTrack,
-    prevTrack
+    prevTrack,
+    seekTo,
+    duration,
+    currentTime
   } = useAudio();
   
   const [isExpanded, setIsExpanded] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [currentTime, setCurrentTime] = useState("0:00");
-  const [duration, setDuration] = useState("0:00");
   const [isLoading, setIsLoading] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const progressIntervalRef = useRef<number | null>(null);
-
-  // Listen for external audio element changes
-  useEffect(() => {
-    
-    // Find the actual audio element being controlled by AudioContext
-    const audioElements = document.getElementsByTagName('audio');
-    if (audioElements.length > 0) {
-      audioRef.current = audioElements[0];
-      
-      const updateDuration = () => {
-        if (audioRef.current && !isNaN(audioRef.current.duration)) {
-          setDuration(formatTime(audioRef.current.duration));
-        }
-      };
-      
-      const handleCanPlay = () => {
-        setIsLoading(false);
-        updateDuration();
-      };
-      
-      const handleLoadStart = () => {
-        setIsLoading(true);
-      };
-      
-      audioRef.current.addEventListener('canplay', handleCanPlay);
-      audioRef.current.addEventListener('loadstart', handleLoadStart);
-      audioRef.current.addEventListener('durationchange', updateDuration);
-      
-      return () => {
-        if (audioRef.current) {
-          audioRef.current.removeEventListener('canplay', handleCanPlay);
-          audioRef.current.removeEventListener('loadstart', handleLoadStart);
-          audioRef.current.removeEventListener('durationchange', updateDuration);
-        }
-      };
-    }
-  }, []);
 
   // Handle external minimized state changes
   useEffect(() => {
+    console.log('EnhancedAudioPlayer: External minimized changed to:', externalMinimized);
     
     if (externalMinimized !== undefined) {
       if (externalMinimized) {
@@ -118,35 +80,6 @@ export function EnhancedAudioPlayer({
     }
   }, [externalMinimized, minimizePlayer, expandPlayer]);
 
-  // Set up progress tracking
-  useEffect(() => {
-    
-    const startProgressTracking = () => {
-      if (progressIntervalRef.current) {
-        window.clearInterval(progressIntervalRef.current);
-      }
-      
-      progressIntervalRef.current = window.setInterval(() => {
-        if (audioRef.current && !audioRef.current.paused) {
-          const currentProgress = (audioRef.current.currentTime / audioRef.current.duration) * 100;
-          if (!isNaN(currentProgress)) {
-            setProgress(currentProgress);
-            setCurrentTime(formatTime(audioRef.current.currentTime));
-          }
-        }
-      }, 1000);
-    };
-    
-    startProgressTracking();
-    
-    return () => {
-      if (progressIntervalRef.current) {
-        window.clearInterval(progressIntervalRef.current);
-        progressIntervalRef.current = null;
-      }
-    };
-  }, []);
-
   const formatTime = (seconds: number): string => {
     if (isNaN(seconds)) return "0:00";
     const mins = Math.floor(seconds / 60);
@@ -155,6 +88,7 @@ export function EnhancedAudioPlayer({
   };
 
   const toggleMute = () => {
+    console.log('EnhancedAudioPlayer: Toggle mute');
     if (isMuted) {
       unmuteAudio();
     } else {
@@ -164,25 +98,39 @@ export function EnhancedAudioPlayer({
 
   const handleVolumeChange = (newValue: number[]) => {
     const newVolume = newValue[0];
+    console.log('EnhancedAudioPlayer: Volume change to:', newVolume);
     setVolume(newVolume);
   };
 
   const handleProgressChange = (newValue: number[]) => {
-    if (!audioRef.current || !audioRef.current.duration) return;
+    if (!duration || duration === 0) return;
     
     const newProgress = newValue[0];
-    const newTime = (audioRef.current.duration / 100) * newProgress;
+    const newTime = (duration / 100) * newProgress;
     
-    if (!isNaN(newTime)) {
-      audioRef.current.currentTime = newTime;
-      setProgress(newProgress);
-      setCurrentTime(formatTime(newTime));
-    }
+    console.log('EnhancedAudioPlayer: Seeking to:', newTime);
+    seekTo(newTime);
   };
   
   const handleReverbAmountChange = (newValue: number[]) => {
+    console.log('EnhancedAudioPlayer: Reverb amount change to:', newValue[0]);
     setReverbAmount(newValue[0]);
   };
+
+  const handleReverbToggle = () => {
+    console.log('EnhancedAudioPlayer: Toggle reverb');
+    toggleReverb();
+    if (!reverbEnabled) {
+      toast.success("Cathedral Reverb Enabled ✨", { 
+        description: "Experience the sacred acoustics of ancient cathedrals",
+        duration: 3000 
+      });
+    } else {
+      toast.info("Cathedral Reverb Disabled", { duration: 2000 });
+    }
+  };
+
+  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   // Render minimal player when minimized
   if (isMinimized) {
@@ -224,10 +172,10 @@ export function EnhancedAudioPlayer({
 
   return (
     <div className={cn(
-      "transition-all duration-500 backdrop-filter backdrop-blur-sm overflow-hidden",
+      "fixed bottom-4 left-4 right-4 z-50 transition-all duration-500 backdrop-filter backdrop-blur-sm overflow-hidden",
       isExpanded 
-        ? "bg-[#1A1F2C]/95 rounded-lg border border-gold/30 shadow-2xl" 
-        : "bg-[#1A1F2C]/90 rounded-full border border-gold/20 shadow-lg",
+        ? "bg-[#1A1F2C]/95 rounded-lg border border-gold/30 shadow-2xl max-w-4xl mx-auto" 
+        : "bg-[#1A1F2C]/90 rounded-full border border-gold/20 shadow-lg max-w-md mx-auto",
       className
     )}>
       <div className={cn(
@@ -321,7 +269,7 @@ export function EnhancedAudioPlayer({
                     ? "bg-gold/30 text-gold hover:bg-gold/40" 
                     : "hover:bg-gold/10 text-gold/70 hover:text-gold"
                 )}
-                onClick={toggleReverb}
+                onClick={handleReverbToggle}
               >
                 <Waves className="h-4 w-4" />
               </Button>
@@ -358,7 +306,7 @@ export function EnhancedAudioPlayer({
               <Music className="h-4 w-4 mr-2" />
               Byzantine Sacred Chants
             </span>
-            <span className="text-xs text-white/60">{currentTime} / {playlist[currentTrackIndex]?.length || "0:00"}</span>
+            <span className="text-xs text-white/60">{formatTime(currentTime)} / {formatTime(duration)}</span>
           </div>
           
           <div className="mb-4">
@@ -386,10 +334,13 @@ export function EnhancedAudioPlayer({
           </div>
           
           {reverbEnabled && (
-            <div className="mb-4 glass-morphism p-3 rounded-md">
-              <Label className="text-xs text-gold/80 mb-2 block">Cathedral Reverb Amount</Label>
+            <div className="mb-4 glass-morphism p-3 rounded-md border border-gold/20">
+              <Label className="text-xs text-gold/80 mb-2 block flex items-center">
+                <Waves className="h-3 w-3 mr-1" />
+                Cathedral Reverb Amount
+              </Label>
               <div className="flex items-center gap-3">
-                <Waves className="h-3 w-3 text-gold/60" />
+                <span className="text-xs text-gold/60 min-w-8">Dry</span>
                 <Slider
                   value={[reverbAmount]}
                   max={100}
@@ -397,7 +348,7 @@ export function EnhancedAudioPlayer({
                   onValueChange={handleReverbAmountChange}
                   className="cursor-pointer"
                 />
-                <span className="text-xs text-gold/70 min-w-8">{reverbAmount}%</span>
+                <span className="text-xs text-gold/70 min-w-12">{reverbAmount}% Wet</span>
               </div>
             </div>
           )}
@@ -440,7 +391,7 @@ export function EnhancedAudioPlayer({
             ))}
           </div>
           
-          <div className="flex justify-center mt-4">
+          <div className="flex justify-center mt-4 gap-2">
             <Button
               variant="ghost"
               size="icon"
