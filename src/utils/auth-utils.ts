@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 
 // Check if the user is authenticated
@@ -17,7 +16,7 @@ export const isAdmin = async (): Promise<boolean> => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session?.user) return false;
     
-    // Admin emails - highest rank
+    // Admin emails - highest rank (both have equal admin rights)
     const adminEmails = [
       'admin@orthodoxechoes.com', 
       'jblinxstudio@gmail.com',
@@ -54,18 +53,26 @@ export const getUsername = async (): Promise<string> => {
   }
 };
 
-// Get user role based on email
-export const getUserRole = async (): Promise<'admin' | 'user'> => {
+// Get user role based on email with enhanced hierarchy
+export const getUserRole = async (): Promise<'lead_admin' | 'admin' | 'moderator' | 'user'> => {
   try {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session?.user) return 'user';
     
-    // Admin emails - highest rank
-    const adminEmails = [
-      'admin@orthodoxechoes.com', 
+    // Lead Admin emails - highest rank (both have equal lead admin rights)
+    const leadAdminEmails = [
       'jblinxstudio@gmail.com',
       'EthosofOrthodoxy@Gmail.com'
     ];
+    
+    // Standard Admin emails
+    const adminEmails = [
+      'admin@orthodoxechoes.com'
+    ];
+    
+    if (leadAdminEmails.includes(session.user.email || '')) {
+      return 'lead_admin';
+    }
     
     if (adminEmails.includes(session.user.email || '') || 
         session.user.user_metadata?.role === 'admin') {
@@ -75,6 +82,16 @@ export const getUserRole = async (): Promise<'admin' | 'user'> => {
     return 'user';
   } catch {
     return 'user';
+  }
+};
+
+// Check if user is lead admin
+export const isLeadAdmin = async (): Promise<boolean> => {
+  try {
+    const role = await getUserRole();
+    return role === 'lead_admin';
+  } catch {
+    return false;
   }
 };
 

@@ -6,12 +6,14 @@ import { supabase } from '@/integrations/supabase/client';
 interface AuthGuardProps {
   children: ReactNode;
   requireAdmin?: boolean;
+  requireLeadAdmin?: boolean;
   redirectTo?: string;
 }
 
 export function AuthGuard({ 
   children, 
-  requireAdmin = false, 
+  requireAdmin = false,
+  requireLeadAdmin = false,
   redirectTo = '/login' 
 }: AuthGuardProps) {
   const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
@@ -28,9 +30,19 @@ export function AuthGuard({
           return;
         }
 
+        // Check lead admin status if required
+        if (requireLeadAdmin) {
+          const leadAdminEmails = ['jblinxstudio@gmail.com', 'EthosofOrthodoxy@Gmail.com'];
+          const isUserLeadAdmin = leadAdminEmails.includes(session.user.email || '');
+          setIsAuthorized(isUserLeadAdmin);
+        }
         // Check admin status if required
-        if (requireAdmin) {
-          const adminEmails = ['admin@orthodoxechoes.com', 'jblinxstudio@gmail.com'];
+        else if (requireAdmin) {
+          const adminEmails = [
+            'admin@orthodoxechoes.com', 
+            'jblinxstudio@gmail.com', 
+            'EthosofOrthodoxy@Gmail.com'
+          ];
           const isUserAdmin = adminEmails.includes(session.user.email || '') || 
                              session.user.user_metadata?.role === 'admin';
           setIsAuthorized(isUserAdmin);
@@ -52,8 +64,16 @@ export function AuthGuard({
       if (event === 'SIGNED_OUT') {
         setIsAuthorized(false);
       } else if (event === 'SIGNED_IN' && session) {
-        if (requireAdmin) {
-          const adminEmails = ['admin@orthodoxechoes.com', 'jblinxstudio@gmail.com'];
+        if (requireLeadAdmin) {
+          const leadAdminEmails = ['jblinxstudio@gmail.com', 'EthosofOrthodoxy@Gmail.com'];
+          const isUserLeadAdmin = leadAdminEmails.includes(session.user.email || '');
+          setIsAuthorized(isUserLeadAdmin);
+        } else if (requireAdmin) {
+          const adminEmails = [
+            'admin@orthodoxechoes.com', 
+            'jblinxstudio@gmail.com', 
+            'EthosofOrthodoxy@Gmail.com'
+          ];
           const isUserAdmin = adminEmails.includes(session.user.email || '') || 
                              session.user.user_metadata?.role === 'admin';
           setIsAuthorized(isUserAdmin);
@@ -65,7 +85,7 @@ export function AuthGuard({
     });
 
     return () => subscription.unsubscribe();
-  }, [requireAdmin]);
+  }, [requireAdmin, requireLeadAdmin]);
   
   // Show loading spinner during the initial check
   if (isLoading) {
