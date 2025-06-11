@@ -175,9 +175,10 @@ export function Header() {
               <span>Contact</span>
             </Link>
 
+            {/* Settings Button */}
             <Link
               to="/settings"
-              className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors group"
+              className="flex items-center space-x-2 text-white/80 hover:text-gold transition-colors group bg-gold/10 px-3 py-2 rounded-md border border-gold/20"
             >
               <span className="group-hover:scale-110 transition-transform">
                 <Settings className="w-4 h-4" />
@@ -185,9 +186,10 @@ export function Header() {
               <span>Settings</span>
             </Link>
 
+            {/* Developer Dashboard Button */}
             <Link
               to="/developer"
-              className="flex items-center space-x-2 text-gold hover:text-gold/80 transition-colors group bg-gold/10 px-3 py-1 rounded-md border border-gold/20"
+              className="flex items-center space-x-2 text-gold hover:text-gold/80 transition-colors group bg-gold/20 px-3 py-2 rounded-md border border-gold/30 shadow-lg"
             >
               <span className="group-hover:scale-110 transition-transform">
                 <Shield className="w-4 h-4" />
@@ -290,7 +292,7 @@ export function Header() {
                 <div className="border-t border-gold/20 pt-4 space-y-2">
                   <Link
                     to="/settings"
-                    className="flex items-center space-x-3 text-white/80 hover:text-gold transition-colors py-2"
+                    className="flex items-center space-x-3 text-white/80 hover:text-gold transition-colors py-2 bg-gold/10 px-3 rounded-md border border-gold/20"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <Settings className="w-4 h-4" />
@@ -299,7 +301,7 @@ export function Header() {
                   
                   <Link
                     to="/developer"
-                    className="flex items-center space-x-3 text-gold hover:text-gold/80 transition-colors py-2 bg-gold/10 px-3 rounded-md"
+                    className="flex items-center space-x-3 text-gold hover:text-gold/80 transition-colors py-2 bg-gold/20 px-3 rounded-md border border-gold/30 shadow-lg"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <Shield className="w-4 h-4" />

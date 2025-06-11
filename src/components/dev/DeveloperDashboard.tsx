@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -7,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { 
   Code, Database, Settings, Users, BarChart, 
   Shield, LogOut, Terminal, Cpu, HardDrive,
-  Activity, Zap, Globe, Server
+  Activity, Zap, Globe, Server, Home
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -27,6 +28,15 @@ export function DeveloperDashboard({ onLogout }: DeveloperDashboardProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0a0d16] to-[#161a26] pt-20">
+      {/* Back to Home Button */}
+      <Link 
+        to="/" 
+        className="fixed top-4 left-4 z-10 flex items-center gap-2 text-gold hover:text-gold/80 transition-colors bg-[#1A1F2C]/90 backdrop-blur-md px-4 py-2 rounded-lg border border-gold/20 shadow-lg"
+      >
+        <Home className="w-4 h-4" />
+        <span>Back to Home</span>
+      </Link>
+
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-8">
@@ -66,7 +76,7 @@ export function DeveloperDashboard({ onLogout }: DeveloperDashboardProps) {
 
             <TabsContent value="overview" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <Card className="bg-[#1A1F2C]/90 border-gold/20">
+                <Card className="bg-[#1A1F2C]/90 border-gold/20 shadow-lg">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3">
                       <Users className="w-8 h-8 text-gold" />
@@ -78,7 +88,7 @@ export function DeveloperDashboard({ onLogout }: DeveloperDashboardProps) {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-[#1A1F2C]/90 border-gold/20">
+                <Card className="bg-[#1A1F2C]/90 border-gold/20 shadow-lg">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3">
                       <Activity className="w-8 h-8 text-green-400" />
@@ -90,7 +100,7 @@ export function DeveloperDashboard({ onLogout }: DeveloperDashboardProps) {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-[#1A1F2C]/90 border-gold/20">
+                <Card className="bg-[#1A1F2C]/90 border-gold/20 shadow-lg">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3">
                       <Zap className="w-8 h-8 text-blue-400" />
@@ -102,7 +112,7 @@ export function DeveloperDashboard({ onLogout }: DeveloperDashboardProps) {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-[#1A1F2C]/90 border-gold/20">
+                <Card className="bg-[#1A1F2C]/90 border-gold/20 shadow-lg">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3">
                       <Globe className="w-8 h-8 text-purple-400" />
@@ -115,7 +125,7 @@ export function DeveloperDashboard({ onLogout }: DeveloperDashboardProps) {
                 </Card>
               </div>
 
-              <Card className="bg-[#1A1F2C]/90 border-gold/20">
+              <Card className="bg-[#1A1F2C]/90 border-gold/20 shadow-lg">
                 <CardHeader>
                   <CardTitle className="text-gold">System Status</CardTitle>
                 </CardHeader>
@@ -139,7 +149,7 @@ export function DeveloperDashboard({ onLogout }: DeveloperDashboardProps) {
             </TabsContent>
 
             <TabsContent value="system" className="space-y-6">
-              <Card className="bg-[#1A1F2C]/90 border-gold/20">
+              <Card className="bg-[#1A1F2C]/90 border-gold/20 shadow-lg">
                 <CardHeader>
                   <CardTitle className="text-gold flex items-center gap-2">
                     <Terminal className="w-5 h-5" />
@@ -196,7 +206,7 @@ export function DeveloperDashboard({ onLogout }: DeveloperDashboardProps) {
             </TabsContent>
 
             <TabsContent value="database" className="space-y-6">
-              <Card className="bg-[#1A1F2C]/90 border-gold/20">
+              <Card className="bg-[#1A1F2C]/90 border-gold/20 shadow-lg">
                 <CardHeader>
                   <CardTitle className="text-gold flex items-center gap-2">
                     <HardDrive className="w-5 h-5" />
@@ -214,7 +224,7 @@ export function DeveloperDashboard({ onLogout }: DeveloperDashboardProps) {
             </TabsContent>
 
             <TabsContent value="api" className="space-y-6">
-              <Card className="bg-[#1A1F2C]/90 border-gold/20">
+              <Card className="bg-[#1A1F2C]/90 border-gold/20 shadow-lg">
                 <CardHeader>
                   <CardTitle className="text-gold flex items-center gap-2">
                     <Code className="w-5 h-5" />
@@ -250,7 +260,7 @@ export function DeveloperDashboard({ onLogout }: DeveloperDashboardProps) {
             </TabsContent>
 
             <TabsContent value="settings" className="space-y-6">
-              <Card className="bg-[#1A1F2C]/90 border-gold/20">
+              <Card className="bg-[#1A1F2C]/90 border-gold/20 shadow-lg">
                 <CardHeader>
                   <CardTitle className="text-gold flex items-center gap-2">
                     <Shield className="w-5 h-5" />

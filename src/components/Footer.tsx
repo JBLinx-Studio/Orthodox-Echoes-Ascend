@@ -83,19 +83,24 @@ export function Footer() {
         
         <div className="mt-12 pt-8 border-t border-orthodox-blue">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-4">
               <Link to="/contact" className="text-sm text-gray-300 hover:text-gold flex items-center gap-1">
                 <Mail className="h-4 w-4" /> Contact
               </Link>
               <Link to="/parishes" className="text-sm text-gray-300 hover:text-gold flex items-center gap-1">
                 <Church className="h-4 w-4" /> Find a Parish
               </Link>
-              <Link to="/settings" className="text-sm text-gray-300 hover:text-gold flex items-center gap-1">
+              
+              {/* Enhanced Settings Button */}
+              <Link to="/settings" className="text-sm text-white hover:text-gold/80 flex items-center gap-1 bg-gold/20 hover:bg-gold/30 px-3 py-1.5 rounded-md border border-gold/30 transition-all shadow-lg">
                 <Settings className="h-4 w-4" /> Settings
               </Link>
-              <Link to="/developer" className="text-sm text-gold hover:text-gold/80 flex items-center gap-1 bg-gold/10 px-2 py-1 rounded">
+              
+              {/* Enhanced Developer Dashboard Button */}
+              <Link to="/developer" className="text-sm text-gold hover:text-gold/80 flex items-center gap-1 bg-gold/30 hover:bg-gold/40 px-3 py-1.5 rounded-md border border-gold/40 transition-all shadow-lg">
                 <Shield className="h-4 w-4" /> Dev Dashboard
               </Link>
+              
               <a href="/LICENSE.md" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-300 hover:text-gold flex items-center gap-1">
                 <FileText className="h-4 w-4" /> License
               </a>
