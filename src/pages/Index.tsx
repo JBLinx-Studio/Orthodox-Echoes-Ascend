@@ -1,7 +1,6 @@
 
 import { HeroSection } from '@/components/HeroSection';
 import { FeaturedArticles } from '@/components/FeaturedArticles';
-import { FeaturesSection } from '@/components/FeaturesSection';
 import { DonationSection } from '@/components/DonationSection';
 import { SaintsFeatured } from '@/components/SaintsFeatured';
 import { useEffect } from 'react';
@@ -219,15 +218,6 @@ const Index = () => {
             </div>
           </motion.div>
         </div>
-      </motion.div>
-      
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.8 }}
-      >
-        <FeaturesSection />
       </motion.div>
       
       <motion.div
