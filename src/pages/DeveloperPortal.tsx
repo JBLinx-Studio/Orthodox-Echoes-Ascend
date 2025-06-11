@@ -1,11 +1,13 @@
 
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DeveloperLogin } from '@/components/dev/DeveloperLogin';
 import { DeveloperDashboard } from '@/components/dev/DeveloperDashboard';
 
 export default function DeveloperPortal() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Check if developer is already authenticated
@@ -34,6 +36,7 @@ export default function DeveloperPortal() {
 
   const handleLogout = () => {
     setIsAuthenticated(false);
+    navigate('/'); // Navigate to home page after logout
   };
 
   if (isLoading) {
