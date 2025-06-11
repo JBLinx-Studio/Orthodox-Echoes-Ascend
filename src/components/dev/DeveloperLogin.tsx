@@ -1,12 +1,12 @@
 
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Shield, Eye, EyeOff, Home } from 'lucide-react';
+import { Shield, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
+import { Link } from 'react-router-dom';
 
 interface DeveloperLoginProps {
   onSuccess: () => void;
@@ -25,7 +25,7 @@ export function DeveloperLogin({ onSuccess }: DeveloperLoginProps) {
     if (password === 'Elevated') {
       localStorage.setItem('orthodoxEchoesDeveloperAccess', 'true');
       localStorage.setItem('orthodoxEchoesDeveloperLoginTime', Date.now().toString());
-      toast.success('Access granted to the Developer Sanctuary');
+      toast.success('Welcome to the Developer Sanctuary');
       onSuccess();
     } else {
       toast.error('Access denied. Invalid sanctuary key.');
@@ -36,22 +36,17 @@ export function DeveloperLogin({ onSuccess }: DeveloperLoginProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0a0d16] to-[#161a26] flex items-center justify-center p-4">
-      {/* Back to Home Button */}
-      <Link 
-        to="/" 
-        className="fixed top-4 left-4 z-10 flex items-center gap-2 text-gold hover:text-gold/80 transition-colors bg-[#1A1F2C]/90 backdrop-blur-md px-4 py-2 rounded-lg border border-gold/20"
-      >
-        <Home className="w-4 h-4" />
-        <span>Back to Home</span>
-      </Link>
-
-      <Card className="w-full max-w-md bg-[#1A1F2C]/90 border-gold/20 shadow-2xl">
+      <Card className="w-full max-w-md bg-[#1A1F2C]/90 border-gold/20">
         <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
-            <div className="relative">
-              <Shield className="w-12 h-12 text-gold" />
-              <div className="absolute inset-0 rounded-full bg-gold/20 blur-lg"></div>
-            </div>
+          <div className="flex items-center justify-between mb-4">
+            <Link to="/">
+              <Button variant="ghost" size="sm" className="text-gold hover:text-gold/80">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Home
+              </Button>
+            </Link>
+            <Shield className="w-12 h-12 text-gold" />
+            <div className="w-20"></div> {/* Spacer for centering */}
           </div>
           <CardTitle className="text-2xl font-display text-gold">Developer Sanctuary</CardTitle>
           <p className="text-white/70">Enter the sacred key to access the inner sanctum</p>
@@ -67,7 +62,7 @@ export function DeveloperLogin({ onSuccess }: DeveloperLoginProps) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter the elevated key..."
-                  className="bg-[#0C1118] border-gold/30 text-white pr-10 focus:border-gold focus:ring-gold/20"
+                  className="bg-[#0C1118] border-gold/30 text-white pr-10"
                   required
                 />
                 <Button
@@ -83,7 +78,7 @@ export function DeveloperLogin({ onSuccess }: DeveloperLoginProps) {
             </div>
             <Button 
               type="submit" 
-              className="w-full bg-gold hover:bg-gold/90 text-black font-semibold shadow-lg hover:shadow-xl transition-all"
+              className="w-full bg-gold hover:bg-gold/90 text-black"
               disabled={isLoading}
             >
               {isLoading ? 'Validating...' : 'Enter Sanctuary'}
@@ -91,7 +86,6 @@ export function DeveloperLogin({ onSuccess }: DeveloperLoginProps) {
           </form>
           <div className="mt-4 text-center">
             <p className="text-xs text-gold/60">Hint: The key represents spiritual ascension</p>
-            <p className="text-xs text-gold/80 mt-1 font-medium">Password: "Elevated"</p>
           </div>
         </CardContent>
       </Card>

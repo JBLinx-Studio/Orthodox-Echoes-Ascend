@@ -11,19 +11,22 @@ export const getCurrentUser = async () => {
 };
 
 export const logout = async () => {
-  // Mock logout function for development
+  // Mock logout for development
   console.log('User logged out');
+  return Promise.resolve();
 };
 
-export const getUsername = (user: any) => {
-  return user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User';
+export const getUsername = async () => {
+  // Mock username for development
+  return 'Orthodox Believer';
 };
 
-export const getLastLogin = (user: any) => {
-  // Mock last login date
+export const getLastLogin = async () => {
+  // Mock last login for development
   return new Date();
 };
 
-export const formatLastLogin = (date: Date) => {
+export const formatLastLogin = (date: Date | null) => {
+  if (!date) return 'Never';
   return date.toLocaleDateString();
 };
