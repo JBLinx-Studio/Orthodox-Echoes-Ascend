@@ -2,9 +2,6 @@
 import { useState, useEffect } from 'react';
 import { DeveloperLogin } from '@/components/dev/DeveloperLogin';
 import { DeveloperDashboard } from '@/components/dev/DeveloperDashboard';
-import { Button } from '@/components/ui/button';
-import { Home, ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
 
 export default function DeveloperPortal() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -50,37 +47,9 @@ export default function DeveloperPortal() {
     );
   }
 
-  // Back to Home button for both login and dashboard views
-  const BackToHomeButton = () => (
-    <div className="fixed top-4 left-4 z-50">
-      <Button
-        asChild
-        variant="outline"
-        size="sm"
-        className="bg-[#1A1F2C]/80 backdrop-blur-sm border-gold/30 text-gold hover:bg-gold/10 hover:border-gold/50"
-      >
-        <Link to="/" className="flex items-center gap-2">
-          <ArrowLeft className="h-4 w-4" />
-          <Home className="h-4 w-4" />
-          Back to Home
-        </Link>
-      </Button>
-    </div>
-  );
-
   if (!isAuthenticated) {
-    return (
-      <>
-        <BackToHomeButton />
-        <DeveloperLogin onSuccess={handleLoginSuccess} />
-      </>
-    );
+    return <DeveloperLogin onSuccess={handleLoginSuccess} />;
   }
 
-  return (
-    <>
-      <BackToHomeButton />
-      <DeveloperDashboard onLogout={handleLogout} />
-    </>
-  );
+  return <DeveloperDashboard onLogout={handleLogout} />;
 }

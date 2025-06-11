@@ -51,7 +51,7 @@ export function UserRoleManager() {
     {
       id: '1',
       email: 'jblinxstudio@gmail.com',
-      role: 'admin',
+      role: 'lead_developer',
       permissions: PERMISSIONS,
       assignedBy: 'System',
       assignedDate: '2025-01-01',
@@ -61,8 +61,8 @@ export function UserRoleManager() {
       id: '2',
       email: 'admin@orthodoxechoes.com',
       role: 'admin',
-      permissions: PERMISSIONS,
-      assignedBy: 'System',
+      permissions: ['manage_content', 'manage_comments', 'view_analytics'],
+      assignedBy: 'jblinxstudio@gmail.com',
       assignedDate: '2025-01-10',
       lastActive: '2025-01-14'
     }
@@ -105,8 +105,8 @@ export function UserRoleManager() {
 
   const handleRemoveUser = (id: string) => {
     const user = users.find(u => u.id === id);
-    if (user?.email === 'jblinxstudio@gmail.com' || user?.email === 'admin@orthodoxechoes.com') {
-      toast.error('Cannot remove system administrator');
+    if (user?.email === 'jblinxstudio@gmail.com') {
+      toast.error('Cannot remove lead developer');
       return;
     }
 
@@ -202,7 +202,7 @@ export function UserRoleManager() {
                     <div className="flex items-center gap-2">
                       <Mail className="h-4 w-4 text-muted-foreground" />
                       <span>{user.email}</span>
-                      {(user.email === 'jblinxstudio@gmail.com' || user.email === 'admin@orthodoxechoes.com') && (
+                      {user.email === 'jblinxstudio@gmail.com' && (
                         <Crown className="h-4 w-4 text-gold" />
                       )}
                     </div>
@@ -231,7 +231,7 @@ export function UserRoleManager() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    {user.email !== 'jblinxstudio@gmail.com' && user.email !== 'admin@orthodoxechoes.com' && (
+                    {user.email !== 'jblinxstudio@gmail.com' && (
                       <Button
                         variant="ghost"
                         size="sm"

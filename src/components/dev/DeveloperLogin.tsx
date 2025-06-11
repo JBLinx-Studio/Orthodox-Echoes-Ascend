@@ -18,8 +18,8 @@ export function DeveloperLogin({ onSuccess }: DeveloperLoginProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [attempts, setAttempts] = useState(0);
 
-  // Developer password - Updated to "Elevated"
-  const DEVELOPER_PASSWORD = 'Elevated';
+  // Developer password - in production, this should be stored securely
+  const DEVELOPER_PASSWORD = 'OrthodoxEchoes2025Dev!';
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

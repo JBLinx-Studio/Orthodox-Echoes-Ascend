@@ -1,6 +1,5 @@
-
 import { Link } from 'react-router-dom';
-import { Mail, Church, Heart, FileText, Settings, Shield } from 'lucide-react';
+import { Mail, Church, Heart, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -89,12 +88,6 @@ export function Footer() {
               </Link>
               <Link to="/parishes" className="text-sm text-gray-300 hover:text-gold flex items-center gap-1">
                 <Church className="h-4 w-4" /> Find a Parish
-              </Link>
-              <Link to="/settings" className="text-sm text-gray-300 hover:text-gold flex items-center gap-1">
-                <Settings className="h-4 w-4" /> Settings
-              </Link>
-              <Link to="/developer" className="text-sm text-gray-300 hover:text-gold flex items-center gap-1">
-                <Shield className="h-4 w-4" /> Dev Dashboard
               </Link>
               <a href="/LICENSE.md" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-300 hover:text-gold flex items-center gap-1">
                 <FileText className="h-4 w-4" /> License

@@ -28,27 +28,34 @@ export function AudioPlayer({ minimal = false, className }: AudioPlayerProps) {
     currentTrackIndex, 
     playlist,
     nextTrack,
-    prevTrack,
-    isMuted,
-    muteAudio,
-    unmuteAudio
+    prevTrack
   } = useAudio();
   
+  const [isMuted, setIsMuted] = useState(false);
+  const [previousVolume, setPreviousVolume] = useState(volume);
   const [showControls, setShowControls] = useState(false);
   
   // Handle error conditions gracefully
-  const currentTrack = playlist && playlist[currentTrackIndex] ? playlist[currentTrackIndex] : { name: 'Sacred Chant', icon: '🎵' };
+  const currentTrack = playlist[currentTrackIndex] || { name: 'Sacred Chant', path: '' };
   
   const toggleMute = () => {
     if (isMuted) {
-      unmuteAudio();
+      setIsMuted(false);
+      setVolume(previousVolume);
     } else {
-      muteAudio();
+      setPreviousVolume(volume);
+      setIsMuted(true);
+      setVolume(0);
     }
   };
   
   const handleVolumeChange = (newValue: number[]) => {
     setVolume(newValue[0]);
+    if (newValue[0] === 0) {
+      setIsMuted(true);
+    } else if (isMuted) {
+      setIsMuted(false);
+    }
   };
 
   // Enhanced mini player with hover expand
