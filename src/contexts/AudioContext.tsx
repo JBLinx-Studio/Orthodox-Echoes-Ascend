@@ -78,7 +78,7 @@ interface AudioProviderProps {
 export const AudioProvider = ({ children }: AudioProviderProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState<string | null>(null);
-  const [volume, setVolumeState] = useState(0.7);
+  const [volume, setVolumeState] = useState(70); // Store as percentage (0-100)
   const [isMuted, setIsMuted] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
@@ -87,18 +87,30 @@ export const AudioProvider = ({ children }: AudioProviderProps) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const playTrack = (trackUrl: string) => {
+    console.log('Playing track:', trackUrl);
+    
     if (audioRef.current) {
       audioRef.current.pause();
     }
     
     audioRef.current = new Audio(trackUrl);
-    audioRef.current.volume = isMuted ? 0 : volume;
-    audioRef.current.play();
+    // Convert percentage to 0-1 range for HTML audio element
+    audioRef.current.volume = isMuted ? 0 : volume / 100;
     
-    setCurrentTrack(trackUrl);
-    setIsPlaying(true);
+    const playPromise = audioRef.current.play();
+    if (playPromise !== undefined) {
+      playPromise.then(() => {
+        console.log('Audio started playing successfully');
+        setCurrentTrack(trackUrl);
+        setIsPlaying(true);
+      }).catch(error => {
+        console.error('Error playing audio:', error);
+        setIsPlaying(false);
+      });
+    }
     
     audioRef.current.onended = () => {
+      console.log('Track ended, playing next');
       setIsPlaying(false);
       setCurrentTrack(null);
       nextTrack();
@@ -106,6 +118,7 @@ export const AudioProvider = ({ children }: AudioProviderProps) => {
   };
 
   const pauseTrack = () => {
+    console.log('Pausing track');
     if (audioRef.current) {
       audioRef.current.pause();
     }
@@ -113,6 +126,7 @@ export const AudioProvider = ({ children }: AudioProviderProps) => {
   };
 
   const togglePlay = () => {
+    console.log('Toggle play - current state:', isPlaying);
     if (isPlaying) {
       pauseTrack();
     } else {
@@ -123,21 +137,28 @@ export const AudioProvider = ({ children }: AudioProviderProps) => {
   };
 
   const setVolume = (newVolume: number) => {
-    setVolumeState(newVolume);
+    console.log('Setting volume to:', newVolume);
+    // Ensure volume is within 0-100 range
+    const clampedVolume = Math.max(0, Math.min(100, newVolume));
+    setVolumeState(clampedVolume);
+    
     if (audioRef.current) {
-      audioRef.current.volume = isMuted ? 0 : newVolume;
+      // Convert percentage to 0-1 range for HTML audio element
+      audioRef.current.volume = isMuted ? 0 : clampedVolume / 100;
     }
   };
 
   const toggleMute = () => {
     const newMutedState = !isMuted;
+    console.log('Toggle mute to:', newMutedState);
     setIsMuted(newMutedState);
     if (audioRef.current) {
-      audioRef.current.volume = newMutedState ? 0 : volume;
+      audioRef.current.volume = newMutedState ? 0 : volume / 100;
     }
   };
 
   const muteAudio = () => {
+    console.log('Muting audio');
     setIsMuted(true);
     if (audioRef.current) {
       audioRef.current.volume = 0;
@@ -145,14 +166,16 @@ export const AudioProvider = ({ children }: AudioProviderProps) => {
   };
 
   const unmuteAudio = () => {
+    console.log('Unmuting audio');
     setIsMuted(false);
     if (audioRef.current) {
-      audioRef.current.volume = volume;
+      audioRef.current.volume = volume / 100;
     }
   };
 
   const nextTrack = () => {
     const newIndex = (currentTrackIndex + 1) % DEFAULT_PLAYLIST.length;
+    console.log('Next track:', newIndex);
     setCurrentTrackIndex(newIndex);
     if (isPlaying) {
       playTrack(DEFAULT_PLAYLIST[newIndex].src);
@@ -161,6 +184,7 @@ export const AudioProvider = ({ children }: AudioProviderProps) => {
 
   const prevTrack = () => {
     const newIndex = (currentTrackIndex - 1 + DEFAULT_PLAYLIST.length) % DEFAULT_PLAYLIST.length;
+    console.log('Previous track:', newIndex);
     setCurrentTrackIndex(newIndex);
     if (isPlaying) {
       playTrack(DEFAULT_PLAYLIST[newIndex].src);
@@ -168,14 +192,17 @@ export const AudioProvider = ({ children }: AudioProviderProps) => {
   };
 
   const expandPlayer = () => {
+    console.log('Expanding player');
     setIsMinimized(false);
   };
 
   const minimizePlayer = () => {
+    console.log('Minimizing player');
     setIsMinimized(true);
   };
 
   const toggleReverb = () => {
+    console.log('Toggle reverb to:', !reverbEnabled);
     setReverbEnabled(!reverbEnabled);
   };
 

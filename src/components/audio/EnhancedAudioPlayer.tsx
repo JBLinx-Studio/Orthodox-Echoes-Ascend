@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { 
   Play, 
@@ -22,7 +23,6 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useAudio } from '@/contexts/AudioContext';
-import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
 interface EnhancedAudioPlayerProps {
@@ -71,11 +71,13 @@ export function EnhancedAudioPlayer({
 
   // Listen for external audio element changes
   useEffect(() => {
+    console.log('EnhancedAudioPlayer: Setting up audio element listener');
     
     // Find the actual audio element being controlled by AudioContext
     const audioElements = document.getElementsByTagName('audio');
     if (audioElements.length > 0) {
       audioRef.current = audioElements[0];
+      console.log('Found audio element:', audioRef.current);
       
       const updateDuration = () => {
         if (audioRef.current && !isNaN(audioRef.current.duration)) {
@@ -84,11 +86,13 @@ export function EnhancedAudioPlayer({
       };
       
       const handleCanPlay = () => {
+        console.log('Audio can play');
         setIsLoading(false);
         updateDuration();
       };
       
       const handleLoadStart = () => {
+        console.log('Audio load start');
         setIsLoading(true);
       };
       
@@ -108,6 +112,7 @@ export function EnhancedAudioPlayer({
 
   // Handle external minimized state changes
   useEffect(() => {
+    console.log('EnhancedAudioPlayer: External minimized changed to:', externalMinimized);
     
     if (externalMinimized !== undefined) {
       if (externalMinimized) {
@@ -120,6 +125,7 @@ export function EnhancedAudioPlayer({
 
   // Set up progress tracking
   useEffect(() => {
+    console.log('EnhancedAudioPlayer: Setting up progress tracking');
     
     const startProgressTracking = () => {
       if (progressIntervalRef.current) {
@@ -155,6 +161,7 @@ export function EnhancedAudioPlayer({
   };
 
   const toggleMute = () => {
+    console.log('EnhancedAudioPlayer: Toggle mute');
     if (isMuted) {
       unmuteAudio();
     } else {
@@ -164,6 +171,7 @@ export function EnhancedAudioPlayer({
 
   const handleVolumeChange = (newValue: number[]) => {
     const newVolume = newValue[0];
+    console.log('EnhancedAudioPlayer: Volume change to:', newVolume);
     setVolume(newVolume);
   };
 
@@ -181,7 +189,21 @@ export function EnhancedAudioPlayer({
   };
   
   const handleReverbAmountChange = (newValue: number[]) => {
+    console.log('EnhancedAudioPlayer: Reverb amount change to:', newValue[0]);
     setReverbAmount(newValue[0]);
+  };
+
+  const handleReverbToggle = () => {
+    console.log('EnhancedAudioPlayer: Toggle reverb');
+    toggleReverb();
+    if (!reverbEnabled) {
+      toast.success("Cathedral Reverb Enabled ✨", { 
+        description: "Experience the sacred acoustics of ancient cathedrals",
+        duration: 3000 
+      });
+    } else {
+      toast.info("Cathedral Reverb Disabled", { duration: 2000 });
+    }
   };
 
   // Render minimal player when minimized
@@ -321,7 +343,7 @@ export function EnhancedAudioPlayer({
                     ? "bg-gold/30 text-gold hover:bg-gold/40" 
                     : "hover:bg-gold/10 text-gold/70 hover:text-gold"
                 )}
-                onClick={toggleReverb}
+                onClick={handleReverbToggle}
               >
                 <Waves className="h-4 w-4" />
               </Button>
@@ -386,10 +408,13 @@ export function EnhancedAudioPlayer({
           </div>
           
           {reverbEnabled && (
-            <div className="mb-4 glass-morphism p-3 rounded-md">
-              <Label className="text-xs text-gold/80 mb-2 block">Cathedral Reverb Amount</Label>
+            <div className="mb-4 glass-morphism p-3 rounded-md border border-gold/20">
+              <Label className="text-xs text-gold/80 mb-2 block flex items-center">
+                <Waves className="h-3 w-3 mr-1" />
+                Cathedral Reverb Amount
+              </Label>
               <div className="flex items-center gap-3">
-                <Waves className="h-3 w-3 text-gold/60" />
+                <span className="text-xs text-gold/60 min-w-8">Dry</span>
                 <Slider
                   value={[reverbAmount]}
                   max={100}
@@ -397,7 +422,7 @@ export function EnhancedAudioPlayer({
                   onValueChange={handleReverbAmountChange}
                   className="cursor-pointer"
                 />
-                <span className="text-xs text-gold/70 min-w-8">{reverbAmount}%</span>
+                <span className="text-xs text-gold/70 min-w-12">{reverbAmount}% Wet</span>
               </div>
             </div>
           )}
@@ -440,7 +465,7 @@ export function EnhancedAudioPlayer({
             ))}
           </div>
           
-          <div className="flex justify-center mt-4">
+          <div className="flex justify-center mt-4 gap-2">
             <Button
               variant="ghost"
               size="icon"
