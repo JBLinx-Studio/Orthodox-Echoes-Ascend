@@ -10,9 +10,11 @@ import {
   Code, Database, Users, Settings, Shield, Crown, 
   LogOut, Activity, Server, Globe, Lock, Home, 
   Terminal, FileText, BarChart3, Cog, Monitor,
-  Zap, AlertTriangle, CheckCircle, Clock, Wifi
+  Zap, AlertTriangle, CheckCircle, Clock, Wifi,
+  ShoppingCart
 } from 'lucide-react';
 import { UserRoleManager } from './UserRoleManager';
+import { ShopManager } from './ShopManager';
 import { ContentManager } from '@/components/admin/ContentManager';
 import { BlogAdmin } from '@/components/admin/BlogAdmin';
 import { SaintManager } from '@/components/admin/SaintManager';
@@ -248,7 +250,7 @@ export function DeveloperDashboard({ onLogout }: DeveloperDashboardProps) {
 
         {/* Enhanced Tabbed Interface */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="bg-[#1A1F2C]/70 border border-gold/20 p-1 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-1">
+          <TabsList className="bg-[#1A1F2C]/70 border border-gold/20 p-1 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-1">
             <TabsTrigger value="overview" className="flex items-center gap-2 text-xs">
               <BarChart3 className="w-3 h-3" />
               Overview
@@ -268,6 +270,10 @@ export function DeveloperDashboard({ onLogout }: DeveloperDashboardProps) {
             <TabsTrigger value="saints" className="flex items-center gap-2 text-xs">
               <Crown className="w-3 h-3" />
               Saints
+            </TabsTrigger>
+            <TabsTrigger value="shop" className="flex items-center gap-2 text-xs">
+              <ShoppingCart className="w-3 h-3" />
+              Shop
             </TabsTrigger>
             <TabsTrigger value="analytics" className="flex items-center gap-2 text-xs">
               <Activity className="w-3 h-3" />
@@ -373,6 +379,10 @@ export function DeveloperDashboard({ onLogout }: DeveloperDashboardProps) {
 
           <TabsContent value="saints" className="space-y-6">
             <SaintManager />
+          </TabsContent>
+
+          <TabsContent value="shop" className="space-y-6">
+            <ShopManager />
           </TabsContent>
 
           <TabsContent value="analytics" className="space-y-6">
