@@ -93,7 +93,7 @@ export function Footer() {
               <Link to="/settings" className="text-sm text-gray-300 hover:text-gold flex items-center gap-1">
                 <Settings className="h-4 w-4" /> Settings
               </Link>
-              <Link to="/developer" className="text-sm text-gold hover:text-gold/80 flex items-center gap-1 bg-gold/10 px-2 py-1 rounded">
+              <Link to="/developer" className="text-sm text-gray-300 hover:text-gold flex items-center gap-1">
                 <Shield className="h-4 w-4" /> Dev Dashboard
               </Link>
               <a href="/LICENSE.md" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-300 hover:text-gold flex items-center gap-1">

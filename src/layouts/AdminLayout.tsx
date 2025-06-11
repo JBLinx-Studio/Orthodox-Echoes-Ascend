@@ -1,9 +1,13 @@
 
-import { useState, useEffect } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { useState, useEffect, ReactNode } from 'react';
+import { Navigate } from 'react-router-dom';
 import { isAdmin } from '@/utils/auth-utils';
 
-export function AdminLayout() {
+interface AdminLayoutProps {
+  children: ReactNode;
+}
+
+export function AdminLayout({ children }: AdminLayoutProps) {
   const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   
@@ -31,7 +35,5 @@ export function AdminLayout() {
     return <Navigate to="/login" replace />;
   }
   
-  return <Outlet />;
+  return <>{children}</>;
 }
-
-export default AdminLayout;
