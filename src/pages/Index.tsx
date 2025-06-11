@@ -205,6 +205,7 @@ const Index = () => {
               </p>
               <button 
                 onClick={() => {
+                  console.log('Sacred Sounds button clicked - expanding player and starting playback');
                   expandPlayer();
                   if (!isPlaying) {
                     togglePlay();

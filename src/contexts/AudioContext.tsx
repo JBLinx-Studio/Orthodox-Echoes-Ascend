@@ -59,6 +59,9 @@ interface AudioContextType {
   toggleReverb: () => void;
   reverbAmount: number;
   setReverbAmount: (amount: number) => void;
+  seekTo: (time: number) => void;
+  duration: number;
+  currentTime: number;
 }
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
@@ -78,48 +81,79 @@ interface AudioProviderProps {
 export const AudioProvider = ({ children }: AudioProviderProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState<string | null>(null);
-  const [volume, setVolumeState] = useState(70); // Store as percentage (0-100)
+  const [volume, setVolumeState] = useState(70);
   const [isMuted, setIsMuted] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(true);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [reverbEnabled, setReverbEnabled] = useState(false);
   const [reverbAmount, setReverbAmount] = useState(30);
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const playPromiseRef = useRef<Promise<void> | null>(null);
 
-  const playTrack = (trackUrl: string) => {
+  const playTrack = async (trackUrl: string) => {
     console.log('Playing track:', trackUrl);
     
-    if (audioRef.current) {
-      audioRef.current.pause();
-    }
-    
-    audioRef.current = new Audio(trackUrl);
-    // Convert percentage to 0-1 range for HTML audio element
-    audioRef.current.volume = isMuted ? 0 : volume / 100;
-    
-    const playPromise = audioRef.current.play();
-    if (playPromise !== undefined) {
-      playPromise.then(() => {
-        console.log('Audio started playing successfully');
-        setCurrentTrack(trackUrl);
-        setIsPlaying(true);
-      }).catch(error => {
-        console.error('Error playing audio:', error);
-        setIsPlaying(false);
+    try {
+      // Stop any existing audio first
+      if (audioRef.current) {
+        if (playPromiseRef.current) {
+          await playPromiseRef.current.catch(() => {});
+        }
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+      
+      // Create new audio element
+      const audio = new Audio(trackUrl);
+      audioRef.current = audio;
+      
+      // Set up event listeners
+      audio.addEventListener('loadedmetadata', () => {
+        console.log('Audio metadata loaded, duration:', audio.duration);
+        setDuration(audio.duration);
       });
-    }
-    
-    audioRef.current.onended = () => {
-      console.log('Track ended, playing next');
+      
+      audio.addEventListener('timeupdate', () => {
+        setCurrentTime(audio.currentTime);
+      });
+      
+      audio.addEventListener('ended', () => {
+        console.log('Track ended, playing next');
+        setIsPlaying(false);
+        setCurrentTrack(null);
+        nextTrack();
+      });
+      
+      audio.addEventListener('error', (e) => {
+        console.error('Audio error:', e);
+        setIsPlaying(false);
+        setCurrentTrack(null);
+      });
+      
+      // Set volume
+      audio.volume = isMuted ? 0 : volume / 100;
+      
+      // Load and play
+      audio.load();
+      playPromiseRef.current = audio.play();
+      
+      await playPromiseRef.current;
+      console.log('Audio started playing successfully');
+      setCurrentTrack(trackUrl);
+      setIsPlaying(true);
+      
+    } catch (error) {
+      console.error('Error playing audio:', error);
       setIsPlaying(false);
       setCurrentTrack(null);
-      nextTrack();
-    };
+    }
   };
 
   const pauseTrack = () => {
     console.log('Pausing track');
-    if (audioRef.current) {
+    if (audioRef.current && !audioRef.current.paused) {
       audioRef.current.pause();
     }
     setIsPlaying(false);
@@ -138,12 +172,10 @@ export const AudioProvider = ({ children }: AudioProviderProps) => {
 
   const setVolume = (newVolume: number) => {
     console.log('Setting volume to:', newVolume);
-    // Ensure volume is within 0-100 range
     const clampedVolume = Math.max(0, Math.min(100, newVolume));
     setVolumeState(clampedVolume);
     
     if (audioRef.current) {
-      // Convert percentage to 0-1 range for HTML audio element
       audioRef.current.volume = isMuted ? 0 : clampedVolume / 100;
     }
   };
@@ -206,6 +238,14 @@ export const AudioProvider = ({ children }: AudioProviderProps) => {
     setReverbEnabled(!reverbEnabled);
   };
 
+  const seekTo = (time: number) => {
+    console.log('Seeking to time:', time);
+    if (audioRef.current && !isNaN(time) && time >= 0 && time <= duration) {
+      audioRef.current.currentTime = time;
+      setCurrentTime(time);
+    }
+  };
+
   return (
     <AudioContext.Provider value={{
       isPlaying,
@@ -230,7 +270,10 @@ export const AudioProvider = ({ children }: AudioProviderProps) => {
       reverbEnabled,
       toggleReverb,
       reverbAmount,
-      setReverbAmount
+      setReverbAmount,
+      seekTo,
+      duration,
+      currentTime
     }}>
       {children}
     </AudioContext.Provider>

@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Play, 
   Pause, 
@@ -58,57 +58,14 @@ export function EnhancedAudioPlayer({
     unmuteAudio,
     playlist,
     nextTrack,
-    prevTrack
+    prevTrack,
+    seekTo,
+    duration,
+    currentTime
   } = useAudio();
   
   const [isExpanded, setIsExpanded] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [currentTime, setCurrentTime] = useState("0:00");
-  const [duration, setDuration] = useState("0:00");
   const [isLoading, setIsLoading] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const progressIntervalRef = useRef<number | null>(null);
-
-  // Listen for external audio element changes
-  useEffect(() => {
-    console.log('EnhancedAudioPlayer: Setting up audio element listener');
-    
-    // Find the actual audio element being controlled by AudioContext
-    const audioElements = document.getElementsByTagName('audio');
-    if (audioElements.length > 0) {
-      audioRef.current = audioElements[0];
-      console.log('Found audio element:', audioRef.current);
-      
-      const updateDuration = () => {
-        if (audioRef.current && !isNaN(audioRef.current.duration)) {
-          setDuration(formatTime(audioRef.current.duration));
-        }
-      };
-      
-      const handleCanPlay = () => {
-        console.log('Audio can play');
-        setIsLoading(false);
-        updateDuration();
-      };
-      
-      const handleLoadStart = () => {
-        console.log('Audio load start');
-        setIsLoading(true);
-      };
-      
-      audioRef.current.addEventListener('canplay', handleCanPlay);
-      audioRef.current.addEventListener('loadstart', handleLoadStart);
-      audioRef.current.addEventListener('durationchange', updateDuration);
-      
-      return () => {
-        if (audioRef.current) {
-          audioRef.current.removeEventListener('canplay', handleCanPlay);
-          audioRef.current.removeEventListener('loadstart', handleLoadStart);
-          audioRef.current.removeEventListener('durationchange', updateDuration);
-        }
-      };
-    }
-  }, []);
 
   // Handle external minimized state changes
   useEffect(() => {
@@ -122,36 +79,6 @@ export function EnhancedAudioPlayer({
       }
     }
   }, [externalMinimized, minimizePlayer, expandPlayer]);
-
-  // Set up progress tracking
-  useEffect(() => {
-    console.log('EnhancedAudioPlayer: Setting up progress tracking');
-    
-    const startProgressTracking = () => {
-      if (progressIntervalRef.current) {
-        window.clearInterval(progressIntervalRef.current);
-      }
-      
-      progressIntervalRef.current = window.setInterval(() => {
-        if (audioRef.current && !audioRef.current.paused) {
-          const currentProgress = (audioRef.current.currentTime / audioRef.current.duration) * 100;
-          if (!isNaN(currentProgress)) {
-            setProgress(currentProgress);
-            setCurrentTime(formatTime(audioRef.current.currentTime));
-          }
-        }
-      }, 1000);
-    };
-    
-    startProgressTracking();
-    
-    return () => {
-      if (progressIntervalRef.current) {
-        window.clearInterval(progressIntervalRef.current);
-        progressIntervalRef.current = null;
-      }
-    };
-  }, []);
 
   const formatTime = (seconds: number): string => {
     if (isNaN(seconds)) return "0:00";
@@ -176,16 +103,13 @@ export function EnhancedAudioPlayer({
   };
 
   const handleProgressChange = (newValue: number[]) => {
-    if (!audioRef.current || !audioRef.current.duration) return;
+    if (!duration || duration === 0) return;
     
     const newProgress = newValue[0];
-    const newTime = (audioRef.current.duration / 100) * newProgress;
+    const newTime = (duration / 100) * newProgress;
     
-    if (!isNaN(newTime)) {
-      audioRef.current.currentTime = newTime;
-      setProgress(newProgress);
-      setCurrentTime(formatTime(newTime));
-    }
+    console.log('EnhancedAudioPlayer: Seeking to:', newTime);
+    seekTo(newTime);
   };
   
   const handleReverbAmountChange = (newValue: number[]) => {
@@ -205,6 +129,8 @@ export function EnhancedAudioPlayer({
       toast.info("Cathedral Reverb Disabled", { duration: 2000 });
     }
   };
+
+  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   // Render minimal player when minimized
   if (isMinimized) {
@@ -246,10 +172,10 @@ export function EnhancedAudioPlayer({
 
   return (
     <div className={cn(
-      "transition-all duration-500 backdrop-filter backdrop-blur-sm overflow-hidden",
+      "fixed bottom-4 left-4 right-4 z-50 transition-all duration-500 backdrop-filter backdrop-blur-sm overflow-hidden",
       isExpanded 
-        ? "bg-[#1A1F2C]/95 rounded-lg border border-gold/30 shadow-2xl" 
-        : "bg-[#1A1F2C]/90 rounded-full border border-gold/20 shadow-lg",
+        ? "bg-[#1A1F2C]/95 rounded-lg border border-gold/30 shadow-2xl max-w-4xl mx-auto" 
+        : "bg-[#1A1F2C]/90 rounded-full border border-gold/20 shadow-lg max-w-md mx-auto",
       className
     )}>
       <div className={cn(
@@ -380,7 +306,7 @@ export function EnhancedAudioPlayer({
               <Music className="h-4 w-4 mr-2" />
               Byzantine Sacred Chants
             </span>
-            <span className="text-xs text-white/60">{currentTime} / {playlist[currentTrackIndex]?.length || "0:00"}</span>
+            <span className="text-xs text-white/60">{formatTime(currentTime)} / {formatTime(duration)}</span>
           </div>
           
           <div className="mb-4">

@@ -22,7 +22,6 @@ export function AudioControls() {
     prevTrack
   } = useAudio();
 
-  // Handle case where playlist item might be undefined during initial load
   const currentTrack = playlist && playlist[currentTrackIndex] ? playlist[currentTrackIndex] : { icon: "🎵", name: "Loading..." };
 
   const handleVolumeChange = (value: number[]) => {
