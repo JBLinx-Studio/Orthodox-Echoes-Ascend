@@ -6,6 +6,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AnimatedBackground } from '@/components/ui/animated-background';
+import { EnhancedAudioPlayer } from '@/components/audio/EnhancedAudioPlayer';
 
 export function MainLayout() {
   const [isPageLoading, setIsPageLoading] = useState(true);
@@ -137,6 +138,9 @@ export function MainLayout() {
           </motion.main>
         )}
       </AnimatePresence>
+      
+      {/* Enhanced Audio Player with proper z-index */}
+      <EnhancedAudioPlayer />
       
       {/* Footer with proper z-index */}
       <div className="relative z-20">

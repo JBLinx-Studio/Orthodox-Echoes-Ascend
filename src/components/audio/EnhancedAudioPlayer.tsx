@@ -140,7 +140,7 @@ export function EnhancedAudioPlayer({
         className
       )}>
         <span className="text-xs font-medium text-gold/80 max-w-28 truncate mr-1">
-          {playlist[currentTrackIndex]?.icon} {playlist[currentTrackIndex]?.name}
+          {playlist && playlist[currentTrackIndex] ? playlist[currentTrackIndex].icon : '🎵'} {playlist && playlist[currentTrackIndex] ? playlist[currentTrackIndex].name : 'Loading...'}
         </span>
         
         <Button
@@ -320,7 +320,7 @@ export function EnhancedAudioPlayer({
             
             <div className="flex justify-between items-center mt-2">
               <div className="text-xs text-gold/80 font-medium max-w-xs truncate">
-                Now Playing: {playlist[currentTrackIndex]?.name || "Loading..."}
+                Now Playing: {playlist && playlist[currentTrackIndex] ? playlist[currentTrackIndex].name : "Loading..."}
               </div>
               
               {isPlaying && (
@@ -354,7 +354,7 @@ export function EnhancedAudioPlayer({
           )}
           
           <div className="space-y-2 max-h-48 overflow-y-auto pr-1 custom-scrollbar">
-            {playlist.map((track, index) => (
+            {playlist && playlist.map((track, index) => (
               <div 
                 key={index}
                 className={cn(
