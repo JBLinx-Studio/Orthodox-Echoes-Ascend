@@ -1,13 +1,11 @@
 
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { DeveloperLogin } from '@/components/dev/DeveloperLogin';
 import { DeveloperDashboard } from '@/components/dev/DeveloperDashboard';
 
 export default function DeveloperPortal() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     // Check if developer is already authenticated
@@ -36,7 +34,6 @@ export default function DeveloperPortal() {
 
   const handleLogout = () => {
     setIsAuthenticated(false);
-    navigate('/'); // Navigate to home page after logout
   };
 
   if (isLoading) {
@@ -44,7 +41,8 @@ export default function DeveloperPortal() {
       <div className="min-h-screen bg-gradient-to-b from-[#0a0d16] to-[#161a26] flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-gold/30 border-t-gold rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-white/70">Initializing developer portal...</p>
+          <p className="text-white/70">Initializing developer sanctuary...</p>
+          <p className="text-gold/60 text-sm mt-2">Password: "Elevated"</p>
         </div>
       </div>
     );

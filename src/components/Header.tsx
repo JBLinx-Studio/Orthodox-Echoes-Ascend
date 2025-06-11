@@ -192,7 +192,7 @@ export function Header() {
               <span className="group-hover:scale-110 transition-transform">
                 <Shield className="w-4 h-4" />
               </span>
-              <span>Dev Dashboard</span>
+              <span>Dev Portal</span>
             </Link>
           </nav>
 
@@ -288,9 +288,13 @@ export function Header() {
                 
                 {/* Mobile Settings and Developer Links */}
                 <div className="border-t border-gold/20 pt-4 space-y-2">
+                  <h3 className="text-gold text-xs uppercase tracking-wider font-semibold">
+                    Quick Access
+                  </h3>
+                  
                   <Link
                     to="/settings"
-                    className="flex items-center space-x-3 text-white/80 hover:text-gold transition-colors py-2"
+                    className="flex items-center space-x-3 text-white/80 hover:text-gold transition-colors py-2 pl-4"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <Settings className="w-4 h-4" />
@@ -303,7 +307,7 @@ export function Header() {
                     onClick={() => setIsMenuOpen(false)}
                   >
                     <Shield className="w-4 h-4" />
-                    <span>Developer Dashboard</span>
+                    <span>Developer Portal</span>
                   </Link>
                 </div>
 
