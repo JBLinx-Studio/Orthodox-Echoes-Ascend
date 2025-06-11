@@ -27,7 +27,9 @@ import {
   Heart,
   ChevronDown,
   Feather,
-  Library
+  Library,
+  Settings,
+  Shield
 } from 'lucide-react';
 import { AudioPlayer } from '@/components/audio/AudioPlayer';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -252,6 +254,32 @@ export function NavBar() {
               <Search className="h-5 w-5" />
             </Button>
             
+            {/* Settings Button */}
+            <Button 
+              variant="ghost" 
+              size="sm"
+              asChild
+              className="hidden md:flex text-gray-300 hover:text-gold hover:bg-gold/10"
+            >
+              <Link to="/settings">
+                <Settings className="h-4 w-4 mr-1" />
+                Settings
+              </Link>
+            </Button>
+            
+            {/* Dev Dashboard Button */}
+            <Button 
+              variant="outline" 
+              size="sm"
+              asChild
+              className="hidden md:flex border-gold/30 text-gold hover:bg-gold/10"
+            >
+              <Link to="/developer">
+                <Shield className="h-4 w-4 mr-1" />
+                Dev Dashboard
+              </Link>
+            </Button>
+            
             {/* Replace user button with profile section */}
             <UserProfileSection />
             
@@ -305,6 +333,17 @@ export function NavBar() {
                       </MainNavItem>
                     </div>
                   ))}
+                  
+                  {/* Settings and Dev Dashboard in mobile menu */}
+                  <MainNavItem href="/settings" active={location.pathname === '/settings'} className="flex items-center py-2 text-base gold-hover-gleam" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Settings className="h-5 w-5 mr-2" />
+                    <span>Settings</span>
+                  </MainNavItem>
+                  
+                  <MainNavItem href="/developer" active={location.pathname === '/developer'} className="flex items-center py-2 text-base text-gold" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Shield className="h-5 w-5 mr-2" />
+                    <span>Dev Dashboard</span>
+                  </MainNavItem>
                 </div>
                 
                 {/* Quick links section */}
