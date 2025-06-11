@@ -18,7 +18,7 @@ export function DeveloperLogin({ onSuccess }: DeveloperLoginProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [attempts, setAttempts] = useState(0);
 
-  // Developer password - Updated to "Elevated"
+  // Developer password - updated to "Elevated"
   const DEVELOPER_PASSWORD = 'Elevated';
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -132,6 +132,9 @@ export function DeveloperLogin({ onSuccess }: DeveloperLoginProps) {
             <div className="mt-6 text-center">
               <p className="text-xs text-white/50">
                 Attempt {attempts}/3 • Secure development environment
+              </p>
+              <p className="text-xs text-gold/60 mt-2">
+                Password: "Elevated"
               </p>
             </div>
           </CardContent>
