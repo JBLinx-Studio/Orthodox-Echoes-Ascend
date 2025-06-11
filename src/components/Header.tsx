@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -201,22 +202,6 @@ export function Header() {
             <Button variant="ghost" size="sm" className="text-white/70 hover:text-gold hover:bg-gold/10">
               <Search className="w-4 h-4" />
             </Button>
-
-            {/* Options Button */}
-            <Link to="/settings">
-              <Button variant="ghost" size="sm" className="text-white/70 hover:text-gold hover:bg-gold/10 flex items-center space-x-2">
-                <Settings className="w-4 h-4" />
-                <span className="hidden md:inline">Options</span>
-              </Button>
-            </Link>
-
-            {/* Developer Dashboard Button */}
-            <Link to="/developer">
-              <Button variant="ghost" size="sm" className="text-gold hover:text-gold/80 hover:bg-gold/10 flex items-center space-x-2 border border-gold/20">
-                <Shield className="w-4 h-4" />
-                <span className="hidden md:inline">Developer Dashboard</span>
-              </Button>
-            </Link>
 
             {!isLoading && (
               <>
