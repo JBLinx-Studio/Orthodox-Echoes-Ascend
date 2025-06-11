@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -49,29 +48,29 @@ export function ShopManager() {
     {
       id: 'beeside-collection',
       name: 'BeeSide Premium Collection',
-      description: 'Pure 100% delicious wild honey and handcrafted beeswax candles',
-      priceUSD: '$42.99',
-      priceZAR: 'R799.99',
-      originalPriceUSD: '$59.99',
-      originalPriceZAR: 'R1,109.99',
+      description: 'Pure 100% delicious wild honey and natural beeswax. Honey available in 500g (R100) and larger bottles (R200). Beeswax candles coming soon!',
+      priceUSD: '$5.40',
+      priceZAR: 'R100',
+      originalPriceUSD: '$10.80',
+      originalPriceZAR: 'R200',
       image: '/lovable-uploads/777f39ed-a494-4566-bc24-29941d4489ed.png',
       rating: 4.9,
       reviews: 127,
-      inStock: true,
-      quantity: 45,
-      location: 'Cape Town, South Africa',
+      inStock: false,
+      quantity: 0,
+      location: 'Despatch, South Africa 6219',
       type: 'physical',
-      features: ['100% Pure Wild Honey', 'Natural Beeswax Candles', 'Premium Quality', 'Handcrafted'],
+      features: ['100% Pure Wild Honey', 'Natural Beeswax', 'Premium Quality', 'Contact: EthosofOrthodoxy@gmail.com'],
       category: 'BeeSide Collection'
     },
     {
       id: 'prayer-ebook',
       name: 'Digital Prayer Compendium',
       description: 'Complete collection of Orthodox prayers and daily devotions in digital format',
-      priceUSD: '$12.99',
-      priceZAR: 'R239.99',
-      originalPriceUSD: '$19.99',
-      originalPriceZAR: 'R369.99',
+      priceUSD: '$4.99',
+      priceZAR: 'R89.99',
+      originalPriceUSD: '$9.99',
+      originalPriceZAR: 'R179.99',
       image: '/placeholder.svg',
       rating: 4.7,
       reviews: 203,
@@ -86,10 +85,10 @@ export function ShopManager() {
       id: 'theology-course',
       name: 'Orthodox Theology Online Course',
       description: 'Comprehensive 12-week course on Orthodox Christian theology and doctrine',
-      priceUSD: '$149.99',
-      priceZAR: 'R2,759.99',
-      originalPriceUSD: '$199.99',
-      originalPriceZAR: 'R3,689.99',
+      priceUSD: '$49.99',
+      priceZAR: 'R919.99',
+      originalPriceUSD: '$99.99',
+      originalPriceZAR: 'R1,839.99',
       image: '/placeholder.svg',
       rating: 4.8,
       reviews: 45,
@@ -435,9 +434,9 @@ export function ShopManager() {
                     type="number"
                     min="0"
                     value={editingProduct.quantity || ''}
-                    onChange={(e) => updateEditingProduct('quantity', e.target.value ? parseInt(e.target.value) : null)}
+                    onChange={(e) => updateEditingProduct('quantity', e.target.value ? parseInt(e.target.value) : 0)}
                     className="bg-[#2A2F3C] border-gold/20 text-white"
-                    placeholder="Enter quantity"
+                    placeholder="Enter quantity (0 for out of stock)"
                   />
                 </div>
                 <div>
@@ -481,7 +480,7 @@ export function ShopManager() {
                       value={feature}
                       onChange={(e) => updateFeature(index, e.target.value)}
                       className="bg-[#2A2F3C] border-gold/20 text-white"
-                      placeholder="Enter feature"
+                      placeholder="Enter feature (e.g., Contact: email@example.com)"
                     />
                     <Button 
                       variant="outline" 

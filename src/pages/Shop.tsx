@@ -19,7 +19,8 @@ import {
   Music,
   Calendar,
   MapPin,
-  Hash
+  Hash,
+  Mail
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -41,29 +42,30 @@ export default function Shop() {
     {
       id: 'beeside-collection',
       name: 'BeeSide Premium Collection',
-      description: 'Pure 100% delicious wild honey and handcrafted beeswax candles',
-      priceUSD: '$42.99',
-      priceZAR: 'R799.99',
-      originalPriceUSD: '$59.99',
-      originalPriceZAR: 'R1,109.99',
+      description: 'Pure 100% delicious wild honey and natural beeswax. Honey available in 500g (R100) and larger bottles (R200). Beeswax candles coming soon!',
+      priceUSD: '$5.40',
+      priceZAR: 'R100',
+      originalPriceUSD: '$10.80',
+      originalPriceZAR: 'R200',
       image: '/lovable-uploads/777f39ed-a494-4566-bc24-29941d4489ed.png',
       rating: 4.9,
       reviews: 127,
-      inStock: true,
-      quantity: 45,
-      location: 'Cape Town, South Africa',
+      inStock: false,
+      quantity: 0,
+      location: 'Despatch, South Africa 6219',
       type: 'physical',
-      features: ['100% Pure Wild Honey', 'Natural Beeswax Candles', 'Premium Quality', 'Handcrafted'],
-      category: 'BeeSide Collection'
+      features: ['100% Pure Wild Honey', 'Natural Beeswax', 'Premium Quality', 'Contact: EthosofOrthodoxy@gmail.com'],
+      category: 'BeeSide Collection',
+      contact: 'EthosofOrthodoxy@gmail.com'
     },
     {
       id: 'prayer-ebook',
       name: 'Digital Prayer Compendium',
       description: 'Complete collection of Orthodox prayers and daily devotions in digital format',
-      priceUSD: '$12.99',
-      priceZAR: 'R239.99',
-      originalPriceUSD: '$19.99',
-      originalPriceZAR: 'R369.99',
+      priceUSD: '$4.99',
+      priceZAR: 'R89.99',
+      originalPriceUSD: '$9.99',
+      originalPriceZAR: 'R179.99',
       image: '/placeholder.svg',
       rating: 4.7,
       reviews: 203,
@@ -78,10 +80,10 @@ export default function Shop() {
       id: 'theology-course',
       name: 'Orthodox Theology Online Course',
       description: 'Comprehensive 12-week course on Orthodox Christian theology and doctrine',
-      priceUSD: '$149.99',
-      priceZAR: 'R2,759.99',
-      originalPriceUSD: '$199.99',
-      originalPriceZAR: 'R3,689.99',
+      priceUSD: '$49.99',
+      priceZAR: 'R919.99',
+      originalPriceUSD: '$99.99',
+      originalPriceZAR: 'R1,839.99',
       image: '/placeholder.svg',
       rating: 4.8,
       reviews: 45,
@@ -153,7 +155,8 @@ export default function Shop() {
                   🍯 BeeSide Premium Collection
                 </h3>
                 <p className="text-white/80 mb-4">
-                  Discover our pure 100% delicious wild honey and handcrafted beeswax products. Natural, raw, and blessed by tradition.
+                  Discover our pure 100% delicious wild honey and natural beeswax products. 
+                  Currently restocking - contact us for availability!
                 </p>
                 <div className="flex gap-2 justify-center">
                   <Button
@@ -164,7 +167,7 @@ export default function Shop() {
                     className="bg-gold hover:bg-gold/90 text-black"
                   >
                     <Sparkles className="h-4 w-4 mr-2" />
-                    Shop Now
+                    View Details
                   </Button>
                   <Button
                     variant="outline"
@@ -205,9 +208,10 @@ export default function Shop() {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold text-gold mb-2">🍯 BeeSide Collection</h2>
-              <p className="text-white/80">Pure 100% delicious wild honey and handcrafted beeswax</p>
+              <p className="text-white/80">Pure 100% delicious wild honey and natural beeswax</p>
+              <p className="text-white/60 text-sm mt-1">Currently restocking - Beeswax candles coming soon!</p>
             </div>
-            <Badge className="bg-gold text-black font-bold">Featured</Badge>
+            <Badge className="bg-red-500 text-white font-bold">Out of Stock</Badge>
           </div>
         </motion.div>
 
@@ -264,8 +268,8 @@ export default function Shop() {
                   
                   {/* Physical product info */}
                   {product.type === 'physical' && (
-                    <div className="flex items-center gap-4 mb-3 text-sm text-white/70">
-                      {product.quantity && (
+                    <div className="space-y-2 mb-3 text-sm text-white/70">
+                      {product.quantity !== null && (
                         <div className="flex items-center gap-1">
                           <Hash className="h-3 w-3" />
                           <span>{product.quantity} available</span>
@@ -275,6 +279,12 @@ export default function Shop() {
                         <div className="flex items-center gap-1">
                           <MapPin className="h-3 w-3" />
                           <span>{product.location}</span>
+                        </div>
+                      )}
+                      {product.contact && (
+                        <div className="flex items-center gap-1">
+                          <Mail className="h-3 w-3" />
+                          <span className="text-gold">{product.contact}</span>
                         </div>
                       )}
                     </div>
@@ -311,7 +321,7 @@ export default function Shop() {
                       disabled={!product.inStock}
                     >
                       <ShoppingCart className="h-4 w-4 mr-2" />
-                      Add to Cart
+                      {product.inStock ? 'Add to Cart' : 'Contact for Stock'}
                     </Button>
                     <Button variant="outline" size="icon" className="border-gold/30 text-gold hover:bg-gold/10">
                       <Info className="h-4 w-4" />
@@ -338,8 +348,8 @@ export default function Shop() {
           
           <Card className="bg-[#1A1F2C]/60 border-gold/20 p-6 text-center">
             <Truck className="h-8 w-8 text-gold mx-auto mb-3" />
-            <h3 className="text-lg font-semibold text-white mb-2">Free Shipping</h3>
-            <p className="text-white/60 text-sm">Free delivery on orders over $50 / R920</p>
+            <h3 className="text-lg font-semibold text-white mb-2">Local Delivery</h3>
+            <p className="text-white/60 text-sm">Contact for delivery arrangements in South Africa</p>
           </Card>
           
           <Card className="bg-[#1A1F2C]/60 border-gold/20 p-6 text-center">
