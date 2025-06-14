@@ -564,3 +564,43 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(155, 35, 53, 0.6);
 }
+
+@layer components {
+  /* Make the animated background really emissive: add a glow and more contrast */
+  .emissive-bg {
+    /* Adds a luminous golden emission effect behind the SVG/canvas */
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    z-index: -10;
+    background: radial-gradient(circle at 50% 40%, rgba(212,175,55,0.11) 0%, rgba(212,175,55,0.13) 44%, rgba(212,175,55,0.21) 66%, transparent 95%);
+    filter: blur(32px) brightness(1.22) saturate(1.2) drop-shadow(0 0 80px #D4AF37aa);
+    opacity: 0.97;
+    transition: opacity 0.3s;
+  }
+}
+/* --- UPDATE darkness overlay so it doesn't cover the background --- */
+.mouse-darkness-overlay {
+  /* limit to a higher z-index, above .emissive-bg but below panels */
+  z-index: 10 !important; /* previously 40 */
+}
+
+/* Optionally, maintain highlight overlay high above */
+.mouse-highlight-overlay {
+  z-index: 30 !important; /* previously 50 */
+}
+/* Ensures: 
+   - Emissive background sits at z-[-10] 
+   - darkness overlay at z-10, highlight at z-30
+   - content/panels at higher z levels
+*/
+
+/* Optionally, make sure the background pattern SVG/canvas is a bit more "luminous": */
+.animated-bg-luminance {
+  filter: brightness(1.14) saturate(1.08) drop-shadow(0 0 40px #D4AF3733);
+  opacity: 0.97;
+}
+
+/* You may want to apply 'emissive-bg' (and optionally 'animated-bg-luminance') to
+   the wrapper div(s) for your AnimatedBackground component.
+*/
