@@ -1,0 +1,47 @@
+
+/**
+ * Orthodox Echoes Design System — Color tokens and palette
+ * ONLY color variables used for backgrounds, borders, and text
+ * (Do not put font or spacing tokens here)
+ */
+
+@layer base {
+  :root {
+    --background: 220 33% 13%;
+    --foreground: 220 14% 96%;
+
+    --card: 220 33% 17%;
+    --card-foreground: 220 14% 96%;
+
+    --popover: 220 33% 13%;
+    --popover-foreground: 220 14% 96%;
+
+    --primary: 220 14% 96%;
+    --primary-foreground: 220 33% 13%;
+
+    --secondary: 42 60% 52%; /* Gold */
+    --secondary-foreground: 220 33% 13%;
+
+    --muted: 220 33% 20%;
+    --muted-foreground: 220 14% 80%;
+
+    --accent: 42 60% 52%; /* Gold */
+    --accent-foreground: 220 33% 13%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 33% 20%;
+    --input: 220 33% 20%;
+    --ring: 224 76% 48%;
+
+    --radius: 0.5rem;
+
+    /* Orthodox/Eastern design references */
+    --orthodox-blue: 215 23% 16%;
+    --gold: 42 57% 52%;
+    --byzantine: 342 53% 40%;
+    --byzantine-dark: 342 53% 35%;
+    --byzantine-light: 342 53% 45%;
+  }
+}
