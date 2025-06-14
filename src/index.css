@@ -284,8 +284,83 @@
       display: none;
     }
   }
+
+  /* Mouse darkness overlay - darkens everything except the main "light" */
+  .mouse-darkness-overlay {
+    background: radial-gradient(
+      circle 360px at var(--mouse-x, 50vw) var(--mouse-y, 50vh),
+      rgba(50, 30, 3, 0)       0%,
+      rgba(30, 19, 7, 0.05)    30%,
+      rgba(8, 7, 0, 0.18)      48%,
+      rgba(0,0,0,0.32)         55%,
+      rgba(0,0,0,0.68)         80%,
+      rgba(0,0,0,0.91)       100%
+    );
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    will-change: background;
+    transition: background 0.18s cubic-bezier(.44,0,.56,1);
+    z-index: 40;
+    opacity: 1;
+    display: block;
+  }
+  @media (max-width: 639px) {
+    .mouse-darkness-overlay { display: none; }
+  }
+
+  /* Mouse highlight overlay - subtle golden glow gently lifts panels */
+  .mouse-highlight-overlay {
+    background: radial-gradient(
+      circle 160px at var(--mouse-x, 50vw) var(--mouse-y, 50vh),
+      rgba(227, 202, 104, 0.18) 0%,
+      rgba(221, 186, 50, 0.10)  30%,
+      rgba(185, 151, 55, 0.03)  70%,
+      transparent 100%
+    );
+    mix-blend-mode: lighten; /* has a soft overlay effect on any content below */
+    pointer-events: none;
+    will-change: background;
+    z-index: 50;
+    opacity: 0.92;
+    transition: background 0.13s;
+    display: block;
+  }
+  @media (max-width: 639px) {
+    .mouse-highlight-overlay { display: none; }
+  }
+
+  /* Panels react to cursor - "lift" as mouse nears */
+  .cathedral-card, .byzantine-border, .scroll-parchment {
+    filter: brightness(var(--card-brightness, 1))
+      drop-shadow(0 2px 20px rgba(212,175,55, calc(var(--card-lift, 0))));
+    transition: filter 0.22s cubic-bezier(.57,.21,.47,.76);
+  }
 }
 
+/* Panel “lift” (real-time) - the JS MouseLightOverlay sets custom CSS variables */
+body {
+  --mouse-x: 50vw;
+  --mouse-y: 50vh;
+}
+.cathedral-card, .byzantine-border, .scroll-parchment {
+  --card-brightness: 1;
+  --card-lift: 0;
+}
+@media (min-width: 640px) {
+  .cathedral-card, .byzantine-border, .scroll-parchment {
+    /* This trick uses a CSS custom property filter, JS will update this on move! */
+    transition: filter 0.25s cubic-bezier(.53,.07,.53,.93), box-shadow 0.12s;
+  }
+}
+
+/* Animate panel brightness and glow based on mouse position */
+@media (min-width: 640px) {
+  body.panel-lift-active .cathedral-card, 
+  body.panel-lift-active .byzantine-border,
+  body.panel-lift-active .scroll-parchment {
+    /* These get updated inline by a future enhancement, so prep the filter. */
+  }
+}
 /* Page appearance animation */
 @keyframes appear {
   from { opacity: 0; transform: translateY(20px); }
