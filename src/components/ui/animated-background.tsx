@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -142,11 +143,10 @@ export function AnimatedBackground({
   
   return (
     <div className={cn("fixed inset-0 -z-10 overflow-hidden", className)}>
-      {/* Emissive background luminous glow (NEW) */}
-      <div className="emissive-bg" />
-      <canvas ref={canvasRef} className="absolute inset-0 animated-bg-luminance" />
-      {/* SVG golden cross and patterns will have their luminosity boosted via CSS */}
-      <div className="absolute top-0 left-0 w-full h-full opacity-5 animated-bg-luminance">
+      <canvas ref={canvasRef} className="absolute inset-0" />
+      
+      {/* Cathedral background pattern with cross motifs */}
+      <div className="absolute top-0 left-0 w-full h-full opacity-5">
         <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
           <defs>
             <pattern id="byzantine-pattern" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
@@ -158,23 +158,27 @@ export function AnimatedBackground({
           <rect width="100%" height="100%" fill="url(#byzantine-pattern)" />
         </svg>
       </div>
+      
       {/* Cathedral dome shapes */}
-      <div className="absolute bottom-0 left-0 w-full h-[30%] opacity-10 animated-bg-luminance">
+      <div className="absolute bottom-0 left-0 w-full h-[30%] opacity-10">
         <svg viewBox="0 0 1200 200" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M0,200 C300,100 900,100 1200,200 L1200,200 L0,200 Z" fill="#D4AF37" />
         </svg>
       </div>
+      
       {/* Light effects resembling stained glass windows */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-byzantine/10 rounded-full filter blur-[120px] opacity-30 animate-pulse" />
-      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-gold/10 rounded-full filter blur-[90px] opacity-20 animate-pulse" style={{animationDuration: '8s'}} />
-      <div className="absolute top-3/4 left-1/4 w-[300px] h-[300px] bg-gold/15 rounded-full filter blur-[60px] opacity-15 animate-pulse" style={{animationDuration: '10s'}} />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-byzantine/10 rounded-full filter blur-[120px] opacity-30 animate-pulse"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-gold/10 rounded-full filter blur-[90px] opacity-20 animate-pulse" style={{animationDuration: '8s'}}></div>
+      <div className="absolute top-3/4 left-1/4 w-[300px] h-[300px] bg-gold/15 rounded-full filter blur-[60px] opacity-15 animate-pulse" style={{animationDuration: '10s'}}></div>
+      
       {/* Byzantine cross silhouette */}
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-5 animated-bg-luminance">
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-5">
         <svg width="600" height="600" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M50 10 L50 90 M30 30 L70 30 M25 70 L75 70 M20 50 L80 50" 
                 stroke="#D4AF37" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </div>
+      
       {/* Cathedral arches */}
       <div className="absolute inset-0 flex items-end justify-center opacity-5">
         <svg width="100%" height="30%" viewBox="0 0 1000 200" preserveAspectRatio="none">
