@@ -1,4 +1,10 @@
+
 import React, { useEffect, useRef } from "react";
+
+function isMobileDevice() {
+  if (typeof window === "undefined") return false;
+  return /Mobi|Android|iPhone|iPad|iPod|Opera Mini/i.test(window.navigator.userAgent);
+}
 
 /**
  * Immersive cathedral mouse light effect!
@@ -11,72 +17,67 @@ export function MouseLightOverlay() {
   const highlightRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Helper for realistic distance-based light falloff
+    // Hide overlay completely for performance/chrome on mobile or users with reduced motion
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion || isMobileDevice()) {
+      if (darkRef.current) darkRef.current.style.display = "none";
+      if (highlightRef.current) highlightRef.current.style.display = "none";
+      document.body.classList.remove("panel-lift-active");
+      return;
+    }
+
     function getLightProps(mouseX: number, mouseY: number, rect: DOMRect) {
-      // Center of the panel/card
       const cardX = rect.left + rect.width / 2;
       const cardY = rect.top + rect.height / 2;
-      // Euclidean distance from mouse to panel center
       const dist = Math.sqrt((mouseX - cardX) ** 2 + (mouseY - cardY) ** 2);
-
-      // Light size parameters — larger, softer for cathedral ambiance
-      const maxRadius = Math.max(window.innerWidth, window.innerHeight) / 1.0; // more diffuse
-
-      // Light prop variables — boost for glass & metallic
-      let cardLift = 0;
-      let cardBrightness = 1;
-      let emissive = 0;
-      let glassGloss = 0.18;
-      let glassBlur = 10;
-      let glassBgLight = 0;
-      let glassPrism = 0;
-      let metallicShine = 0;
-
+      const maxRadius = Math.max(window.innerWidth, window.innerHeight) / 1.0;
+      let cardLift = 0, cardBrightness = 1, emissive = 0, glassGloss = 0.18, glassBlur = 10, glassBgLight = 0, glassPrism = 0, metallicShine = 0;
       if (dist < maxRadius) {
-        // Soft quadratic falloff for realism
         const light = 1 - Math.min(dist / maxRadius, 1);
-        // Boost overall, smooth falloff for ambient caustic
         cardLift = 0.16 * Math.pow(light, 1.55) + 0.035 * light;
         cardBrightness = 1.04 + 0.22 * Math.pow(light, 2);
         emissive = 0.27 * Math.pow(light, 1.5) + 0.07 * light;
-        // Glassy glossiness, blurs more and gets a halo as mouse approaches
-        glassGloss = 0.23 * light + 0.17; // more gloss near bright
-        glassBlur = 15 + (25 * Math.pow(light, 3)); // much bigger blur near mouse
-        glassBgLight = 0.10 + 0.45 * Math.pow(light, 1.6); // more underlight
-        glassPrism = 0.12 * Math.pow(light, 1.5); // prismatic color fringing
+        glassGloss = 0.23 * light + 0.17;
+        glassBlur = 15 + (25 * Math.pow(light, 3));
+        glassBgLight = 0.10 + 0.45 * Math.pow(light, 1.6);
+        glassPrism = 0.12 * Math.pow(light, 1.5);
         metallicShine = 0.10 * light + 0.09 * Math.pow(light, 2);
       }
       return { cardLift, cardBrightness, emissive, glassGloss, glassBlur, glassBgLight, glassPrism, metallicShine };
     }
 
+    // Throttle mousemove for better perf
+    let ticking = false;
     function updatePanels(mouseX?: number, mouseY?: number) {
-      // If not supplied, get from CSS variable (for resize!), fallback to center of window.
-      let x = mouseX ?? (parseFloat(document.body.style.getPropertyValue("--mouse-x") || "") || window.innerWidth / 2);
-      let y = mouseY ?? (parseFloat(document.body.style.getPropertyValue("--mouse-y") || "") || window.innerHeight / 2);
-      // All "panel" selectors that should reflect the light
-      const selector = [
-        ".cathedral-card",
-        ".byzantine-border",
-        ".scroll-parchment"
-      ].join(",");
-
-      document.body.classList.add("panel-lift-active");
-      document.querySelectorAll<HTMLElement>(selector).forEach(panel => {
-        const rect = panel.getBoundingClientRect();
-        const { cardLift, cardBrightness, emissive, glassGloss, glassBlur, glassBgLight, glassPrism, metallicShine } = getLightProps(x, y, rect);
-        panel.style.setProperty("--card-lift", cardLift.toFixed(3));
-        panel.style.setProperty("--card-brightness", cardBrightness.toFixed(3));
-        panel.style.setProperty("--emissive-strength", emissive.toFixed(3));
-        panel.style.setProperty("--glass-gloss", glassGloss.toFixed(3));
-        panel.style.setProperty("--glass-blur", glassBlur.toFixed(1));
-        panel.style.setProperty("--glass-bg-light", glassBgLight.toFixed(3));
-        // Prism and shine!
-        panel.style.setProperty("--glass-prism", glassPrism.toFixed(3));
-        panel.style.setProperty("--metallic-shine", metallicShine.toFixed(3));
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        let x = mouseX ?? (parseFloat(document.body.style.getPropertyValue("--mouse-x") || "") || window.innerWidth / 2);
+        let y = mouseY ?? (parseFloat(document.body.style.getPropertyValue("--mouse-y") || "") || window.innerHeight / 2);
+        const selector = [".cathedral-card", ".byzantine-border", ".scroll-parchment"].join(",");
+        document.body.classList.add("panel-lift-active");
+        document.querySelectorAll<HTMLElement>(selector).forEach(panel => {
+          const rect = panel.getBoundingClientRect();
+          const { cardLift, cardBrightness, emissive, glassGloss, glassBlur, glassBgLight, glassPrism, metallicShine } = getLightProps(x, y, rect);
+          panel.style.setProperty("--card-lift", cardLift.toFixed(3));
+          panel.style.setProperty("--card-brightness", cardBrightness.toFixed(3));
+          panel.style.setProperty("--emissive-strength", emissive.toFixed(3));
+          panel.style.setProperty("--glass-gloss", glassGloss.toFixed(3));
+          panel.style.setProperty("--glass-blur", glassBlur.toFixed(1));
+          panel.style.setProperty("--glass-bg-light", glassBgLight.toFixed(3));
+          panel.style.setProperty("--glass-prism", glassPrism.toFixed(3));
+          panel.style.setProperty("--metallic-shine", metallicShine.toFixed(3));
+        });
+        ticking = false;
       });
     }
 
+    let lastRun = 0;
     function handleMove(e: MouseEvent) {
+      const now = performance.now();
+      // Only run at ~30fps
+      if (now - lastRun < 33) return;
+      lastRun = now;
       const x = e.clientX;
       const y = e.clientY;
       [darkRef, highlightRef].forEach(ref => {
@@ -85,13 +86,11 @@ export function MouseLightOverlay() {
           ref.current.style.setProperty("--mouse-y", `${y}px`);
         }
       });
-      // Pass mouse pos via CSS for e.g. accent icons
       document.body.style.setProperty("--mouse-x", `${x}px`);
       document.body.style.setProperty("--mouse-y", `${y}px`);
       updatePanels(x, y);
     }
 
-    // Keep everything updating on resize
     function handleResize() {
       updatePanels();
     }
@@ -99,7 +98,6 @@ export function MouseLightOverlay() {
     window.addEventListener("mousemove", handleMove);
     window.addEventListener("resize", handleResize);
 
-    // Init to center (prevents dark boot flicker)
     const vw = window.innerWidth / 2;
     const vh = window.innerHeight / 2;
     [darkRef, highlightRef].forEach(ref => {
@@ -112,14 +110,17 @@ export function MouseLightOverlay() {
     document.body.style.setProperty("--mouse-y", `${vh}px`);
     updatePanels(vw, vh);
 
-    // Clean up
     return () => {
       window.removeEventListener("mousemove", handleMove);
       window.removeEventListener("resize", handleResize);
     };
   }, []);
 
-  // Disable on mobile for perf
+  // Avoid rendering at all on mobile/reduced-motion
+  const show = !(typeof window !== "undefined" && (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || isMobileDevice()));
+
+  if (!show) return null;
+
   return (
     <>
       <div
