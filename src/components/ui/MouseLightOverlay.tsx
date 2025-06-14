@@ -2,50 +2,66 @@
 import React, { useEffect, useRef } from "react";
 
 /**
- * Renders a transparent overlay darkening the page,
- * with a bright radial 'light' following your mouse.
- * Uses GPU-accelerated CSS for performance. 
+ * Contains two overlay layers:
+ * 1. DarknessOverlay: Radial mask darkens the entire UI except where the cursor glows.
+ * 2. HighlightOverlay: Subtle golden soft highlight that “lifts” the content just under the mouse.
  */
 export function MouseLightOverlay() {
-  const overlayRef = useRef<HTMLDivElement>(null);
+  const darkRef = useRef<HTMLDivElement>(null);
+  const highlightRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const overlay = overlayRef.current;
-    if (!overlay) return;
-
-    // Function to update light position
-    function handleMouseMove(e: MouseEvent) {
+    function handleMove(e: MouseEvent) {
       const x = e.clientX;
       const y = e.clientY;
-      // Move the CSS mask-position to the mouse
-      overlay.style.setProperty("--mouse-x", `${x}px`);
-      overlay.style.setProperty("--mouse-y", `${y}px`);
+      [darkRef, highlightRef].forEach(ref => {
+        if (ref.current) {
+          ref.current.style.setProperty("--mouse-x", `${x}px`);
+          ref.current.style.setProperty("--mouse-y", `${y}px`);
+        }
+      });
+      // Expose CSS variables for child panels (e.g. raised effect)
+      document.body.style.setProperty("--mouse-x", `${x}px`);
+      document.body.style.setProperty("--mouse-y", `${y}px`);
     }
-
-    window.addEventListener("mousemove", handleMouseMove);
-
-    // Initialize at center
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    overlay.style.setProperty("--mouse-x", `${vw / 2}px`);
-    overlay.style.setProperty("--mouse-y", `${vh / 2}px`);
-    
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
+    window.addEventListener("mousemove", handleMove);
+    // Init (center)
+    const vw = window.innerWidth / 2;
+    const vh = window.innerHeight / 2;
+    [darkRef, highlightRef].forEach(ref => {
+      if (ref.current) {
+        ref.current.style.setProperty("--mouse-x", `${vw}px`);
+        ref.current.style.setProperty("--mouse-y", `${vh}px`);
+      }
+    });
+    document.body.style.setProperty("--mouse-x", `${vw}px`);
+    document.body.style.setProperty("--mouse-y", `${vh}px`);
+    return () => window.removeEventListener("mousemove", handleMove);
   }, []);
 
-  // Hide on small screens
+  // Disable on mobile (matches CSS media query)
   return (
-    <div
-      ref={overlayRef}
-      aria-hidden
-      className="pointer-events-none fixed inset-0 z-40 mouse-light-overlay"
-      style={{
-        // Custom CSS properties for light position
-        "--mouse-x": "50vw",
-        "--mouse-y": "50vh",
-      } as React.CSSProperties}
-    />
+    <>
+      {/* 1. Big darkness vignette except center */}
+      <div
+        ref={darkRef}
+        aria-hidden
+        className="pointer-events-none fixed inset-0 z-40 mouse-darkness-overlay"
+        style={{
+          "--mouse-x": "50vw",
+          "--mouse-y": "50vh",
+        } as React.CSSProperties}
+      />
+      {/* 2. Bright gold highlight, above panels, below nav */}
+      <div
+        ref={highlightRef}
+        aria-hidden
+        className="pointer-events-none fixed inset-0 z-50 mouse-highlight-overlay"
+        style={{
+          "--mouse-x": "50vw",
+          "--mouse-y": "50vh",
+        } as React.CSSProperties}
+      />
+    </>
   );
 }

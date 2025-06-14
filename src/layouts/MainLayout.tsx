@@ -37,9 +37,9 @@ export function MainLayout() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-[#070a12] to-[#11131c]">
-      {/* Mouse Light Overlay sits above backgrounds but below top UI */}
+      {/* 1. Mouse Light system (darkening + golden highlight overlays) */}
       <MouseLightOverlay />
-
+      
       {/* Accessibility: Skip to content link */}
       <a href="#main-content" onClick={handleSkipToContent} className="skip-link">
         Skip to content
