@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
@@ -104,11 +103,13 @@ interface ArticleCardProps {
   featured?: boolean;
 }
 
+const fadeInPanel = "animate-fade-in bg-gradient-to-br from-gold/10 via-byzantine/5 to-black/0 cathedral-card shadow-xl border-gold/15";
+
 function ArticleCard({ article, featured = false }: ArticleCardProps) {
   return (
     <Card className={cn(
-      "overflow-hidden border-none shadow-md transition-all duration-300 hover:shadow-lg bg-card h-full",
-      featured && "md:col-span-2 md:row-span-2"
+      fadeInPanel,
+      featured && "md:col-span-2 md:row-span-2 border-gold-strong"
     )}>
       <div className={cn(
         "grid grid-cols-1",
@@ -121,20 +122,24 @@ function ArticleCard({ article, featured = false }: ArticleCardProps) {
           <img 
             src={article.imageUrl} 
             alt={article.title}
-            className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+            loading="lazy"
+            style={{objectPosition: 'center'}}
           />
-          <div className="absolute top-2 left-2 bg-byzantine text-white text-xs px-2 py-1 rounded">{article.category}</div>
+          <div className="absolute top-2 left-2 bg-gold/70 text-black text-xs px-3 py-1 rounded shadow border-gold">
+            {article.category}
+          </div>
         </div>
         <CardContent className="p-4 flex flex-col h-full">
-          <div className="mb-2 text-sm text-muted-foreground">{article.publishDate}</div>
+          <div className="mb-2 text-sm text-gold/80 font-semibold">{article.publishDate}</div>
           <h3 className={cn(
-            "font-display font-bold tracking-tight",
+            "font-display font-bold tracking-tight drop-shadow glow-shadow",
             featured ? "text-xl md:text-2xl mb-3" : "text-lg mb-2"
           )}>
             {article.title}
           </h3>
           <p className={cn(
-            "text-muted-foreground line-clamp-2",
+            "text-white/70 line-clamp-2",
             featured && "md:line-clamp-4"
           )}>
             {article.excerpt}
@@ -167,23 +172,25 @@ export function FeaturedArticles() {
   });
   
   return (
-    <section className="py-12 md:py-16">
+    <section className="py-10 md:py-14">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
           <div>
-            <h2 className="orthodox-heading text-2xl md:text-3xl font-bold mb-2">Explore Our Articles</h2>
-            <p className="text-muted-foreground">Discover the depth and richness of Orthodox teaching and tradition</p>
+            <h2 className="orthodox-heading text-2xl md:text-3xl font-extrabold mb-2 text-gold/95 glow-shadow">Explore Our Articles</h2>
+            <p className="text-white/80">Discover the depth and richness of Orthodox teaching and tradition</p>
           </div>
           <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full md:w-auto">
-            <TabsList className="bg-muted/50">
+            <TabsList className="bg-gold/8 border border-gold/20 rounded-xl shadow-inner">
               {CATEGORIES.map(category => (
-                <TabsTrigger key={category} value={category}>{category}</TabsTrigger>
+                <TabsTrigger key={category} value={category} className="font-medium text-lg rounded-md px-3 py-1 focus:ring-gold/70 transition-all">
+                  {category}
+                </TabsTrigger>
               ))}
             </TabsList>
           </Tabs>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-9">
           {filteredArticles.length > 0 ? (
             filteredArticles.map((article, index) => (
               <ArticleCard 
@@ -200,7 +207,7 @@ export function FeaturedArticles() {
         </div>
         
         <div className="mt-10 text-center">
-          <Button asChild variant="outline" className="border-byzantine text-byzantine hover:bg-byzantine/10">
+          <Button asChild variant="outline" className="border-gold/60 text-gold hover:bg-gold/10 shadow-md rounded-lg px-6 font-semibold">
             <Link to="/blog">View All Articles</Link>
           </Button>
         </div>
