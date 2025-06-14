@@ -56,6 +56,13 @@
     /* Box shadow for vignette effect */
     box-shadow: inset 0 0 250px rgba(0, 0, 0, 0.8);
     min-height: 100vh;
+    /* Custom gold radial cross cursor for desktop */
+    cursor: url("data:image/svg+xml;utf8,<svg width='36' height='36' xmlns='http://www.w3.org/2000/svg'><g><circle cx='18' cy='18' r='15' fill='rgba(255,235,170,0.9)' stroke='gold' stroke-width='2'/><path d='M18,4 L18,32' stroke='goldenrod' stroke-width='2.2'/><path d='M4,18 L32,18' stroke='goldenrod' stroke-width='2.2'/><circle cx='18' cy='18' r='7' fill='rgba(212,175,55,0.65)'/><circle cx='18' cy='18' r='2.2' fill='white'/></g></svg>") 18 18, pointer;
+  }
+  @media (max-width: 639px) {
+    body {
+      cursor: auto;
+    }
   }
 
   h1, h2, h3, h4, h5, h6 {
