@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from "react";
 
 /**
@@ -37,7 +38,7 @@ export function MouseLightOverlay() {
     return () => window.removeEventListener("mousemove", handleMove);
   }, []);
 
-  // Cursor: subtle gold star & pointer - reduced intensity
+  // Cursor: turning gold star & pointer
   useEffect(() => {
     const styleId = "custom-star-cursor-keyframes";
     if (!document.getElementById(styleId)) {
@@ -48,15 +49,15 @@ export function MouseLightOverlay() {
         100% { transform: rotate(360deg); }
       }
       .star-cursor {
-        width:24px;height:24px;pointer-events:none;
+        width:32px;height:32px;pointer-events:none;
         position:fixed;z-index:999999;
         transition:opacity 0.2s;
         will-change:transform,opacity;
-        filter: drop-shadow(0 0 5px #ffd90070) drop-shadow(0 0 12px #ffe34270);
-        opacity:0.82;
+        filter: drop-shadow(0 0 8px #ffd900cc) drop-shadow(0 0 22px #ffe34ea0);
+        opacity:0.95;
         mix-blend-mode:lighten;
         pointer-events: none;
-        left:-24px;top:-24px;
+        left:-32px;top:-32px;
         user-select:none;
         z-index:99999999;
       }
@@ -65,11 +66,11 @@ export function MouseLightOverlay() {
     }
     const star = document.createElement("div");
     star.innerHTML = `
-      <svg width="24" height="24" viewBox="0 0 32 32" fill="none">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
         <g>
           <polygon points="16,2 20,12 31,12 22,19 25,30 16,24 7,30 10,19 1,12 12,12"
-            fill="#ffe06b" stroke="#eabd23" stroke-width="1.5" />
-          <circle cx="16" cy="16" r="6" fill="#FFF8C5" fill-opacity="0.3"/>
+            fill="#ffe06b" stroke="#eabd23" stroke-width="2" />
+          <circle cx="16" cy="16" r="6" fill="#FFF8C5" fill-opacity="0.4"/>
         </g>
       </svg>
     `;
@@ -78,12 +79,13 @@ export function MouseLightOverlay() {
     document.body.appendChild(star);
 
     function cursorAnimHandler(e: MouseEvent) {
-      star.style.left = `${e.clientX - 12}px`;
-      star.style.top = `${e.clientY - 12}px`;
-      star.style.animation = "rotate-cursor-star 3.2s linear infinite";
+      star.style.left = `${e.clientX - 16}px`;
+      star.style.top = `${e.clientY - 16}px`;
+      star.style.animation = "rotate-cursor-star 2s linear infinite";
     }
     window.addEventListener("mousemove", cursorAnimHandler);
 
+    // Hide system cursor for desktop
     document.body.style.cursor = "none";
 
     return () => {
@@ -97,7 +99,7 @@ export function MouseLightOverlay() {
 
   return (
     <>
-      {/* Darkness vignette - much softer */}
+      {/* 1. Even bigger darkness vignette, only panel areas stay visible */}
       <div
         ref={darkRef}
         aria-hidden
@@ -107,7 +109,7 @@ export function MouseLightOverlay() {
           "--mouse-y": "50vh",
         } as React.CSSProperties}
       />
-      {/* Subtle golden glow - less intense & larger radius */}
+      {/* 2. Major golden glow highlight with even more coverage */}
       <div
         ref={highlightRef}
         aria-hidden

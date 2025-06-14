@@ -260,21 +260,23 @@
 
   /* MouseLightOverlay core styles */
   .mouse-light-overlay {
-    /* Softer illumination */
+    /* Darken everything by default */
     background: radial-gradient(
-      circle 160px at var(--mouse-x, 50vw) var(--mouse-y, 50vh), 
-      rgba(212,175,55,0.13) 0%,         /* faint gold core */
-      rgba(212,175,55,0.06) 23%,
-      rgba(212,175,55,0.04) 46%,
-      rgba(0,0,0,0.03) 59%,
-      rgba(0,0,0,0.13) 74%,
-      rgba(0,0,0,0.38) 100%
+      circle 240px at var(--mouse-x, 50vw) var(--mouse-y, 50vh), 
+      rgba(212,175,55,0.23) 0%,          /* strong gold light core */
+      rgba(212,175,55,0.14) 15%,
+      rgba(212,175,55,0.10) 36%,
+      rgba(0,0,0,0.06) 43%,
+      rgba(0,0,0,0.45) 60%,
+      rgba(0,0,0,0.77) 100%
     );
     mix-blend-mode: lighten;
     transition: background 0.13s;
-    opacity: 0.78;
+    will-change: background;
     pointer-events: none;
     z-index: 40;
+    opacity: 1;
+    /* Only show on desktop */
     display: block;
   }
   @media (max-width: 639px) {
@@ -286,20 +288,20 @@
   /* Mouse darkness overlay - darkens everything except the main "light" */
   .mouse-darkness-overlay {
     background: radial-gradient(
-      circle 275px at var(--mouse-x, 50vw) var(--mouse-y, 50vh),
-      rgba(50, 30, 3, 0.02)      0%,
-      rgba(30, 19, 7, 0.04)     38%,
-      rgba(8, 7, 0, 0.09)       55%,
-      rgba(0,0,0,0.2)           67%,
-      rgba(0,0,0,0.39)          86%,
-      rgba(0,0,0,0.58)        100%
+      circle 360px at var(--mouse-x, 50vw) var(--mouse-y, 50vh),
+      rgba(50, 30, 3, 0)       0%,
+      rgba(30, 19, 7, 0.05)    30%,
+      rgba(8, 7, 0, 0.18)      48%,
+      rgba(0,0,0,0.32)         55%,
+      rgba(0,0,0,0.68)         80%,
+      rgba(0,0,0,0.91)       100%
     );
     mix-blend-mode: multiply;
     pointer-events: none;
     will-change: background;
-    transition: background 0.16s cubic-bezier(.44,0,.56,1);
+    transition: background 0.18s cubic-bezier(.44,0,.56,1);
     z-index: 40;
-    opacity: 0.50;
+    opacity: 1;
     display: block;
   }
   @media (max-width: 639px) {
@@ -309,18 +311,18 @@
   /* Mouse highlight overlay - subtle golden glow gently lifts panels */
   .mouse-highlight-overlay {
     background: radial-gradient(
-      circle 290px at var(--mouse-x, 50vw) var(--mouse-y, 50vh),
-      rgba(227, 202, 104, 0.08) 0%,
-      rgba(221, 186, 50, 0.04)  44%,
-      rgba(185, 151, 55, 0.01)  85%,
+      circle 160px at var(--mouse-x, 50vw) var(--mouse-y, 50vh),
+      rgba(227, 202, 104, 0.18) 0%,
+      rgba(221, 186, 50, 0.10)  30%,
+      rgba(185, 151, 55, 0.03)  70%,
       transparent 100%
     );
     mix-blend-mode: lighten; /* has a soft overlay effect on any content below */
     pointer-events: none;
     will-change: background;
     z-index: 50;
-    opacity: 0.49;
-    transition: background 0.14s;
+    opacity: 0.92;
+    transition: background 0.13s;
     display: block;
   }
   @media (max-width: 639px) {
@@ -565,13 +567,14 @@ html {
 
 /* --- Enhanced GLASS Panels & GLOW --- */
 .cathedral-card, .byzantine-border, .scroll-parchment {
-  background: rgba(35,27,10,0.19) !important;   /* less opaque, more glassy */
-  backdrop-filter: blur(10px) saturate(1.05);
-  box-shadow: 0 2px 30px 4px #D4AF3735, 0 1.5px 0.5px #fff8ee09, 0 0.5px 10px 2px #ffd46b19;
-  border: 1.25px solid #ffe9a817 !important;
-  filter: brightness(1.04) blur(0.08px) drop-shadow(0 2px 12px #d6b03223);
-  /* suble card-lift still applies */
-  transition: box-shadow 0.18s, filter 0.13s, background 0.11s;
+  background: rgba(35,27,10,0.35) !important;
+  backdrop-filter: blur(18px) saturate(1.35);
+  box-shadow: 0 2px 45px 8px #D4AF3760, 0 1.5px 0.5px #fff8ee10, 0 0.5px 24px 6px #ffd46b40;
+  border: 1.5px solid #ffe9a855 !important;
+  border-radius: 2rem;
+  /* See-through + more glow! */
+  filter: brightness(1.12) blur(0.2px) drop-shadow(0 4px 40px #d6b03263);
+  transition: box-shadow 0.26s, filter 0.16s, background 0.16s;
   position: relative;
   overflow: visible;
 }
@@ -611,47 +614,71 @@ html {
 }
 /* Holy light shines through */
 .enhanced-holy-glow {
-  opacity: 0.55 !important;
+  opacity: 1 !important;
   background: radial-gradient(
-    circle 540px at var(--mouse-x, 50vw) var(--mouse-y, 50vh),
-    #ffe06b33 0%, 
-    #ffe06b19 22%,
-    #ffe06b11 41%,
-    #eabd2309 60%,
-    #e3b30004 93%,
+    circle 700px at var(--mouse-x, 50vw) var(--mouse-y, 50vh),
+    #ffe06b 0%, 
+    #ffe06bcc 15%,
+    #ffe06baa 33%,
+    #eabd235d 54%,
+    #e3b3003a 74%,
     transparent 100%
-  ),
+  ), 
   radial-gradient(
-    circle 730px at 50% 17%,
-    #ffe0680a 0%,#fff0 70%
+    circle 900px at 50% 17%,
+    #ffe06822 0%,#fff0 70%
   );
   pointer-events: none;
   z-index: 60;
   mix-blend-mode: lighter;
-  transition: background 0.12s;
+  transition: background 0.14s;
 }
-/* Text & buttons: more gentle light */
+
+/* --- Emissive GLow Headings & Text --- */
 .byzantine-title, .orthodox-heading, h1, h2, h3, .holy-glow-text {
-  text-shadow: 0 0 4px #ffe4a362, 0 0 10px #ffe06b38, 0 2px 1px #533, 0 0 1px #dbb45829;
+  text-shadow: 
+    0 0 8px #ffe4a3aa, 
+    0 0 12px #ffe06b89,
+    0 2px 1px #533,
+    0 0 2px #dbb45838;
   color: #FFE06B !important;
-  filter: brightness(1.04) drop-shadow(0 0 4px #ffe06b45);
-  background: linear-gradient(90deg,#ffedb2 50%,#efbe5c 50%);
+  filter: brightness(1.13) drop-shadow(0 0 10px #ffe06b68);
+  background: linear-gradient(90deg,#ffedb2 30%,#efbe5c 70%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
-/* For buttons and tabs: dial back background and shadow */
+
+.enhanced-glass-bg {
+  background: rgba(28,21,8,0.29) !important;
+  backdrop-filter: blur(12px) brightness(1.15) saturate(1.1);
+  box-shadow: 0 1.5px 65px 15px #ffe06b1b, 0 2px 15px #d4af3722;
+}
+
+.enhanced-holy-glow-bg {
+  background: radial-gradient(ellipse at 50% 10%, #ffe06b19 0%, #ffe06b00 75%);
+}
+
+.enhanced-reflection {
+  position: relative;
+}
+.enhanced-reflection::after {
+  content: "";
+  position: absolute;
+  left: 12%; right: 12%; top: 0;
+  height: 10px;
+  background: linear-gradient(90deg,transparent 0%, #fff8 55%, #fff3 100%);
+  opacity: 0.14;
+  border-radius: 999px; pointer-events:none;
+}
+
 button, .shadcn-ui, .tab-trigger, .tab-item {
   /* Buttons and tabs: more gold glow, gloss */
-  background: linear-gradient(90deg,rgba(245, 190, 57, 0.11),rgba(245,190,57,0.05) 60%,rgba(244,230,170,0.12) 100%) !important;
-  border: 1px solid #ffe9a81a;
-  box-shadow: 0 0 5px #ffe06b25, 0 1.5px 2.5px #ffe06b10;
-  text-shadow: 0 0 2px #ffe06b30;
-  filter: brightness(1.03);
+  background: linear-gradient(90deg,rgba(245, 190, 57, 0.22),rgba(245,190,57,0.09) 60%,rgba(244,230,170,0.28) 100%) !important;
+  border: 1.5px solid #ffe9a831;
+  box-shadow: 0 0 14px #ffe06b80, 0 1.5px 6.5px #ffe06b36;
+  text-shadow: 0 0 7px #ffe06b80;
+  filter: brightness(1.15);
   color: #FFE06B !important;
-}
-button:hover, .tab-trigger.active, .tab-item.active, .cathedral-card:hover, .byzantine-border:hover {
-  filter: brightness(1.11) saturate(1.04) drop-shadow(0 2px 5px #ffe06b44);
-  box-shadow: 0 1px 9px 2px #ffe06b38, 0 0.5px 0.5px #fffcdc2e;
 }
 
 /* Glossy effect for all tabs/cards/buttons on hover/focus */
