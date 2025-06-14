@@ -41,8 +41,8 @@ export function MouseLightOverlay() {
 
     function updatePanels(mouseX?: number, mouseY?: number) {
       // If not supplied, get from CSS variable (for resize!), fallback to center of window.
-      let x = mouseX ?? parseFloat(document.body.style.getPropertyValue("--mouse-x") || '') || window.innerWidth / 2;
-      let y = mouseY ?? parseFloat(document.body.style.getPropertyValue("--mouse-y") || '') || window.innerHeight / 2;
+      let x = mouseX ?? (parseFloat(document.body.style.getPropertyValue("--mouse-x") || '') || window.innerWidth / 2);
+      let y = mouseY ?? (parseFloat(document.body.style.getPropertyValue("--mouse-y") || '') || window.innerHeight / 2);
       // All "panel" selectors that should reflect the light
       const selector = [
         ".cathedral-card",
