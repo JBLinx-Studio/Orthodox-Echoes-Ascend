@@ -56,13 +56,6 @@
     /* Box shadow for vignette effect */
     box-shadow: inset 0 0 250px rgba(0, 0, 0, 0.8);
     min-height: 100vh;
-    /* Custom gold radial cross cursor for desktop */
-    cursor: url("data:image/svg+xml;utf8,<svg width='36' height='36' xmlns='http://www.w3.org/2000/svg'><g><circle cx='18' cy='18' r='15' fill='rgba(255,235,170,0.9)' stroke='gold' stroke-width='2'/><path d='M18,4 L18,32' stroke='goldenrod' stroke-width='2.2'/><path d='M4,18 L32,18' stroke='goldenrod' stroke-width='2.2'/><circle cx='18' cy='18' r='7' fill='rgba(212,175,55,0.65)'/><circle cx='18' cy='18' r='2.2' fill='white'/></g></svg>") 18 18, pointer;
-  }
-  @media (max-width: 639px) {
-    body {
-      cursor: auto;
-    }
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -263,33 +256,6 @@
     content: "";
     @apply absolute -top-8 left-1/2 -translate-x-1/2 w-4 h-4 bg-gold/30 rounded-full blur-md;
     animation: flame-glow 3s ease-in-out infinite;
-  }
-
-  /* MouseLightOverlay core styles */
-  .mouse-light-overlay {
-    /* Darken everything by default */
-    background: radial-gradient(
-      circle 240px at var(--mouse-x, 50vw) var(--mouse-y, 50vh), 
-      rgba(212,175,55,0.23) 0%,          /* strong gold light core */
-      rgba(212,175,55,0.14) 15%,
-      rgba(212,175,55,0.10) 36%,
-      rgba(0,0,0,0.06) 43%,
-      rgba(0,0,0,0.45) 60%,
-      rgba(0,0,0,0.77) 100%
-    );
-    mix-blend-mode: lighten;
-    transition: background 0.13s;
-    will-change: background;
-    pointer-events: none;
-    z-index: 40;
-    opacity: 1;
-    /* Only show on desktop */
-    display: block;
-  }
-  @media (max-width: 639px) {
-    .mouse-light-overlay {
-      display: none;
-    }
   }
 }
 

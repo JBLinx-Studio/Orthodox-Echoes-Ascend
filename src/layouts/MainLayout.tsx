@@ -1,3 +1,4 @@
+
 import { Outlet } from 'react-router-dom';
 import { NavBar } from '@/components/core/NavBar';
 import { Footer } from '@/components/Footer';
@@ -5,7 +6,6 @@ import { useEffect, useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AnimatedBackground } from '@/components/ui/animated-background';
-import { MouseLightOverlay } from "@/components/ui/MouseLightOverlay";
 
 export function MainLayout() {
   const [isPageLoading, setIsPageLoading] = useState(true);
@@ -36,10 +36,7 @@ export function MainLayout() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-[#070a12] to-[#11131c]">
-      {/* Mouse Light Overlay sits above backgrounds but below top UI */}
-      <MouseLightOverlay />
-
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-[#0a0d16] to-[#161a26]">
       {/* Accessibility: Skip to content link */}
       <a href="#main-content" onClick={handleSkipToContent} className="skip-link">
         Skip to content
@@ -54,8 +51,8 @@ export function MainLayout() {
         <AnimatedBackground intensity="medium" theme="gold" />
         
         {/* Cathedral vignette effect */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#070a12] via-transparent to-transparent"></div>
-        <div className="absolute inset-0 shadow-[inset_0_0_120px_rgba(0,0,0,0.93)]"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0d16] via-transparent to-transparent"></div>
+        <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.8)]"></div>
         
         {/* Enhanced candle glow effects with more dynamics */}
         <div className="absolute bottom-20 left-1/4 w-40 h-40 rounded-full bg-gold/5 blur-3xl animate-[pulse_4s_ease-in-out_infinite]"></div>
