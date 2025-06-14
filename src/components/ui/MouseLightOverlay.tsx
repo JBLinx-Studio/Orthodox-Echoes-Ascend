@@ -19,40 +19,40 @@ export function MouseLightOverlay() {
       // Euclidean distance from mouse to panel center
       const dist = Math.sqrt((mouseX - cardX) ** 2 + (mouseY - cardY) ** 2);
 
-      // Light size parameters — larger, softer for cathedral ambiance
-      const maxRadius = Math.max(window.innerWidth, window.innerHeight) / 1.0; // more diffuse
-
-      // Light prop variables — boost for glass & metallic
+      // Light size parameters (tweak for realism/perf!)
+      const maxRadius = Math.max(window.innerWidth, window.innerHeight) / 1.2; // physically plausible
+      // Card "lift": how much it glows/floats visually
       let cardLift = 0;
+      // Brightness: how much the card color is lifted
       let cardBrightness = 1;
+      // Emissive: reflective accents, icons, borders
       let emissive = 0;
+      // Glassy glossiness, blurs more and gets a halo as mouse approaches
       let glassGloss = 0.18;
-      let glassBlur = 10;
+      // Glassy blur
+      let glassBlur = 9;
+      // Underlight
       let glassBgLight = 0;
-      let glassPrism = 0;
-      let metallicShine = 0;
 
       if (dist < maxRadius) {
         // Soft quadratic falloff for realism
         const light = 1 - Math.min(dist / maxRadius, 1);
-        // Boost overall, smooth falloff for ambient caustic
-        cardLift = 0.16 * Math.pow(light, 1.55) + 0.035 * light;
-        cardBrightness = 1.04 + 0.22 * Math.pow(light, 2);
-        emissive = 0.27 * Math.pow(light, 1.5) + 0.07 * light;
+        // The closer you are, the more lift & brightness & emissive
+        cardLift = 0.13 * light ** 2 + 0.03 * light;        // subtle lift, squared falloff
+        cardBrightness = 1.01 + 0.23 * light ** 1.7;        // not too much, or it's blinding
+        emissive = 0.22 * light ** 2 + 0.06 * light;        // glowy border, accents
         // Glassy glossiness, blurs more and gets a halo as mouse approaches
-        glassGloss = 0.23 * light + 0.17; // more gloss near bright
-        glassBlur = 15 + (25 * Math.pow(light, 3)); // much bigger blur near mouse
-        glassBgLight = 0.10 + 0.45 * Math.pow(light, 1.6); // more underlight
-        glassPrism = 0.12 * Math.pow(light, 1.5); // prismatic color fringing
-        metallicShine = 0.10 * light + 0.09 * Math.pow(light, 2);
+        glassGloss = 0.22 * light + 0.15;
+        glassBlur = 12 + (10 * light ** 3); // stronger blur close to mouse
+        glassBgLight = 0.07 + 0.35 * (light ** 1.7); // underlight
       }
-      return { cardLift, cardBrightness, emissive, glassGloss, glassBlur, glassBgLight, glassPrism, metallicShine };
+      return { cardLift, cardBrightness, emissive, glassGloss, glassBlur, glassBgLight };
     }
 
     function updatePanels(mouseX?: number, mouseY?: number) {
       // If not supplied, get from CSS variable (for resize!), fallback to center of window.
-      let x = mouseX ?? (parseFloat(document.body.style.getPropertyValue("--mouse-x") || "") || window.innerWidth / 2);
-      let y = mouseY ?? (parseFloat(document.body.style.getPropertyValue("--mouse-y") || "") || window.innerHeight / 2);
+      let x = mouseX ?? (parseFloat(document.body.style.getPropertyValue("--mouse-x") || '') || window.innerWidth / 2);
+      let y = mouseY ?? (parseFloat(document.body.style.getPropertyValue("--mouse-y") || '') || window.innerHeight / 2);
       // All "panel" selectors that should reflect the light
       const selector = [
         ".cathedral-card",
@@ -63,16 +63,13 @@ export function MouseLightOverlay() {
       document.body.classList.add("panel-lift-active");
       document.querySelectorAll<HTMLElement>(selector).forEach(panel => {
         const rect = panel.getBoundingClientRect();
-        const { cardLift, cardBrightness, emissive, glassGloss, glassBlur, glassBgLight, glassPrism, metallicShine } = getLightProps(x, y, rect);
+        const { cardLift, cardBrightness, emissive, glassGloss, glassBlur, glassBgLight } = getLightProps(x, y, rect);
         panel.style.setProperty("--card-lift", cardLift.toFixed(3));
         panel.style.setProperty("--card-brightness", cardBrightness.toFixed(3));
         panel.style.setProperty("--emissive-strength", emissive.toFixed(3));
         panel.style.setProperty("--glass-gloss", glassGloss.toFixed(3));
         panel.style.setProperty("--glass-blur", glassBlur.toFixed(1));
         panel.style.setProperty("--glass-bg-light", glassBgLight.toFixed(3));
-        // Prism and shine!
-        panel.style.setProperty("--glass-prism", glassPrism.toFixed(3));
-        panel.style.setProperty("--metallic-shine", metallicShine.toFixed(3));
       });
     }
 
