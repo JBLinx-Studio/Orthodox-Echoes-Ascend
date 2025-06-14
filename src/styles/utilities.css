@@ -8,4 +8,52 @@
   .hover-scale:hover {
     transform: scale(1.05);
   }
+  .pulse {
+    @apply animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite];
+  }
+
+  /* Keyframes for all custom animations e.g. "pulse", "iconGlow", "candle-flicker", "glass-metal-shine" */
+  @keyframes iconGlow {
+    0%, 100% { filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.3)); }
+    50% { filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.7)); }
+  }
+
+  @keyframes candle-flicker {
+    0%, 100% {
+      transform: translateX(-50%) scale(0.9) rotate(-2deg);
+      opacity: 0.8;
+      box-shadow: 0 0 6px 2px rgba(255, 220, 180, 0.5);
+    }
+    25% {
+      transform: translateX(-48%) scale(1.1) rotate(1deg);
+      opacity: 1;
+      box-shadow: 0 0 10px 3px rgba(255, 220, 180, 0.7);
+    }
+    50% {
+      transform: translateX(-52%) scale(1) rotate(-1deg);
+      opacity: 0.9;
+      box-shadow: 0 0 8px 2px rgba(255, 220, 180, 0.6);
+    }
+    75% {
+      transform: translateX(-49%) scale(1.05) rotate(1.5deg);
+      opacity: 1;
+      box-shadow: 0 0 12px 4px rgba(255, 220, 180, 0.8);
+    }
+  }
+  @keyframes glass-metal-shine {
+    0%,100% { background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%; }
+    50% { background-position: 13% 9%, 22% 30%, 30% 22%, 40% 12%, 16% 50%, 0% 0%; }
+  }
+  /* Page appearance animation */
+  @keyframes appear {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Cathedral prayer reveal animation */
+  @keyframes prayerReveal {
+    0% { opacity: 0; transform: translateY(10px); }
+    30% { opacity: 0.3; transform: translateY(5px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
 }

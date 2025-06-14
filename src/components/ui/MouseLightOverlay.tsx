@@ -1,122 +1,145 @@
-
 import React, { useEffect, useRef } from "react";
-import { Star } from "lucide-react";
 
 /**
- * A global, performant "divine illumination" overlay.
- * Shows:
- *  - Global gold light/dark radial gradients blending with all content.
- *  - Mouse pointer becomes a luminous, gently rotating star casting soft glows.
- *  - Panels (via :root or [data-emissive]) will react to the star ("emissive-strength").
- * No per-panel mouse tracking, no lag!
+ * Immersive cathedral mouse light effect!
+ * - Global darkness mask with light following cursor
+ * - Glowy golden highlight under mouse
+ * - Panels & content subtly "catch" and reflect/cast light!
  */
 export function MouseLightOverlay() {
-  const pointerRef = useRef<HTMLDivElement>(null);
+  const darkRef = useRef<HTMLDivElement>(null);
+  const highlightRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    let lastX = window.innerWidth / 2;
-    let lastY = window.innerHeight / 2;
-    let starAngle = 0;
-    let frameId: number;
-    let ticking = false;
+    // Helper for realistic distance-based light falloff
+    function getLightProps(mouseX: number, mouseY: number, rect: DOMRect) {
+      // Center of the panel/card
+      const cardX = rect.left + rect.width / 2;
+      const cardY = rect.top + rect.height / 2;
+      // Euclidean distance from mouse to panel center
+      const dist = Math.sqrt((mouseX - cardX) ** 2 + (mouseY - cardY) ** 2);
 
-    function setVars(x: number, y: number) {
-      document.documentElement.style.setProperty("--mouse-x", `${x}px`);
-      document.documentElement.style.setProperty("--mouse-y", `${y}px`);
-      // Calculate "proximity" for panel highlight strength, global
-      // E.g. as mouse is in center, stronger
-      const dx = x - window.innerWidth / 2;
-      const dy = y - window.innerHeight / 2;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      // Max proximity in px: 0 (center) to ~800 (corners on FHD). Map to 0.35..0.68
-      const pct = 1.0 - Math.min(dist / 800, 1.0);
-      document.documentElement.style.setProperty(
-        "--emissive-strength",
-        (0.35 + 0.33 * pct).toString()
-      );
+      // Light size parameters — larger, softer for cathedral ambiance
+      const maxRadius = Math.max(window.innerWidth, window.innerHeight) / 1.0; // more diffuse
+
+      // Light prop variables — boost for glass & metallic
+      let cardLift = 0;
+      let cardBrightness = 1;
+      let emissive = 0;
+      let glassGloss = 0.18;
+      let glassBlur = 10;
+      let glassBgLight = 0;
+      let glassPrism = 0;
+      let metallicShine = 0;
+
+      if (dist < maxRadius) {
+        // Soft quadratic falloff for realism
+        const light = 1 - Math.min(dist / maxRadius, 1);
+        // Boost overall, smooth falloff for ambient caustic
+        cardLift = 0.16 * Math.pow(light, 1.55) + 0.035 * light;
+        cardBrightness = 1.04 + 0.22 * Math.pow(light, 2);
+        emissive = 0.27 * Math.pow(light, 1.5) + 0.07 * light;
+        // Glassy glossiness, blurs more and gets a halo as mouse approaches
+        glassGloss = 0.23 * light + 0.17; // more gloss near bright
+        glassBlur = 15 + (25 * Math.pow(light, 3)); // much bigger blur near mouse
+        glassBgLight = 0.10 + 0.45 * Math.pow(light, 1.6); // more underlight
+        glassPrism = 0.12 * Math.pow(light, 1.5); // prismatic color fringing
+        metallicShine = 0.10 * light + 0.09 * Math.pow(light, 2);
+      }
+      return { cardLift, cardBrightness, emissive, glassGloss, glassBlur, glassBgLight, glassPrism, metallicShine };
     }
 
-    const handleMove = (e: MouseEvent) => {
-      lastX = e.clientX;
-      lastY = e.clientY;
-      setVars(lastX, lastY);
-      if (pointerRef.current && !ticking) {
-        requestAnimationFrame(() => {
-          if (pointerRef.current) {
-            pointerRef.current.style.transform = `translate(${lastX}px,${lastY}px) rotate(${starAngle}deg)`;
-          }
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
+    function updatePanels(mouseX?: number, mouseY?: number) {
+      // If not supplied, get from CSS variable (for resize!), fallback to center of window.
+      let x = mouseX ?? (parseFloat(document.body.style.getPropertyValue("--mouse-x") || "") || window.innerWidth / 2);
+      let y = mouseY ?? (parseFloat(document.body.style.getPropertyValue("--mouse-y") || "") || window.innerHeight / 2);
+      // All "panel" selectors that should reflect the light
+      const selector = [
+        ".cathedral-card",
+        ".byzantine-border",
+        ".scroll-parchment"
+      ].join(",");
 
-    function animate() {
-      starAngle += 1;
-      if (pointerRef.current) {
-        pointerRef.current.style.transform = `translate(${lastX}px,${lastY}px) rotate(${starAngle}deg)`;
-      }
-      frameId = requestAnimationFrame(animate);
+      document.body.classList.add("panel-lift-active");
+      document.querySelectorAll<HTMLElement>(selector).forEach(panel => {
+        const rect = panel.getBoundingClientRect();
+        const { cardLift, cardBrightness, emissive, glassGloss, glassBlur, glassBgLight, glassPrism, metallicShine } = getLightProps(x, y, rect);
+        panel.style.setProperty("--card-lift", cardLift.toFixed(3));
+        panel.style.setProperty("--card-brightness", cardBrightness.toFixed(3));
+        panel.style.setProperty("--emissive-strength", emissive.toFixed(3));
+        panel.style.setProperty("--glass-gloss", glassGloss.toFixed(3));
+        panel.style.setProperty("--glass-blur", glassBlur.toFixed(1));
+        panel.style.setProperty("--glass-bg-light", glassBgLight.toFixed(3));
+        // Prism and shine!
+        panel.style.setProperty("--glass-prism", glassPrism.toFixed(3));
+        panel.style.setProperty("--metallic-shine", metallicShine.toFixed(3));
+      });
     }
 
-    // Initialize to center
-    setVars(lastX, lastY);
-    animate();
+    function handleMove(e: MouseEvent) {
+      const x = e.clientX;
+      const y = e.clientY;
+      [darkRef, highlightRef].forEach(ref => {
+        if (ref.current) {
+          ref.current.style.setProperty("--mouse-x", `${x}px`);
+          ref.current.style.setProperty("--mouse-y", `${y}px`);
+        }
+      });
+      // Pass mouse pos via CSS for e.g. accent icons
+      document.body.style.setProperty("--mouse-x", `${x}px`);
+      document.body.style.setProperty("--mouse-y", `${y}px`);
+      updatePanels(x, y);
+    }
+
+    // Keep everything updating on resize
+    function handleResize() {
+      updatePanels();
+    }
+
     window.addEventListener("mousemove", handleMove);
+    window.addEventListener("resize", handleResize);
+
+    // Init to center (prevents dark boot flicker)
+    const vw = window.innerWidth / 2;
+    const vh = window.innerHeight / 2;
+    [darkRef, highlightRef].forEach(ref => {
+      if (ref.current) {
+        ref.current.style.setProperty("--mouse-x", `${vw}px`);
+        ref.current.style.setProperty("--mouse-y", `${vh}px`);
+      }
+    });
+    document.body.style.setProperty("--mouse-x", `${vw}px`);
+    document.body.style.setProperty("--mouse-y", `${vh}px`);
+    updatePanels(vw, vh);
+
+    // Clean up
     return () => {
-      cancelAnimationFrame(frameId);
       window.removeEventListener("mousemove", handleMove);
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
-  // Radial glows: one dark overlay, one gold highlight, both soft blend
+  // Disable on mobile for perf
   return (
     <>
-      {/* The soft darkness for candle-lit effect */}
       <div
-        className="mouse-darkness-overlay pointer-events-none"
-        aria-hidden="true"
+        ref={darkRef}
+        aria-hidden
+        className="pointer-events-none fixed inset-0 z-40 mouse-darkness-overlay"
         style={{
-          // Fallback to center if no JS
-          background:
-            "radial-gradient(420px 320px at var(--mouse-x, 50vw) var(--mouse-y, 50vh), rgba(40, 33, 13, 0.01) 0%, rgba(20, 18, 8, 0.15) 50%, rgba(10, 7, 3, 0.84) 92%, rgba(8, 6, 2, 0.94) 100%)",
-          opacity: 0.93,
-        }}
+          "--mouse-x": "50vw",
+          "--mouse-y": "50vh",
+        } as React.CSSProperties}
       />
-      {/* Divine gold illumination highlight */}
       <div
-        className="mouse-light-overlay pointer-events-none"
-        aria-hidden="true"
+        ref={highlightRef}
+        aria-hidden
+        className="pointer-events-none fixed inset-0 z-50 mouse-highlight-overlay"
         style={{
-          background:
-            "radial-gradient(360px 280px at var(--mouse-x, 50vw) var(--mouse-y, 50vh), rgba(240,220,100,0.18) 0%, rgba(212,175,55,0.09) 45%, rgba(120,104,30,0.05) 80%, rgba(6,4,1,0.00) 100%)",
-          opacity: 0.72,
-          mixBlendMode: "screen",
-        }}
+          "--mouse-x": "50vw",
+          "--mouse-y": "50vh",
+        } as React.CSSProperties}
       />
-      {/* Gold star pointer, above everything */}
-      <div
-        ref={pointerRef}
-        style={{
-          left: "-24px",
-          top: "-24px",
-        }}
-        className="fixed z-[10000] pointer-events-none"
-        aria-hidden="true"
-      >
-        <Star
-          size={48}
-          color="#D4AF37"
-          fill="rgba(212,175,55,0.48)"
-          style={{
-            filter:
-              "drop-shadow(0 0 28px #D4AF3780) blur(0.5px) brightness(1.15)",
-            transition: "filter 0.12s",
-            mixBlendMode: "screen",
-          }}
-          className="animate-[icon-glow_3s_ease-in-out_infinite]"
-        />
-      </div>
     </>
   );
 }
