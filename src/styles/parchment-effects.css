@@ -1,0 +1,8 @@
+
+@tailwind components;
+
+@layer components {
+  /* Reserved: scroll-parchment and parchment special visual effects
+     No scroll-parchment utilities here yet, but add as the project grows.
+  */
+}

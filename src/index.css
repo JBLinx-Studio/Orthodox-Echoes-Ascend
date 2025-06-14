@@ -23,6 +23,9 @@
 @import './styles/overlays.css';
 @import './styles/typography.css';
 @import './styles/utilities.css';
+@import './styles/animation-keyframes.css';
+@import './styles/util-helpers.css';
+@import './styles/parchment-effects.css';
 
 /* -------------
    Tailwind layers
@@ -40,3 +43,4 @@
     min-height: 100vh;
   }
 }
+
