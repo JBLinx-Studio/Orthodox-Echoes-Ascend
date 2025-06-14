@@ -1,0 +1,15 @@
+
+@tailwind components;
+
+@layer components {
+  /* Mouse light, darkness, highlight overlays */
+  .mouse-light-overlay {
+    // ... light overlay gradients, blend-modes, pointer-events, etc ...
+  }
+  .mouse-darkness-overlay {
+    // ... darkness overlay gradients, multiply, pointer-events: none, etc ...
+  }
+  .mouse-highlight-overlay {
+    // ... golden highlight overlay, subtle, pointer-events: none ...
+  }
+}
