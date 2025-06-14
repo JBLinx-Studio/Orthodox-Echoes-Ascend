@@ -25,7 +25,7 @@ export default function Shop() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0a0d16] to-[#161a26] pt-20">
+    <div className="min-h-screen bg-gradient-to-b from-[#070a12] to-[#131623] pt-20">
       {/* Popup Notice */}
       <ShopInfoPopup
         show={showPopup}

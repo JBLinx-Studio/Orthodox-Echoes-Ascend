@@ -257,6 +257,33 @@
     @apply absolute -top-8 left-1/2 -translate-x-1/2 w-4 h-4 bg-gold/30 rounded-full blur-md;
     animation: flame-glow 3s ease-in-out infinite;
   }
+
+  /* MouseLightOverlay core styles */
+  .mouse-light-overlay {
+    /* Darken everything by default */
+    background: radial-gradient(
+      circle 240px at var(--mouse-x, 50vw) var(--mouse-y, 50vh), 
+      rgba(212,175,55,0.23) 0%,          /* strong gold light core */
+      rgba(212,175,55,0.14) 15%,
+      rgba(212,175,55,0.10) 36%,
+      rgba(0,0,0,0.06) 43%,
+      rgba(0,0,0,0.45) 60%,
+      rgba(0,0,0,0.77) 100%
+    );
+    mix-blend-mode: lighten;
+    transition: background 0.13s;
+    will-change: background;
+    pointer-events: none;
+    z-index: 40;
+    opacity: 1;
+    /* Only show on desktop */
+    display: block;
+  }
+  @media (max-width: 639px) {
+    .mouse-light-overlay {
+      display: none;
+    }
+  }
 }
 
 /* Page appearance animation */
