@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -9,6 +8,11 @@ interface AnimatedBackgroundProps {
   animated?: boolean;
 }
 
+function isMobileDevice() {
+  if (typeof window === "undefined") return false;
+  return /Mobi|Android|iPhone|iPad|iPod|Opera Mini/i.test(window.navigator.userAgent);
+}
+
 export function AnimatedBackground({
   className,
   intensity = 'medium',
@@ -16,38 +20,42 @@ export function AnimatedBackground({
   animated = true
 }: AnimatedBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animationRef = useRef<number>();
+  const lastVisibilityState = useRef<'visible'|'hidden'>('visible');
   
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || !animated) return;
-    
+
+    // Respect reduced motion if user prefers it
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+    // Disable entirely for mobile devices for max perf
+    if (isMobileDevice()) return;
+
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
-    // Set canvas dimensions
     const setCanvasDimensions = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
-    
     setCanvasDimensions();
     window.addEventListener('resize', setCanvasDimensions);
-    
-    // Particle settings based on intensity
+
+    // Lowered particle count for better perf on most screens
     const particleCount = {
-      low: 30,
-      medium: 60,
-      high: 100
+      low: 18,
+      medium: isMobileDevice() ? 15 : 30,
+      high: isMobileDevice() ? 25 : 50
     }[intensity];
-    
-    // Color settings based on theme
+
     const particleColor = {
       light: '#FFFFFF',
       dark: '#1A1F2C',
       gold: '#D4AF37'
     }[theme];
-    
-    // Create particles
+
     class Particle {
       x: number;
       y: number;
@@ -55,29 +63,20 @@ export function AnimatedBackground({
       speedX: number;
       speedY: number;
       opacity: number;
-      
       constructor() {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 5 + 1;
-        this.speedX = Math.random() * 0.5 - 0.25;
-        this.speedY = Math.random() * 0.5 - 0.25;
-        this.opacity = Math.random() * 0.5 + 0.2;
+        this.size = Math.random() * 4 + 1;
+        this.speedX = Math.random() * 0.35 - 0.18;
+        this.speedY = Math.random() * 0.35 - 0.18;
+        this.opacity = Math.random() * 0.4 + 0.15;
       }
-      
       update() {
         this.x += this.speedX;
         this.y += this.speedY;
-        
-        if (this.x < 0 || this.x > canvas.width) {
-          this.speedX = -this.speedX;
-        }
-        
-        if (this.y < 0 || this.y > canvas.height) {
-          this.speedY = -this.speedY;
-        }
+        if (this.x < 0 || this.x > canvas.width) { this.speedX = -this.speedX; }
+        if (this.y < 0 || this.y > canvas.height) { this.speedY = -this.speedY; }
       }
-      
       draw() {
         if (!ctx) return;
         ctx.fillStyle = particleColor;
@@ -87,28 +86,24 @@ export function AnimatedBackground({
         ctx.fill();
       }
     }
-    
+
     const particles: Particle[] = [];
-    
     for (let i = 0; i < particleCount; i++) {
       particles.push(new Particle());
     }
-    
+
     function connectParticles() {
       if (!ctx) return;
-      
-      const maxDistance = 100;
-      
+      const maxDistance = 90;
       for (let a = 0; a < particles.length; a++) {
         for (let b = a; b < particles.length; b++) {
           const dx = particles[a].x - particles[b].x;
           const dy = particles[a].y - particles[b].y;
           const distance = Math.sqrt(dx * dx + dy * dy);
-          
           if (distance < maxDistance) {
             const opacity = 1 - (distance / maxDistance);
             ctx.strokeStyle = particleColor;
-            ctx.globalAlpha = opacity * 0.2;
+            ctx.globalAlpha = opacity * 0.13;
             ctx.lineWidth = 1;
             ctx.beginPath();
             ctx.moveTo(particles[a].x, particles[a].y);
@@ -118,29 +113,46 @@ export function AnimatedBackground({
         }
       }
     }
-    
+
+    let running = true;
     function animate() {
-      if (!ctx) return;
-      
+      if (!ctx || !running) return;
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
       for (const particle of particles) {
         particle.update();
         particle.draw();
       }
-      
       connectParticles();
-      
-      requestAnimationFrame(animate);
+      animationRef.current = requestAnimationFrame(animate);
     }
-    
+
+    // Visibility API: pause when tab hidden
+    function handleVisibilityChange() {
+      if (document.visibilityState === "visible") {
+        running = true;
+        if (lastVisibilityState.current !== 'visible') {
+          animate();
+        }
+        lastVisibilityState.current = 'visible';
+      } else {
+        running = false;
+        if (animationRef.current) cancelAnimationFrame(animationRef.current);
+        lastVisibilityState.current = 'hidden';
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     animate();
-    
+
     return () => {
       window.removeEventListener('resize', setCanvasDimensions);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      running = false;
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
     };
   }, [animated, intensity, theme]);
-  
+
   return (
     <div className={cn("fixed inset-0 -z-10 overflow-hidden", className)}>
       <canvas ref={canvasRef} className="absolute inset-0" />

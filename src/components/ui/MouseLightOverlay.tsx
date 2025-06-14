@@ -1,124 +1,122 @@
 
 import React, { useEffect, useRef } from "react";
+import { Star } from "lucide-react";
 
 /**
- * Major "holy light" overlay:
- * 1. DarknessOverlay: Radial mask, jumbo size, darkens all UI except a huge illuminated zone.
- * 2. HighlightOverlay: BRIGHT, gold, and very large/strong holy light with subtle streaks.
+ * A global, performant "divine illumination" overlay.
+ * Shows:
+ *  - Global gold light/dark radial gradients blending with all content.
+ *  - Mouse pointer becomes a luminous, gently rotating star casting soft glows.
+ *  - Panels (via :root or [data-emissive]) will react to the star ("emissive-strength").
+ * No per-panel mouse tracking, no lag!
  */
 export function MouseLightOverlay() {
-  const darkRef = useRef<HTMLDivElement>(null);
-  const highlightRef = useRef<HTMLDivElement>(null);
+  const pointerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    function handleMove(e: MouseEvent) {
-      const x = e.clientX;
-      const y = e.clientY;
-      [darkRef, highlightRef].forEach(ref => {
-        if (ref.current) {
-          ref.current.style.setProperty("--mouse-x", `${x}px`);
-          ref.current.style.setProperty("--mouse-y", `${y}px`);
-        }
-      });
-      document.body.style.setProperty("--mouse-x", `${x}px`);
-      document.body.style.setProperty("--mouse-y", `${y}px`);
+    let lastX = window.innerWidth / 2;
+    let lastY = window.innerHeight / 2;
+    let starAngle = 0;
+    let frameId: number;
+    let ticking = false;
+
+    function setVars(x: number, y: number) {
+      document.documentElement.style.setProperty("--mouse-x", `${x}px`);
+      document.documentElement.style.setProperty("--mouse-y", `${y}px`);
+      // Calculate "proximity" for panel highlight strength, global
+      // E.g. as mouse is in center, stronger
+      const dx = x - window.innerWidth / 2;
+      const dy = y - window.innerHeight / 2;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      // Max proximity in px: 0 (center) to ~800 (corners on FHD). Map to 0.35..0.68
+      const pct = 1.0 - Math.min(dist / 800, 1.0);
+      document.documentElement.style.setProperty(
+        "--emissive-strength",
+        (0.35 + 0.33 * pct).toString()
+      );
     }
+
+    const handleMove = (e: MouseEvent) => {
+      lastX = e.clientX;
+      lastY = e.clientY;
+      setVars(lastX, lastY);
+      if (pointerRef.current && !ticking) {
+        requestAnimationFrame(() => {
+          if (pointerRef.current) {
+            pointerRef.current.style.transform = `translate(${lastX}px,${lastY}px) rotate(${starAngle}deg)`;
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    function animate() {
+      starAngle += 1;
+      if (pointerRef.current) {
+        pointerRef.current.style.transform = `translate(${lastX}px,${lastY}px) rotate(${starAngle}deg)`;
+      }
+      frameId = requestAnimationFrame(animate);
+    }
+
+    // Initialize to center
+    setVars(lastX, lastY);
+    animate();
     window.addEventListener("mousemove", handleMove);
-
-    const vw = window.innerWidth / 2;
-    const vh = window.innerHeight / 2;
-    [darkRef, highlightRef].forEach(ref => {
-      if (ref.current) {
-        ref.current.style.setProperty("--mouse-x", `${vw}px`);
-        ref.current.style.setProperty("--mouse-y", `${vh}px`);
-      }
-    });
-    document.body.style.setProperty("--mouse-x", `${vw}px`);
-    document.body.style.setProperty("--mouse-y", `${vh}px`);
-    return () => window.removeEventListener("mousemove", handleMove);
-  }, []);
-
-  // Cursor: turning gold star & pointer
-  useEffect(() => {
-    const styleId = "custom-star-cursor-keyframes";
-    if (!document.getElementById(styleId)) {
-      const style = document.createElement("style");
-      style.id = styleId;
-      style.innerHTML = `
-      @keyframes rotate-cursor-star {
-        100% { transform: rotate(360deg); }
-      }
-      .star-cursor {
-        width:32px;height:32px;pointer-events:none;
-        position:fixed;z-index:999999;
-        transition:opacity 0.2s;
-        will-change:transform,opacity;
-        filter: drop-shadow(0 0 8px #ffd900cc) drop-shadow(0 0 22px #ffe34ea0);
-        opacity:0.95;
-        mix-blend-mode:lighten;
-        pointer-events: none;
-        left:-32px;top:-32px;
-        user-select:none;
-        z-index:99999999;
-      }
-      `;
-      document.head.appendChild(style);
-    }
-    const star = document.createElement("div");
-    star.innerHTML = `
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-        <g>
-          <polygon points="16,2 20,12 31,12 22,19 25,30 16,24 7,30 10,19 1,12 12,12"
-            fill="#ffe06b" stroke="#eabd23" stroke-width="2" />
-          <circle cx="16" cy="16" r="6" fill="#FFF8C5" fill-opacity="0.4"/>
-        </g>
-      </svg>
-    `;
-    star.className = "star-cursor";
-    star.style.position = "fixed";
-    document.body.appendChild(star);
-
-    function cursorAnimHandler(e: MouseEvent) {
-      star.style.left = `${e.clientX - 16}px`;
-      star.style.top = `${e.clientY - 16}px`;
-      star.style.animation = "rotate-cursor-star 2s linear infinite";
-    }
-    window.addEventListener("mousemove", cursorAnimHandler);
-
-    // Hide system cursor for desktop
-    document.body.style.cursor = "none";
-
     return () => {
-      window.removeEventListener("mousemove", cursorAnimHandler);
-      if (star.parentNode) star.parentNode.removeChild(star);
-      document.body.style.cursor = "";
-      const style = document.getElementById(styleId);
-      if (style) style.remove();
+      cancelAnimationFrame(frameId);
+      window.removeEventListener("mousemove", handleMove);
     };
   }, []);
 
+  // Radial glows: one dark overlay, one gold highlight, both soft blend
   return (
     <>
-      {/* 1. Even bigger darkness vignette, only panel areas stay visible */}
+      {/* The soft darkness for candle-lit effect */}
       <div
-        ref={darkRef}
-        aria-hidden
-        className="pointer-events-none fixed inset-0 z-40 mouse-darkness-overlay"
+        className="mouse-darkness-overlay pointer-events-none"
+        aria-hidden="true"
         style={{
-          "--mouse-x": "50vw",
-          "--mouse-y": "50vh",
-        } as React.CSSProperties}
+          // Fallback to center if no JS
+          background:
+            "radial-gradient(420px 320px at var(--mouse-x, 50vw) var(--mouse-y, 50vh), rgba(40, 33, 13, 0.01) 0%, rgba(20, 18, 8, 0.15) 50%, rgba(10, 7, 3, 0.84) 92%, rgba(8, 6, 2, 0.94) 100%)",
+          opacity: 0.93,
+        }}
       />
-      {/* 2. Major golden glow highlight with even more coverage */}
+      {/* Divine gold illumination highlight */}
       <div
-        ref={highlightRef}
-        aria-hidden
-        className="pointer-events-none fixed inset-0 z-50 mouse-highlight-overlay enhanced-holy-glow"
+        className="mouse-light-overlay pointer-events-none"
+        aria-hidden="true"
         style={{
-          "--mouse-x": "50vw",
-          "--mouse-y": "50vh",
-        } as React.CSSProperties}
+          background:
+            "radial-gradient(360px 280px at var(--mouse-x, 50vw) var(--mouse-y, 50vh), rgba(240,220,100,0.18) 0%, rgba(212,175,55,0.09) 45%, rgba(120,104,30,0.05) 80%, rgba(6,4,1,0.00) 100%)",
+          opacity: 0.72,
+          mixBlendMode: "screen",
+        }}
       />
+      {/* Gold star pointer, above everything */}
+      <div
+        ref={pointerRef}
+        style={{
+          left: "-24px",
+          top: "-24px",
+        }}
+        className="fixed z-[10000] pointer-events-none"
+        aria-hidden="true"
+      >
+        <Star
+          size={48}
+          color="#D4AF37"
+          fill="rgba(212,175,55,0.48)"
+          style={{
+            filter:
+              "drop-shadow(0 0 28px #D4AF3780) blur(0.5px) brightness(1.15)",
+            transition: "filter 0.12s",
+            mixBlendMode: "screen",
+          }}
+          className="animate-[icon-glow_3s_ease-in-out_infinite]"
+        />
+      </div>
     </>
   );
 }

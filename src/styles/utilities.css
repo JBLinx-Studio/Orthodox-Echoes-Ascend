@@ -1,0 +1,11 @@
+@tailwind utilities;
+
+@layer utilities {
+  /* Animations, utility classes, helper effects */
+  .hover-scale {
+    transition: transform 0.2s;
+  }
+  .hover-scale:hover {
+    transform: scale(1.05);
+  }
+}

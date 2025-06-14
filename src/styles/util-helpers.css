@@ -1,0 +1,17 @@
+
+@tailwind utilities;
+
+@layer utilities {
+  /* Quick helper classes */
+
+  .hover-scale {
+    transition: transform 0.2s;
+  }
+  .hover-scale:hover {
+    transform: scale(1.05);
+  }
+
+  .pulse {
+    @apply animate-[pulse_2s_cubic-bezier(0.4,0,0.6,1)_infinite];
+  }
+}

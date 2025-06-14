@@ -1,0 +1,76 @@
+
+@tailwind components;
+
+@layer components {
+  /* Mouse light, darkness, highlight overlays */
+
+  .mouse-light-overlay {
+    /* 
+      Soft radial light gradient following mouse.
+      Blend over darkness for "illumination" effect.
+      Should use mix-blend-mode: screen or lighten.
+      Set via JS: --mouse-x, --mouse-y.
+    */
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 45;
+    /* Place rough radial light around mouse: */
+    background: radial-gradient(
+      340px 260px at var(--mouse-x, 50vw) var(--mouse-y, 50vh),
+      rgba(255, 255, 194, 0.24) 0%,
+      rgba(225, 220, 110, 0.11) 45%,
+      rgba(100, 100, 25, 0.06) 80%,
+      rgba(6, 4, 1, 0.0) 100%
+    );
+    mix-blend-mode: screen;
+    opacity: 0.80;
+    transition: background 0.19s, opacity 0.17s;
+  }
+
+  .mouse-darkness-overlay {
+    /* 
+      Overall darkness: simulates candle-lit/focused room.
+      Makes regions far from mouse much darker.
+      Should use multiply to blend over app.
+    */
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    /* Center light fades out, edges dark: */
+    background: radial-gradient(
+      410px 310px at var(--mouse-x, 50vw) var(--mouse-y, 50vh),
+      rgba(40, 33, 13, 0.03) 0%,
+      rgba(20, 18, 8, 0.18) 46%,
+      rgba(14, 11, 7, 0.78) 80%,
+      rgba(10, 7, 3, 0.95) 99%,
+      rgba(8, 6, 2, 0.98) 100%
+    );
+    mix-blend-mode: multiply;
+    opacity: 0.92;
+    transition: background 0.23s, opacity 0.13s;
+  }
+
+  .mouse-highlight-overlay {
+    /* 
+      Thin gold emission at the very center for "divine touch".
+      Only glows softly under mouse, not too strong.
+    */
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: radial-gradient(
+      120px 100px at var(--mouse-x, 50vw) var(--mouse-y, 50vh),
+      rgba(238, 200, 80, 0.16) 0%,
+      rgba(212, 175, 55, 0.12) 33%,
+      rgba(244, 223, 150, 0.06) 71%,
+      rgba(244, 223, 150, 0.00) 100%
+    );
+    mix-blend-mode: lighten;
+    opacity: 0.82;
+    transition: background 0.20s, opacity 0.13s;
+    filter: blur(0.5px) contrast(1.02);
+  }
+}

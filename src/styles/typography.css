@@ -1,0 +1,61 @@
+@tailwind components;
+
+@layer components {
+  /* Headings, display titles, illuminated text styles */
+  .byzantine-title {
+    @apply font-display text-4xl text-gold relative inline-block mb-8;
+  }
+
+  .byzantine-title::before,
+  .byzantine-title::after {
+    content: "☦";
+    @apply absolute text-xl text-gold/70 top-1/2 -translate-y-1/2;
+  }
+
+  .byzantine-title::before {
+    @apply -left-10;
+  }
+
+  .byzantine-title::after {
+    @apply -right-10;
+  }
+  .orthodox-heading {
+    @apply font-display relative inline-block pb-4 px-6;
+  }
+  
+  .orthodox-heading::before,
+  .orthodox-heading::after {
+    content: "✦";
+    @apply absolute text-sm text-gold/80 top-1/2 -translate-y-1/2;
+  }
+  
+  .orthodox-heading::before {
+    @apply -left-4;
+  }
+  
+  .orthodox-heading::after {
+    @apply -right-4;
+  }
+  
+  /* Fixed underline positioning - now properly underneath the text */
+  .orthodox-heading::after {
+    content: "";
+    @apply absolute bottom-2 left-1/4 right-1/4 h-0.5 bg-gradient-to-r from-transparent via-gold/50 to-transparent;
+  }
+  .illuminated-first-letter::first-letter {
+    font-family: 'Playfair Display', serif;
+    float: left;
+    font-size: 3em;
+    line-height: 0.8;
+    margin-right: 0.1em;
+    color: #D4AF37;
+  }
+  .scripture-text {
+    font-family: 'Source Serif Pro', serif;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.8);
+    border-left: 3px solid #D4AF37;
+    padding-left: 1rem;
+    margin: 1.5rem 0;
+  }
+}
