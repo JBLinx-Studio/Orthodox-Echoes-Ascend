@@ -1,16 +1,65 @@
-
 import React, { useEffect, useRef } from "react";
 
 /**
- * Contains two overlay layers:
- * 1. DarknessOverlay: Radial mask darkens the entire UI except where the cursor glows.
- * 2. HighlightOverlay: Subtle golden soft highlight that “lifts” the content just under the mouse.
+ * Immersive cathedral mouse light effect!
+ * - Global darkness mask with light following cursor
+ * - Glowy golden highlight under mouse
+ * - Panels & content subtly "catch" and reflect/cast light!
  */
 export function MouseLightOverlay() {
   const darkRef = useRef<HTMLDivElement>(null);
   const highlightRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Helper for realistic distance-based light falloff
+    function getLightProps(mouseX: number, mouseY: number, rect: DOMRect) {
+      // Center of the panel/card
+      const cardX = rect.left + rect.width / 2;
+      const cardY = rect.top + rect.height / 2;
+      // Euclidean distance from mouse to panel center
+      const dist = Math.sqrt((mouseX - cardX) ** 2 + (mouseY - cardY) ** 2);
+
+      // Light size parameters (tweak for realism/perf!)
+      const maxRadius = Math.max(window.innerWidth, window.innerHeight) / 1.2; // physically plausible
+      // Card "lift": how much it glows/floats visually
+      let cardLift = 0;
+      // Brightness: how much the card color is lifted
+      let cardBrightness = 1;
+      // Emissive: reflective accents, icons, borders
+      let emissive = 0;
+
+      if (dist < maxRadius) {
+        // Soft quadratic falloff for realism
+        const light = 1 - Math.min(dist / maxRadius, 1);
+        // The closer you are, the more lift & brightness & emissive
+        cardLift = 0.13 * light ** 2 + 0.03 * light;        // subtle lift, squared falloff
+        cardBrightness = 1.01 + 0.21 * light ** 1.5;        // not too much, or it's blinding
+        emissive = 0.16 * light ** 2 + 0.03 * light;        // glowy border, accents
+      }
+      return { cardLift, cardBrightness, emissive };
+    }
+
+    function updatePanels(mouseX?: number, mouseY?: number) {
+      // If not supplied, get from CSS variable (for resize!), fallback to center of window.
+      let x = mouseX ?? parseFloat(document.body.style.getPropertyValue("--mouse-x") || '') || window.innerWidth / 2;
+      let y = mouseY ?? parseFloat(document.body.style.getPropertyValue("--mouse-y") || '') || window.innerHeight / 2;
+      // All "panel" selectors that should reflect the light
+      const selector = [
+        ".cathedral-card",
+        ".byzantine-border",
+        ".scroll-parchment"
+      ].join(",");
+
+      document.body.classList.add("panel-lift-active");
+      document.querySelectorAll<HTMLElement>(selector).forEach(panel => {
+        const rect = panel.getBoundingClientRect();
+        const { cardLift, cardBrightness, emissive } = getLightProps(x, y, rect);
+        panel.style.setProperty("--card-lift", cardLift.toFixed(3));
+        panel.style.setProperty("--card-brightness", cardBrightness.toFixed(3));
+        panel.style.setProperty("--emissive-strength", emissive.toFixed(3));
+      });
+    }
+
     function handleMove(e: MouseEvent) {
       const x = e.clientX;
       const y = e.clientY;
@@ -20,12 +69,21 @@ export function MouseLightOverlay() {
           ref.current.style.setProperty("--mouse-y", `${y}px`);
         }
       });
-      // Expose CSS variables for child panels (e.g. raised effect)
+      // Pass mouse pos via CSS for e.g. accent icons
       document.body.style.setProperty("--mouse-x", `${x}px`);
       document.body.style.setProperty("--mouse-y", `${y}px`);
+      updatePanels(x, y);
     }
+
+    // Keep everything updating on resize
+    function handleResize() {
+      updatePanels();
+    }
+
     window.addEventListener("mousemove", handleMove);
-    // Init (center)
+    window.addEventListener("resize", handleResize);
+
+    // Init to center (prevents dark boot flicker)
     const vw = window.innerWidth / 2;
     const vh = window.innerHeight / 2;
     [darkRef, highlightRef].forEach(ref => {
@@ -36,13 +94,18 @@ export function MouseLightOverlay() {
     });
     document.body.style.setProperty("--mouse-x", `${vw}px`);
     document.body.style.setProperty("--mouse-y", `${vh}px`);
-    return () => window.removeEventListener("mousemove", handleMove);
+    updatePanels(vw, vh);
+
+    // Clean up
+    return () => {
+      window.removeEventListener("mousemove", handleMove);
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
-  // Disable on mobile (matches CSS media query)
+  // Disable on mobile for perf
   return (
     <>
-      {/* 1. Big darkness vignette except center */}
       <div
         ref={darkRef}
         aria-hidden
@@ -52,7 +115,6 @@ export function MouseLightOverlay() {
           "--mouse-y": "50vh",
         } as React.CSSProperties}
       />
-      {/* 2. Bright gold highlight, above panels, below nav */}
       <div
         ref={highlightRef}
         aria-hidden

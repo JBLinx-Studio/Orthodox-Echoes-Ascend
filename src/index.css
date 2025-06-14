@@ -331,9 +331,74 @@
 
   /* Panels react to cursor - "lift" as mouse nears */
   .cathedral-card, .byzantine-border, .scroll-parchment {
-    filter: brightness(var(--card-brightness, 1))
-      drop-shadow(0 2px 20px rgba(212,175,55, calc(var(--card-lift, 0))));
-    transition: filter 0.22s cubic-bezier(.57,.21,.47,.76);
+    filter:
+      brightness(var(--card-brightness, 1))
+      drop-shadow(0 2px 20px rgba(212,175,55, calc(var(--card-lift, 0))))
+      drop-shadow(0 0 8px rgba(222,215,130, calc(var(--emissive-strength,0) * 1.2)));
+    /* Extra "lift" on gold edges as mouse approaches, including soft halo glow */
+    box-shadow:
+      0 2px 18px 0 rgba(10,8,0,0.15),
+      0 0 22px 3px rgba(215,180,50, calc(var(--emissive-strength,0))),
+      0 0 0px 0px transparent;
+    transition:
+      filter 0.22s cubic-bezier(.62,.11,.48,.87),
+      box-shadow 0.22s cubic-bezier(.62,.11,.48,.87);
+    will-change: filter, box-shadow;
+  }
+
+  .cathedral-card .icon-glow,
+  .byzantine-border .icon-glow,
+  .scroll-parchment .icon-glow {
+    /* These icons "emit light" when mouse is close */
+    filter: drop-shadow(0 0 7px rgba(212,175,55, calc(var(--emissive-strength,0.02) + 0.14)))
+      brightness(calc(1.05 + var(--emissive-strength,0) * 3));
+    transition: filter 0.19s cubic-bezier(.55,.11,.48,.8);
+  }
+
+  /* Beautiful soft styling for "emissive" gold details */
+  .cathedral-card, .byzantine-border, .scroll-parchment {
+    --panel-base-dark: rgba(15, 13, 4, 0.81);
+    --panel-deep-shadow: rgba(8, 6, 1, 0.94);
+    background: linear-gradient(to right bottom, 
+      var(--panel-base-dark), 
+      rgba(70, 34, 13, 0.16) 80%),
+      var(--panel-deep-shadow);
+  }
+
+  /* Cards get extra darkness/mood for more dramatic light */
+  .cathedral-card {
+    background-blend-mode: multiply;
+    border-color: rgba(180,140,50,0.26);
+  }
+
+  /* Panel borders glow more with proximity */
+  .byzantine-border {
+    border-color: rgba(212, 175, 55, calc(0.34 + var(--emissive-strength,0) * 2));
+  }
+  .scroll-parchment {
+    border-color: rgba(212,175,55, calc(0.18 + var(--emissive-strength,0) * 1.2));
+  }
+
+  /* Animated highlights for borders and details */
+  .cathedral-card::before,
+  .byzantine-border::before,
+  .scroll-parchment::before {
+    opacity: calc(0.5 + var(--emissive-strength,0) * 2);
+    box-shadow: 0 0 calc(10px + var(--emissive-strength,0)*32px) 0 rgba(221, 195, 60, calc(.2 + var(--emissive-strength,0) * 1.5));
+  }
+  .cathedral-card::after,
+  .byzantine-border::after,
+  .scroll-parchment::after {
+    opacity: calc(0.5 + var(--emissive-strength,0) * 2);
+  }
+
+  @media (max-width: 639px) {
+    .cathedral-card, .byzantine-border, .scroll-parchment {
+      /* No dynamic per-panel lift on mobile for performance */
+      --card-lift: 0 !important;
+      --card-brightness: 1 !important;
+      --emissive-strength: 0 !important;
+    }
   }
 }
 
