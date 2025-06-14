@@ -1,4 +1,3 @@
-
 import { HeroSection } from '@/components/HeroSection';
 import { FeaturedArticles } from '@/components/FeaturedArticles';
 import { DonationSection } from '@/components/DonationSection';
@@ -12,6 +11,8 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Calendar, Users, Bookmark, Edit } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { GlassBanner } from '@/components/ui/GlassBanner';
+import { GlowOverlay } from '@/components/ui/GlowOverlay';
 
 // Animation presets
 const fadeInUp = {
@@ -58,49 +59,40 @@ const Index = () => {
   }, [expandPlayer, togglePlay, isPlaying]);
 
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* Upgraded Hero Section */}
+    <div className="min-h-screen flex flex-col relative">
+      {/* Animated Glow Background */}
+      <GlowOverlay color="gold" intensity="medium" className="top-0 left-0 w-full h-[400px]" />
+      {/* Hero Section */}
       <HeroSection />
 
-      {/* Animated section: Faith in Practice */}
+      {/* Faith in Practice glassy mid-banner */}
+      <motion.div className="relative z-10 -mt-24 md:mt-0 pb-20">
+        <div className="container mx-auto px-4">
+          <GlassBanner>
+            <h2 className="font-display text-3xl md:text-4xl text-gold font-extrabold mb-2 tracking-tight">Faith in Practice</h2>
+            <div className="inline-flex items-center gap-2 bg-byzantine/15 rounded-full px-6 py-2 shadow-md border border-gold/40 text-gold text-xs uppercase font-medium animate-pulse mb-2">✦ Ancient Roots, Living Tradition ✦</div>
+            <p className="text-white/80 text-medium max-w-xl mx-auto text-center mb-2">Discover how Orthodox Christianity continues to transform lives through timeless wisdom and sacred traditions.</p>
+          </GlassBanner>
+        </div>
+      </motion.div>
+
+      {/* Animated section: Faith in Practice grid */}
       <motion.section
-        className="py-20 relative bg-gradient-to-b from-[#12162a]/80 to-[#171a29]/95"
+        className="py-12 relative bg-gradient-to-b from-[#181d2e]/80 to-[#1a1c29]/95"
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-120px" }}
+        viewport={{ once: true, margin: "-100px" }}
         variants={staggerContainer}
       >
+        {/* Glow accent */}
+        <GlowOverlay color="gold" intensity="low" className="top-[20%] left-[10%] w-[260px] h-[180px]" />
         <div className="container mx-auto px-4">
-          {/* BYZANTINE DIVIDER */}
-          <div className="flex justify-center mb-10">
-            <div className="relative w-64 h-6">
-              <svg width="256" height="24" className="absolute inset-0" viewBox="0 0 256 24" fill="none">
-                <path d="M0,12 C32,4 64,20 96,12 C128,4 160,20 192,12 C224,4 256,20 256,12" stroke="#D4AF37" strokeWidth="2" fill="none"/>
-                <circle cx="128" cy="12" r="4" fill="#D4AF37" opacity="0.3"/>
-              </svg>
-            </div>
-          </div>
-          {/* Section Heading */}
-          <motion.div variants={fadeInUp} className="mb-14 text-center">
-            <h2 className="text-4xl md:text-5xl font-display font-bold text-gold mb-4 tracking-tight drop-shadow-lg">
-              Faith in Practice
-            </h2>
-            <div className="mx-auto mb-5 flex justify-center">
-              <div className="inline-flex items-center gap-2 bg-byzantine/15 rounded-full px-6 py-2 shadow-md border border-gold/40 text-gold text-sm uppercase font-medium animate-pulse">
-                ✦ Ancient Roots, Living Tradition ✦
-              </div>
-            </div>
-            <p className="text-white/80 max-w-2xl mx-auto text-lg font-body">
-              Discover how Orthodox Christianity continues to transform lives through timeless wisdom and sacred traditions.
-            </p>
-          </motion.div>
-          {/* Featured grids */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-14">
             <motion.div variants={fadeInUp}
-              className="bg-[#181D2E]/80 rounded-xl p-8 border border-gold/15 shadow-lg hover:border-gold/50 transition-all hover:scale-[1.03] group"
+              className="cathedral-card transition-all hover:scale-[1.04] group"
             >
               <div className="w-14 h-14 rounded-full mb-3 flex items-center justify-center bg-gold/10 group-hover:animate-pulse">
-                <Calendar className="h-8 w-8 text-gold" />
+                <Calendar className="h-8 w-8 text-gold drop-shadow" />
               </div>
               <h3 className="text-2xl font-display text-gold mb-2 font-bold">Liturgical Calendar</h3>
               <p className="text-white/70 mb-4">Follow the ancient rhythm of prayer, feast, and fast that guides Orthodox life throughout the year.</p>
@@ -109,10 +101,10 @@ const Index = () => {
               </Link>
             </motion.div>
             <motion.div variants={fadeInUp}
-              className="bg-[#181D2E]/80 rounded-xl p-8 border border-gold/15 shadow-lg hover:border-gold/50 transition-all hover:scale-[1.03] group"
+              className="cathedral-card transition-all hover:scale-[1.04] group"
             >
               <div className="w-14 h-14 rounded-full mb-3 flex items-center justify-center bg-gold/10 group-hover:animate-pulse">
-                <Users className="h-8 w-8 text-gold" />
+                <Users className="h-8 w-8 text-gold drop-shadow" />
               </div>
               <h3 className="text-2xl font-display text-gold mb-2 font-bold">Lives of Saints</h3>
               <p className="text-white/70 mb-4">Explore inspiring stories of holy men and women who exemplify the Orthodox path to sanctity.</p>
@@ -121,10 +113,10 @@ const Index = () => {
               </Link>
             </motion.div>
             <motion.div variants={fadeInUp}
-              className="bg-[#181D2E]/80 rounded-xl p-8 border border-gold/15 shadow-lg hover:border-gold/50 transition-all hover:scale-[1.03] group"
+              className="cathedral-card transition-all hover:scale-[1.04] group"
             >
               <div className="w-14 h-14 rounded-full mb-3 flex items-center justify-center bg-gold/10 group-hover:animate-pulse">
-                <Bookmark className="h-8 w-8 text-gold" />
+                <Bookmark className="h-8 w-8 text-gold drop-shadow" />
               </div>
               <h3 className="text-2xl font-display text-gold mb-2 font-bold">Prayer Guide</h3>
               <p className="text-white/70 mb-4">Learn traditional Orthodox prayers and develop a consistent prayer life with our comprehensive guide.</p>
@@ -141,7 +133,7 @@ const Index = () => {
         className="container mx-auto px-4 py-24"
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-140px" }}
+        viewport={{ once: true, margin: "-120px" }}
         variants={staggerContainer}
       >
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
@@ -167,7 +159,7 @@ const Index = () => {
           </motion.div>
           {/* Sidebar Panel */}
           <motion.div className="lg:col-span-1 space-y-10" variants={fadeInUp}>
-            <div className="bg-[#191c2d]/80 backdrop-blur p-8 rounded-xl border border-gold/20 shadow-xl relative overflow-hidden group">
+            <div className="glass-morphism p-8 rounded-xl border border-gold/20 shadow-xl relative overflow-hidden group bg-[#191c2d]/70">
               <h3 className="text-gold text-xl font-semibold mb-4 flex items-center">
                 <Edit className="mr-2 h-5 w-5" />
                 From Our Blog
@@ -189,16 +181,15 @@ const Index = () => {
                   Visit Blog
                 </Link>
               </Button>
-              {/* Byzantine shimmer effect */}
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-gold/10 to-transparent blur-md opacity-80 animate-pulse" />
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-gold/15 to-transparent blur-md opacity-80 animate-pulse" />
             </div>
-            <div className="bg-[#191c2d]/80 backdrop-blur p-8 rounded-xl border border-gold/20 shadow-xl">
+            <GlassBanner className="bg-[#191c2d]/85">
               <PrayerOfTheDay />
-            </div>
-            <div className="bg-[#191c2d]/80 backdrop-blur p-8 rounded-xl border border-gold/20 shadow-xl">
+            </GlassBanner>
+            <GlassBanner className="bg-[#191c2d]/85">
               <LiturgicalCalendar />
-            </div>
-            <div className="bg-[#191c2d]/80 backdrop-blur p-8 rounded-xl border border-gold/20 shadow-xl">
+            </GlassBanner>
+            <div className="glass-morphism p-8 rounded-xl border border-gold/20 shadow-xl bg-[#191c2d]/85">
               <h3 className="text-gold text-xl font-semibold mb-4 flex items-center">
                 <span className="mr-2 text-2xl">☦️</span> Sacred Sounds
               </h3>
@@ -247,4 +238,3 @@ const Index = () => {
 };
 
 export default Index;
-

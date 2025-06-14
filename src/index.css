@@ -501,3 +501,53 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(155, 35, 53, 0.6);
 }
+
+/* Improved custom cursor - golden cross */
+.cursor-golden-cross {
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='36'><text x='0' y='26' font-size='26' font-family='serif' fill='%23D4AF37'>☦</text></svg>") 13 17, pointer;
+}
+
+/* Incense effect improvements */
+.incense { pointer-events: none; }
+.incense-smoke {
+  width: 3px;
+  height: 120px;
+  margin: 0 6px;
+  background: linear-gradient(180deg, rgba(255,240,210,0.05) 0%, rgba(255,255,255,0.18) 30%, rgba(255,255,255,0.09) 65%, rgba(255,240,210,0.01) 100%);
+  border-radius: 999px;
+  opacity: 0.56;
+  position: absolute;
+  left: 0;
+  animation: incenseRise 6s ease-in-out infinite;
+}
+.incense-smoke.delay-400 { animation-delay: 2.1s; }
+
+@keyframes incenseRise {
+  from { transform: translateY(0) scaleX(0.98) scaleY(1.06) rotate(-5deg); opacity: 0.29; }
+  20% { transform: translateY(-22px) scaleX(0.99) scaleY(1.11) rotate(-3deg); opacity: 0.42; }
+  41% { transform: translateY(-54px) scaleX(1.01) scaleY(1.07) rotate(5deg); opacity: 0.54; }
+  67% { transform: translateY(-78px) scaleX(0.97) scaleY(1.13) rotate(1deg); opacity: 0.39; }
+  to { transform: translateY(-110px) scaleX(1.02) scaleY(1.04) rotate(-4deg); opacity: 0.14; }
+}
+
+/* Enhance holy-light for stronger shimmer & depth */
+.holy-light {
+  position: relative;
+  overflow: hidden;
+}
+.holy-light::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 180% 90% at 50% 25%, rgba(212, 175, 55, 0.12), transparent 72%);
+  opacity: 0.2;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* hue-rotate utility for overlays */
+.hue-rotate-gold { filter: hue-rotate(25deg); }
+
+@media (max-width: 640px) {
+  .cursor-golden-cross { cursor: pointer !important; }
+}
