@@ -310,4 +310,46 @@
 .cathedral-card, .byzantine-border, .scroll-parchment {
   mask-image: radial-gradient(circle at 55% 60%, #fff 75%, #fff8 89%, #fff2 98%, transparent 100%);
 }
+
+/* Buttons and tabs: emit a gold glow by default, intensifying on hover */
+.button, .tab, .shadcn-btn, .shadcn-tab {
+  box-shadow:
+    0 0 18px 3px rgba(212,175,55,0.2),
+    0 1.5px 3.5px 0 rgba(40,30,11,0.11);
+  border-color: rgba(212,175,55,0.20);
+  background:
+    linear-gradient(91deg, rgba(212,175,55,0.06) 0%, rgba(72,41,13,0.03) 74%);
+  text-shadow: 0 0 3px rgba(212,175,55,0.09);
+  transition: box-shadow 0.17s, background 0.17s, border-color 0.13s;
+}
+.button:hover, .tab:hover, .shadcn-btn:hover, .shadcn-tab:hover,
+.button:focus, .tab:focus, .shadcn-btn:focus, .shadcn-tab:focus {
+  box-shadow:
+    0 0 24px 9px rgba(212,175,55,0.28),
+    0 2px 5.5px 0 rgba(40,30,11,0.11);
+  border-color: rgba(212,175,55,0.34);
+  background:
+    linear-gradient(91deg, rgba(212,175,55,0.13) 0%, rgba(72,41,13,0.05) 74%);
+  text-shadow: 0 0 3.5px rgba(212,175,55,0.12);
+}
+
+/* Tabs in shadcn ui: illuminated indicator & glow on active triggers */
+[role="tablist"] .shadcn-tab[data-state="active"], [role="tablist"] .tab[data-state="active"] {
+  box-shadow:
+    0 0 30px 6px rgba(212,175,55,0.30),
+    0 2px 7.5px 0 rgba(40,30,11,0.14);
+  border-color: rgba(212,175,55,0.38);
+  background:
+    linear-gradient(96deg, rgba(212,175,55,0.19) 0%, rgba(72,41,13,0.07) 74%);
+  text-shadow: 0 1px 4.5px #D4AF3780;
+}
+
+/* Headings: a holy gold glow always-on effect */
+.illuminated-heading, .byzantine-heading, .gold-heading, h1, h2, h3, h4 {
+  text-shadow:
+    0 1.5px 8.6px #D4AF3755,
+    0 0.5px 1.5px #FFF6DD55,
+    0 0 1px #AA8C2C99;
+  color: inherit;
+}
 }
