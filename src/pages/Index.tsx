@@ -1,8 +1,9 @@
+
 import { HeroSection } from '@/components/HeroSection';
 import { FeaturedArticles } from '@/components/FeaturedArticles';
 import { DonationSection } from '@/components/DonationSection';
 import { SaintsFeatured } from '@/components/SaintsFeatured';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useAudio } from '@/contexts/AudioContext';
 import { PrayerOfTheDay } from '@/components/PrayerOfTheDay';
@@ -13,6 +14,7 @@ import { ArrowRight, Calendar, Users, Bookmark, Edit } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { GlassBanner } from '@/components/ui/GlassBanner';
 import { GlowOverlay } from '@/components/ui/GlowOverlay';
+import { BlogPost } from '@/types/BlogPost';
 
 // Animation presets
 const fadeInUp = {
@@ -34,10 +36,124 @@ const staggerContainer = {
   }
 };
 
+// Get actual blog posts from localStorage - same as Content Library
+const getActualBlogPosts = (): BlogPost[] => {
+  const savedPosts = localStorage.getItem('orthodoxEchoesBlogPosts');
+  if (savedPosts) {
+    const posts = JSON.parse(savedPosts);
+    return posts.filter((post: BlogPost) => !post.draft);
+  }
+  
+  return [
+    {
+      id: "1",
+      title: "The Divine Liturgy: A Heavenly Experience",
+      excerpt: "Exploring the profound mysteries of the Orthodox Divine Liturgy and its celestial symbolism.",
+      content: `<p>The Divine Liturgy stands at the center of Orthodox Christian worship...</p>`,
+      author: "Fr. Seraphim",
+      publishDate: "March 15, 2025",
+      imageUrl: "https://images.unsplash.com/photo-1574039677318-3febf1c5c8e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1170&q=80",
+      tags: ["Liturgy", "Worship", "Theology"],
+      featured: true,
+      category: "liturgy",
+      contentType: "article",
+      likes: 45,
+      views: 234,
+      readTime: 8
+    },
+    {
+      id: "2",
+      title: "Modern Faith in Ancient Traditions",
+      excerpt: "Navigating contemporary life while staying true to Orthodox principles.",
+      content: `<p>In our rapidly changing world, Orthodox Christians face unique challenges...</p>`,
+      author: "Maria Christodoulou",
+      publishDate: "April 5, 2025",
+      imageUrl: "https://images.unsplash.com/photo-1595118216242-53018840a9f3?auto=format&fit=crop&w=1170&q=80",
+      tags: ["Modern Life", "Spirituality", "Personal Reflection"],
+      featured: false,
+      category: "spirituality",
+      contentType: "blog",
+      likes: 28,
+      views: 156,
+      readTime: 6
+    },
+    {
+      id: "3",
+      title: "The Mystical Theology of St. John Chrysostom",
+      excerpt: "Chapter 1: Introduction to the Golden-Mouthed Preacher's Spiritual Teachings",
+      content: `<h2>Chapter 1: The Foundation of Mystical Understanding</h2><p>St. John Chrysostom offers profound insights...</p>`,
+      author: "Metropolitan Kallistos",
+      publishDate: "March 20, 2025",
+      imageUrl: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=1170&q=80",
+      tags: ["Patristics", "Mystical Theology", "St. John Chrysostom"],
+      featured: true,
+      category: "saints",
+      contentType: "book",
+      likes: 67,
+      views: 445,
+      readTime: 15
+    },
+    {
+      id: "4",
+      title: "Kyrie Eleison - Ancient Chant",
+      excerpt: "Traditional Byzantine chant expressing the cry for God's mercy",
+      content: `<p>This ancient chant has been sung in Orthodox churches for centuries...</p>`,
+      author: "Byzantine Choir",
+      publishDate: "April 1, 2025",
+      imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1170&q=80",
+      tags: ["Chant", "Music", "Byzantine"],
+      featured: false,
+      category: "music",
+      contentType: "chant",
+      audioUrl: "/audio/kyrie-eleison.mp3",
+      likes: 89,
+      views: 312,
+      readTime: 4
+    },
+    {
+      id: "5",
+      title: "Orthodox Wedding Ceremony Explained",
+      excerpt: "Understanding the beautiful symbolism of Orthodox marriage traditions",
+      content: `<p>The Orthodox wedding ceremony is rich with ancient traditions...</p>`,
+      author: "Fr. Michael",
+      publishDate: "March 28, 2025",
+      imageUrl: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1170&q=80",
+      tags: ["Marriage", "Sacraments", "Tradition"],
+      featured: false,
+      category: "sacraments",
+      contentType: "liturgy",
+      videoUrl: "/videos/orthodox-wedding.mp3",
+      likes: 156,
+      views: 678,
+      readTime: 10
+    },
+    {
+      id: "6",
+      title: "The Life of St. Nicholas the Wonderworker",
+      excerpt: "Exploring the miraculous life and enduring legacy of this beloved saint",
+      content: `<p>St. Nicholas of Myra remains one of the most beloved saints...</p>`,
+      author: "Sister Anastasia",
+      publishDate: "December 6, 2024",
+      imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=1170&q=80",
+      tags: ["Saints", "Miracles", "History"],
+      featured: true,
+      category: "saints",
+      contentType: "article",
+      likes: 234,
+      views: 567,
+      readTime: 12
+    }
+  ];
+};
+
 const Index = () => {
   const { expandPlayer, togglePlay, isPlaying } = useAudio();
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
 
   useEffect(() => {
+    // Load actual blog posts
+    setBlogPosts(getActualBlogPosts());
+    
     // Welcome toast notification
     const timer = setTimeout(() => {
       toast.success(
@@ -57,6 +173,10 @@ const Index = () => {
     }, 900);
     return () => clearTimeout(timer);
   }, [expandPlayer, togglePlay, isPlaying]);
+
+  // Get featured and recent posts for display
+  const featuredPosts = blogPosts.filter(post => post.featured).slice(0, 4);
+  const recentPosts = blogPosts.slice(0, 3);
 
   // Cathedral-style blend for improved immersion
   const cathedralBlend = "glass-blend border-2 border-gold/25 shadow-xl ring-1 ring-gold/15 bg-gradient-to-br from-gold/7 via-byzantine/10 to-black/10 animate-fade-in";
@@ -185,7 +305,7 @@ const Index = () => {
         </div>
       </motion.section>
 
-      {/* Blog + Saints Grid */}
+      {/* Content Library Preview */}
       <motion.div
         className="container mx-auto px-4 py-24"
         initial="hidden"
@@ -195,10 +315,10 @@ const Index = () => {
       >
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           <motion.div className="lg:col-span-2" variants={fadeInUp}>
-            {/* Latest Articles */}
+            {/* Content Library Section */}
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl md:text-4xl font-display font-bold text-gold">Latest Articles</h2>
-              <Link to="/blog" className="text-gold hover:underline flex items-center">
+              <h2 className="text-3xl md:text-4xl font-display font-bold text-gold">Content Library</h2>
+              <Link to="/content-library" className="text-gold hover:underline flex items-center">
                 View All <ArrowRight className="ml-1 h-4 w-4" />
               </Link>
             </div>
@@ -219,23 +339,28 @@ const Index = () => {
             <div className={"glass-morphism p-8 rounded-xl border-2 border-gold/15 shadow-xl relative overflow-hidden group bg-[#181c21]/80 animate-fade-in transition-all hover:border-gold/50"}>
               <h3 className="text-gold text-xl font-semibold mb-4 flex items-center">
                 <Edit className="mr-2 h-5 w-5" />
-                From Our Blog
+                From Our Library
               </h3>
               <div className="space-y-4">
-                {[1, 2, 3].map((item) => (
-                  <div key={item} className="p-4 bg-[#10141d]/40 rounded-md border border-gold/15 hover:border-gold/45 transition-all shadow-inner">
-                    <h4 className="text-white font-medium mb-1">Understanding Orthodox Iconography</h4>
-                    <p className="text-white/60 text-xs mb-2 line-clamp-2">Icons serve as windows to heaven, bridging the gap between the divine and earthly realms...</p>
-                    <div className="flex justify-between items-center text-xs text-gold/70">
-                      <span>Fr. Thomas</span>
-                      <span>Read 4 min</span>
+                {recentPosts.map((post, index) => (
+                  <Link key={post.id} to={`/content-library/${post.id}`} className="block">
+                    <div className="p-4 bg-[#10141d]/40 rounded-md border border-gold/15 hover:border-gold/45 transition-all shadow-inner">
+                      <h4 className="text-white font-medium mb-1 line-clamp-1">{post.title}</h4>
+                      <p className="text-white/60 text-xs mb-2 line-clamp-2">{post.excerpt}</p>
+                      <div className="flex justify-between items-center text-xs text-gold/70">
+                        <span>{post.author}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="bg-byzantine/20 px-2 py-1 rounded text-xs">{post.contentType}</span>
+                          <span>{post.readTime} min</span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
               <Button asChild className="w-full mt-4 bg-byzantine hover:bg-byzantine-dark text-white font-semibold shadow">
-                <Link to="/blog">
-                  Visit Blog
+                <Link to="/content-library">
+                  Visit Content Library
                 </Link>
               </Button>
               <div className="pointer-events-none absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-gold/15 to-transparent blur-md opacity-80 animate-pulse" />
