@@ -27,16 +27,26 @@ export function MouseLightOverlay() {
       let cardBrightness = 1;
       // Emissive: reflective accents, icons, borders
       let emissive = 0;
+      // Glassy glossiness, blurs more and gets a halo as mouse approaches
+      let glassGloss = 0.18;
+      // Glassy blur
+      let glassBlur = 9;
+      // Underlight
+      let glassBgLight = 0;
 
       if (dist < maxRadius) {
         // Soft quadratic falloff for realism
         const light = 1 - Math.min(dist / maxRadius, 1);
         // The closer you are, the more lift & brightness & emissive
         cardLift = 0.13 * light ** 2 + 0.03 * light;        // subtle lift, squared falloff
-        cardBrightness = 1.01 + 0.21 * light ** 1.5;        // not too much, or it's blinding
-        emissive = 0.16 * light ** 2 + 0.03 * light;        // glowy border, accents
+        cardBrightness = 1.01 + 0.23 * light ** 1.7;        // not too much, or it's blinding
+        emissive = 0.22 * light ** 2 + 0.06 * light;        // glowy border, accents
+        // Glassy glossiness, blurs more and gets a halo as mouse approaches
+        glassGloss = 0.22 * light + 0.15;
+        glassBlur = 12 + (10 * light ** 3); // stronger blur close to mouse
+        glassBgLight = 0.07 + 0.35 * (light ** 1.7); // underlight
       }
-      return { cardLift, cardBrightness, emissive };
+      return { cardLift, cardBrightness, emissive, glassGloss, glassBlur, glassBgLight };
     }
 
     function updatePanels(mouseX?: number, mouseY?: number) {
@@ -53,10 +63,13 @@ export function MouseLightOverlay() {
       document.body.classList.add("panel-lift-active");
       document.querySelectorAll<HTMLElement>(selector).forEach(panel => {
         const rect = panel.getBoundingClientRect();
-        const { cardLift, cardBrightness, emissive } = getLightProps(x, y, rect);
+        const { cardLift, cardBrightness, emissive, glassGloss, glassBlur, glassBgLight } = getLightProps(x, y, rect);
         panel.style.setProperty("--card-lift", cardLift.toFixed(3));
         panel.style.setProperty("--card-brightness", cardBrightness.toFixed(3));
         panel.style.setProperty("--emissive-strength", emissive.toFixed(3));
+        panel.style.setProperty("--glass-gloss", glassGloss.toFixed(3));
+        panel.style.setProperty("--glass-blur", glassBlur.toFixed(1));
+        panel.style.setProperty("--glass-bg-light", glassBgLight.toFixed(3));
       });
     }
 

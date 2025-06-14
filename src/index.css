@@ -230,32 +230,109 @@
     @apply -right-10;
   }
   
-  /* Cathedral dome card style */
-  .cathedral-card {
-    @apply bg-[#1A1F2C]/60 backdrop-blur-sm rounded-t-3xl rounded-b-md border border-gold/20 shadow-lg overflow-hidden;
-    background-image: linear-gradient(to bottom, rgba(26, 31, 44, 0.6), rgba(10, 13, 22, 0.8));
+  /* Cathedral dome card style with glassmorphism and light backend emission */
+  .cathedral-card, .byzantine-border, .scroll-parchment {
+    /* Existing brushes and gradients */
+    @apply relative overflow-hidden;
+    background: linear-gradient(
+      to right bottom, 
+      var(--panel-base-dark, rgba(15,13,4,0.81)),
+      rgba(70, 34, 13, 0.16) 80%
+    ), var(--panel-deep-shadow, rgba(8,6,1,0.94));
+    /* Frosted glass effect */
+    backdrop-filter: blur(var(--glass-blur,9px)) brightness(var(--glass-bg-light,1));
+    -webkit-backdrop-filter: blur(var(--glass-blur,9px)) brightness(var(--glass-bg-light,1));
+    box-shadow:
+      0 1.5px 10px 0 rgba(20,13,3,0.22),
+      0 0 34px 8px rgba(222,215,130, calc(var(--glass-bg-light,0) * 1.25)),
+      0 0 32px 2px rgba(212,175,55, calc(var(--emissive-strength,0) * 0.7)),
+      0 8px 44px 12px rgba(221, 195, 60, calc(var(--glass-bg-light,0.03))),
+      0 2px 18px 0 rgba(10,8,0,0.12),
+      0 0 0px 0px transparent;
+    filter:
+      brightness(var(--card-brightness, 1))
+      drop-shadow(0 2px 20px rgba(212,175,55, calc(var(--card-lift, 0))))
+      drop-shadow(0 0 8px rgba(222,215,130, calc(var(--emissive-strength,0) * 1.2)));
+    /* Glossy overlay using a pseudo-element below content */
   }
-  
-  .cathedral-card::before {
+  /* Add glossy shine - overlay only if not on mobile */
+  .cathedral-card::before,
+  .byzantine-border::before,
+  .scroll-parchment::before {
     content: "";
-    @apply absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-gold/50 to-transparent;
+    pointer-events: none;
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(
+      110deg,
+      rgba(255,255,255,calc(var(--glass-gloss,0.12))) 0%,
+      rgba(255,255,255,calc(var(--glass-gloss,0.24))) 45%,
+      rgba(245,236,193, calc(var(--glass-gloss,0.12))) 55%,
+      rgba(255, 255, 255, 0) 60%
+    );
+    opacity: 1;
+    z-index: 2;
+    mix-blend-mode: screen;
+    transition: background 0.18s, opacity 0.18s;
   }
-  
-  /* Orthodox candle effect */
-  .orthodox-candle {
-    @apply relative inline-block;
-  }
-  
-  .orthodox-candle::before {
+  .cathedral-card::after,
+  .byzantine-border::after,
+  .scroll-parchment::after {
+    /* Glass "emission"/halo behind, softly glowing, tied to the light */
     content: "";
-    @apply absolute -top-6 left-1/2 -translate-x-1/2 w-1.5 h-6 bg-gradient-to-t from-gold/80 via-gold/50 to-white/90 rounded-t-lg;
-    animation: candle-flicker 3s ease-in-out infinite;
+    position: absolute;
+    z-index: 0;
+    left: 10%; right: 10%; top: 60%; bottom: -10%;
+    background: radial-gradient(
+      ellipse at 50% 40%,
+      rgba(212, 175, 55, calc(var(--glass-bg-light, 0.07))) 0%,
+      rgba(212, 175, 55, 0.02) 90%,
+      transparent 100%
+    );
+    opacity: 1;
+    pointer-events: none;
+    filter: blur(14px) brightness(1.07);
+    transition: background 0.2s, opacity 0.16s;
+    /* animate emission effect */
   }
-  
-  .orthodox-candle::after {
-    content: "";
-    @apply absolute -top-8 left-1/2 -translate-x-1/2 w-4 h-4 bg-gold/30 rounded-full blur-md;
-    animation: flame-glow 3s ease-in-out infinite;
+
+  /* Make interactivity, glow, and reflections snappier on desktop */
+  @media (min-width: 640px) {
+    .cathedral-card, .byzantine-border, .scroll-parchment {
+      transition:
+        filter 0.23s cubic-bezier(.62,.11,.48,.87),
+        box-shadow 0.25s cubic-bezier(.62,.11,.48,.87),
+        backdrop-filter 0.18s cubic-bezier(.51,.23,.49,.77);
+      will-change: filter, box-shadow, backdrop-filter;
+    }
+    .cathedral-card::before, .byzantine-border::before, .scroll-parchment::before {
+      transition: background 0.18s, opacity 0.18s;
+    }
+    .cathedral-card::after, .byzantine-border::after, .scroll-parchment::after {
+      transition: background 0.2s, opacity 0.16s;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .cathedral-card, .byzantine-border, .scroll-parchment {
+      /* Disable heavy glass/blur for performance on mobile */
+      --glass-blur: 7 !important;
+      --glass-bg-light: 0.09 !important;
+      --glass-gloss: 0.13 !important;
+      filter: brightness(1) !important;
+      box-shadow: none !important;
+      backdrop-filter: blur(7px) !important;
+    }
+    .cathedral-card::after,
+    .byzantine-border::after,
+    .scroll-parchment::after {
+      opacity: 0 !important;
+    }
+    .cathedral-card::before,
+    .byzantine-border::before,
+    .scroll-parchment::before {
+      opacity: 0.08 !important;
+    }
   }
 
   /* MouseLightOverlay core styles */
